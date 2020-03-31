@@ -31,3 +31,4 @@ Improvement for next version
   - Add LCD screen + button shield to read back pressure valves & other valves
   - Add auto switch-over to battery back up
   - Add voltage divider & safety code to give auidable & visual alarm when battery is running out
+  - Code in the motorSpeed POT to allow adjustment for different motors
