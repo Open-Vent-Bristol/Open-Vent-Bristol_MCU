@@ -6,7 +6,8 @@ Assumptions
 
 Design Principles
 
-Restrictions 
+Restrictions
+
 It is our intention to rework the code over time to improve the safety margins and reliability by reworking the code against a industry recognised standard. As part of this we are/will be applying based off NASA's The Power of Ten (http://spinroot.com/gerard/pdf/P10.pdf). We have listed them below, for reference when making changes to the code. 
 1. Restrict all code to very simple control flow contructs. This means NO goto, setjmp, longjmp or recursion. 
 2. All loops must have fixed upper bounds. It must be easy to test if the upper bounds have been exceeded. 
