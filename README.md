@@ -35,8 +35,11 @@ It is our intention to rework the code over time to improve the safety margins a
 10. Make sure you have you complier set to it's most stringent, make sure the code executes with ANY errors. 
 
 Limitations
--At this time these rules have only be partly applied to the current version of the code, do not assume that these have been enforced. 
--There is no test currently for checking if the motor has been wired correctly. So testing without a bag hooked up is nessesary. 
+
+-At this time these rules have only be partly applied to the current version of the code, do not assume that these have been enforced.
+
+-There is no test currently for checking if the motor has been wired correctly. So testing without a bag hooked up is nessesary.
+
 -Doesn't meet the NHS requirements at this time, but it is the intention to get as close as practicable. 
 
 
