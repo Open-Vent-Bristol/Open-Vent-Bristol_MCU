@@ -7,6 +7,7 @@ Ventilation is the only known available treatment for sufferers of COVID-19. Exi
 As far as I understand, one effect of the virus as well as damaging the lungs, it also produces a very sticky mucus in the lungs which causes the lungs to collapse and makes it very difficult for the patent to breath of their own accord. Ventilation can be delivered either via intubation or a well sealed mask and delivers continuous positive air pressure into the lungs to keep them inflated at all times. Conscious less ill patents can be aided using a CPAP (Continuous Positive Airway Pressure) ventilation device like a sleep apnea device, this delivers a constant air of the same flow rate and pressure. The more critically ill patients need a machine to breath for them which varies the pressure and flow according to inhale and exhale and relies on maintaining a good seal and a PEEP valve to keep the lungs continually inflated.
 
 An analogy: Imagine inflating a balloon, letting it deflate completely, then re-inflating it, that is like CPAP. If you inflated the balloon, deflated it half way, then re-inflated it, that's more like the treatment needed for the worse sufferers.
+
 Assumptions
 
 Design Principles
