@@ -10,6 +10,13 @@ An analogy: Imagine inflating a balloon, letting it deflate completely, then re-
 
 Assumptions
 
+1. BVM design does not vary drastically, with the same basic diameters required to fit within the frame. 
+2. That whomever produces this is able to produce the physical components to a standard. 
+3. That on average a human breaths between 8-30 breathes per minute depending on a number of factors.  
+4. Humans can start having negative effects from asphyxia in around 90 seconds. 
+5. That the figure of tje global average of around 1 doctor to 10 intensive paitents.
+6. Power at some point could be lost or be inconsistent from source. 
+
 Design Principles
 
 1. for a very simple low cost design.
@@ -37,11 +44,11 @@ It is our intention to rework the code over time to improve the safety margins a
 
 Limitations
 
--At this time these rules have only be partly applied to the current version of the code, do not assume that these have been enforced.
+1. At this time these rules have only be partly applied to the current version of the code, do not assume that these have been enforced.
 
--There is no test currently for checking if the motor has been wired correctly. So testing without a bag hooked up is nessesary.
+2. There is no test currently for checking if the motor has been wired correctly. So testing without a bag hooked up is nessesary.
 
--Doesn't meet the NHS requirements at this time, but it is the intention to get as close as practicable. 
+3. Doesn't meet the NHS requirements at this time, but it is the intention to get as close as practicable. 
 
 
 Improvement for next version
