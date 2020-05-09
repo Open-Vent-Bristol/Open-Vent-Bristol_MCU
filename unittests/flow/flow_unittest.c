@@ -1,8 +1,11 @@
-#include <stdio.h>
 #include <math.h>
 
+#include "unity.h"
+#include "unity_fixture.h"
 #include "flow/flow.h"
 #include "flow/flow_parameters.def"
+
+#define TOLERANCE (1)
 
 #define C1 (19.06998055)
 #define E1 (0.517553019)
@@ -39,26 +42,36 @@ int16_t Calculate_Flow_Using_Floating_Point(
   return result;
 }
 
-int main()
+TEST_GROUP(flow_tests);
+
+TEST_SETUP(flow_tests)
 {
-  printf("\nPressure full range, with T=298K and back pressure 100Pa:");
-  for (uint16_t i = 0u; i < 100u; i++)
+
+}
+
+TEST_TEAR_DOWN(flow_tests)
+{
+
+}
+
+TEST(flow_tests, output_within_tolerance_of_floating_point)
+{
+  for (uint16_t i = 0u; i < PRESSURE_LIMIT; i++)
   {
-    printf("\n+%u: %d, %d",
-      i,
-      Get_Flow_Rate(i, 100, 298, 0),
-      Calculate_Flow_Using_Floating_Point(i, 100, 298, 0));
-    printf("\n-%u: %d, %d",
-      i,
-      Get_Flow_Rate(0-i, 100, 298, 0),
-      Calculate_Flow_Using_Floating_Point(0-i, 100, 298, 0));
+    int16_t fixed_point = Get_Flow_Rate(i, 100, 298, 0);
+    int16_t floating_point =
+      Calculate_Flow_Using_Floating_Point(i, 100, 298, 0);
+
+    uint16_t difference;
+    if (fixed_point > floating_point)
+    {
+      difference = fixed_point - floating_point;
+    }
+    else
+    {
+      difference = floating_point - fixed_point;
+    }
+
+    TEST_ASSERT_LESS_THAN(TOLERANCE + 1u, difference);
   }
-
-  // printf("\nT=273-323K with pressure 15Pa and back pressure 100Pa:");
-  // for (uint16_t i = 273u; i <= 323u; i++)
-  // {
-  //   printf("\n%u: %d", i, Get_Flow_Rate(15, 100, i, 0));
-  // }
-
-  puts("\n");
 }

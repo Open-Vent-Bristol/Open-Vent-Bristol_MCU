@@ -1,31 +1,19 @@
-cmake_minimum_required(VERSION 3.13)
+project(flow_unittest)
 
-project(OpenVent_unittest
-    VERSION 1.0
-    DESCRIPTION "OpenVent Unit Tests"
-    LANGUAGES C
+include(../unittests_common.cmake)
+
+enable_testing()
+
+add_executable(flow_unittest
+  ${UNITY_SRC}
+  ../../code/flow/flow.c
+  flow_unittest.c
+  all_tests.c
 )
-
-add_executable(flow_unittest)
-
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g3 -O0 -Wall -Werror")
 
 target_compile_definitions(flow_unittest
   PRIVATE
-    DEBUG=
-    UTEST_MODE=
     PROGMEM=
 )
 
-target_include_directories(flow_unittest
-  PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ../mocks
-    ../../code
-)
-
-target_sources(flow_unittest
-  PRIVATE
-    ../../code/flow/flow.c
-    flow_unittest.c
-)
+add_test(NAME flow_unittest COMMAND flow_unittest -v)
