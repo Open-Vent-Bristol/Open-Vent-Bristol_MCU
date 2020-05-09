@@ -42,7 +42,7 @@ int16_t Calculate_Flow_Using_Floating_Point(
 int main()
 {
   printf("\nPressure full range, with T=298K and back pressure 100Pa:");
-  for (uint16_t i = 0u; i < 25; i++)
+  for (uint16_t i = 0u; i < 100u; i++)
   {
     printf("\n+%u: %d, %d",
       i,
@@ -51,7 +51,7 @@ int main()
     printf("\n-%u: %d, %d",
       i,
       Get_Flow_Rate(0-i, 100, 298, 0),
-      Calculate_Flow_Using_Floating_Point(i, 100, 298, 0));
+      Calculate_Flow_Using_Floating_Point(0-i, 100, 298, 0));
   }
 
   // printf("\nT=273-323K with pressure 15Pa and back pressure 100Pa:");
