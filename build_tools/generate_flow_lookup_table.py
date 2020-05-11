@@ -49,7 +49,7 @@ if __name__ == "__main__":
 
     value = constants[key]
     value *= (1 << bit_shift_amount)
-    value = round(abs(value))
+    value = round(value)
 
     if value > 65535:
       type = "ul"

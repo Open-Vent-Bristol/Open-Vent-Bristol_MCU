@@ -92,8 +92,6 @@ TEST(flow_tests, output_within_tolerance_backPressure)
     int16_t floating_point =
       Calculate_Flow_Using_Floating_Point(deltaP, i, temp, cf);
 
-    // TODO - negative back pressures don't work!
-    // printf("\n%d: %d, %d", i, fixed_point, floating_point);
     uint16_t difference;
     if (fixed_point > floating_point)
     {

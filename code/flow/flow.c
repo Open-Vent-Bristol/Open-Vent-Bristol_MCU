@@ -28,14 +28,6 @@ int16_t Get_Flow_Rate(int16_t pressure_delta,
     return 0;
   }
 
-  if (back_pressure < 0)
-  {
-    back_pressure = 0 - back_pressure;
-
-    // Keep track of the sign of the result
-    result_sign = 0 - result_sign;
-  }
-
   // The temperature argument is already shifted 7 bits, so we need to
   // recover those before adding the constant B1
   temp_param = C2_SHIFT16 * ambient_temperature;
