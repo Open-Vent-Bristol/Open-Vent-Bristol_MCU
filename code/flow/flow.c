@@ -70,7 +70,7 @@ int16_t Get_Flow_Rate(int16_t pressure_delta,
 
   // Apply the correction_factor.  First, offset it by 128 to
   // account for the signedness, then multiply, then recover bits
-  correction_param = (uint8_t)correction_factor - 128u;
+  correction_param = correction_factor + 128u;
   flow_rate *= correction_param;
   flow_rate >>= 7u;
 

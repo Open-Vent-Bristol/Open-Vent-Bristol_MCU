@@ -3,7 +3,10 @@
 
 TEST_GROUP_RUNNER(flow_tests)
 {
-  RUN_TEST_CASE(flow_tests, output_within_tolerance_of_floating_point);
+  RUN_TEST_CASE(flow_tests, output_within_tolerance_deltaPressure);
+  RUN_TEST_CASE(flow_tests, output_within_tolerance_backPressure);
+  RUN_TEST_CASE(flow_tests, output_within_tolerance_ambientTemp);
+  RUN_TEST_CASE(flow_tests, output_within_tolerance_correctionFactor);
 }
 
 static void RunAllTests(void)

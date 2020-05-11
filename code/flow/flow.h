@@ -11,7 +11,7 @@ extern "C"
 /**
  * @brief Temperature in Kelvins multiplied by 128
  */
-typedef int16_t Flow_Temperature_t;
+typedef uint16_t Flow_Temperature_t;
 
 /**
  * @brief Fixed point scalar deviation

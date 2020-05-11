@@ -59,7 +59,7 @@ if __name__ == "__main__":
     print(("#define {0} ({1}{2})").format(key, value, type))
 
   pressure_limit = int(sys.argv[1])
-  print(("#define PRESSURE_LIMIT ({}u)").format(pressure_limit))
+  print(("#define PRESSURE_LIMIT ({})").format(pressure_limit))
   table = generate_flow_lookup_table(pressure_limit)
 
   # Print the table (array)

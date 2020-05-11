@@ -5,7 +5,7 @@
 #include "flow/flow.h"
 #include "flow/flow_parameters.def"
 
-#define TOLERANCE (1)
+#define TOLERANCE (4)
 
 #define C1 (19.06998055)
 #define E1 (0.517553019)
@@ -30,7 +30,7 @@ int16_t Calculate_Flow_Using_Floating_Point(
   double tp = C2 * ambient_temperature / 128.0;
   tp += B1;
 
-  double cf = correction_factor / 256;
+  double cf = correction_factor / 128.0;
   cf += 1.0;
 
   int16_t result = (int16_t)(flow * bpp * tp * cf);
@@ -54,13 +54,99 @@ TEST_TEAR_DOWN(flow_tests)
 
 }
 
-TEST(flow_tests, output_within_tolerance_of_floating_point)
+TEST(flow_tests, output_within_tolerance_deltaPressure)
 {
-  for (uint16_t i = 0u; i < PRESSURE_LIMIT; i++)
+  const int16_t backP = 10;
+  const Flow_Temperature_t temp = 298u << 7u;
+  const Flow_CorrectionFactor_t cf = 0;
+
+  for (int16_t i = (1 - PRESSURE_LIMIT); i < PRESSURE_LIMIT; i++)
   {
-    int16_t fixed_point = Get_Flow_Rate(i, 100, 298, 0);
+    int16_t fixed_point = Get_Flow_Rate(i, backP, temp, cf);
     int16_t floating_point =
-      Calculate_Flow_Using_Floating_Point(i, 100, 298, 0);
+      Calculate_Flow_Using_Floating_Point(i, backP, temp, cf);
+
+    uint16_t difference;
+    if (fixed_point > floating_point)
+    {
+      difference = fixed_point - floating_point;
+    }
+    else
+    {
+      difference = floating_point - fixed_point;
+    }
+
+    TEST_ASSERT_LESS_THAN(TOLERANCE + 1u, difference);
+  }
+}
+
+TEST(flow_tests, output_within_tolerance_backPressure)
+{
+  const int16_t deltaP = 20;
+  const Flow_Temperature_t temp = 310u << 7u;
+  const Flow_CorrectionFactor_t cf = 0;
+
+  for (int16_t i = (1 - PRESSURE_LIMIT); i < PRESSURE_LIMIT; i++)
+  {
+    int16_t fixed_point = Get_Flow_Rate(deltaP, i, temp, cf);
+    int16_t floating_point =
+      Calculate_Flow_Using_Floating_Point(deltaP, i, temp, cf);
+
+    // TODO - negative back pressures don't work!
+    // printf("\n%d: %d, %d", i, fixed_point, floating_point);
+    uint16_t difference;
+    if (fixed_point > floating_point)
+    {
+      difference = fixed_point - floating_point;
+    }
+    else
+    {
+      difference = floating_point - fixed_point;
+    }
+
+    TEST_ASSERT_LESS_THAN(TOLERANCE + 1u, difference);
+  }
+}
+
+TEST(flow_tests, output_within_tolerance_ambientTemp)
+{
+  const int16_t deltaP = 20;
+  const int16_t backP = 5;
+  const Flow_CorrectionFactor_t cf = 0;
+  const Flow_Temperature_t lowTemp = 273u << 7u;
+  const Flow_Temperature_t highTemp = 323u << 7u;
+
+  for (uint16_t i = lowTemp; i <= highTemp; i += (1u << 7u))
+  {
+    int16_t fixed_point = Get_Flow_Rate(deltaP, backP, i, cf);
+    int16_t floating_point =
+      Calculate_Flow_Using_Floating_Point(deltaP, backP, i, cf);
+
+    uint16_t difference;
+    if (fixed_point > floating_point)
+    {
+      difference = fixed_point - floating_point;
+    }
+    else
+    {
+      difference = floating_point - fixed_point;
+    }
+
+    TEST_ASSERT_LESS_THAN(TOLERANCE + 1u, difference);
+  }
+}
+
+TEST(flow_tests, output_within_tolerance_correctionFactor)
+{
+  const int16_t deltaP = 20;
+  const int16_t backP = 5;
+  const Flow_Temperature_t temp = 303u << 7u;
+
+  for (int16_t i = INT8_MIN; i <= INT8_MAX; i++)
+  {
+    int16_t fixed_point = Get_Flow_Rate(deltaP, backP, temp, i);
+    int16_t floating_point =
+      Calculate_Flow_Using_Floating_Point(deltaP, backP, temp, i);
 
     uint16_t difference;
     if (fixed_point > floating_point)
