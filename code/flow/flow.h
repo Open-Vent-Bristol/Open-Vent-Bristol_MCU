@@ -24,14 +24,14 @@ typedef int8_t Flow_CorrectionFactor_t;
 /**
  * @brief Get the Flow Rate through the orifice plate
  *
- * @param pressure_delta        Pressure difference in Pa (positive for flow into patient)
- * @param back_pressure         Pressure downstream of orifice plate in Pa
+ * @param pressure_delta_raw    Pressure difference (raw value from ADC)
+ * @param back_pressure_raw     Pressure downstream of orifice plate (raw value from ADC)
  * @param ambient_temperature   See Flow_Temperature_t
  * @param correction_factor     See Flow_CorrectionFactor_t
  * @return int16_t              Flow rate in ml per second
  */
-int16_t Get_Flow_Rate(int16_t pressure_delta,
-                      int16_t back_pressure,
+int16_t Get_Flow_Rate(int16_t pressure_delta_raw,
+                      int16_t back_pressure_raw,
                       Flow_Temperature_t ambient_temperature,
                       Flow_CorrectionFactor_t correction_factor);
 
