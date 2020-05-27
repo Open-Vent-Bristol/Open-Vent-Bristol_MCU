@@ -1,6 +1,18 @@
 // This file should not be included directly.  Include board/board.h instead and define a board ID, e.g. BOARD_MK1
 #include <avr/io.h>
 
+// Scheduler timer will interrupt at 1 kHz
+#define SCHEDULER_TIM_CFG() TCCR1B = (1u << WGM12) | (1u << CS11); \
+                            OCR1A = 499u
+#define SCHEDULER_START()   TIMSK1 |= (1u << OCIE1A)
+#define SCHEDULER_STOP()    TIMSK1 &= ~(1u << OCIE1A)
+
+// Motor PWM 125 kHz, phase correct
+#define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM02) | (1u << WGM00)
+#define MOTOR_PWM_START()   TCCR0B |= (1u << CS01) | (1u << CS00)
+#define MOTOR_PWM_STOP()    TCCR0B &= ~((1u << CS01) | (1u << CS00))
+#define MOTOR_PWM(value)    OCR0B = value
+
 // pins 12-17
 #define ALERTS_PORTIN       PINB
 #define ALERTS_PULLUP       PORTB
@@ -55,10 +67,7 @@
 #define GPIO_SPARE_MODE     DDRD
 #define GPIO_SPARE_PIN      PORTD4
 
-// pins 9-11
-#define MOTOR_PWM_PORT      PORTD
-#define MOTOR_PWM_MODE      DDRD
-#define MOTOR_PWM_PIN       PORTD5
+// pins 10-11
 #define SR_MR_n_PORT        PORTD
 #define SR_MR_n_MODE        DDRD
 #define SR_MR_n_PIN         PORTD6

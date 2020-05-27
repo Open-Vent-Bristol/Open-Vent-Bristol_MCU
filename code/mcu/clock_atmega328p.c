@@ -1,5 +1,5 @@
 #include "mcu/clock.h"
-#include <avr/io.h>
+#include "board/board.h"
 
 // NOTE: in order to use the onboard 8MHz crystal, it is necessary to program fuses.  If this is not
 // performed, the internal RC oscillator is used.
@@ -15,4 +15,7 @@ void clock_init(void)
 
   // Disable clocks to unused peripherals
   PRR |= (1u << PRTWI); // Disable I2C interface
+
+  SCHEDULER_TIM_CFG();
+  MOTOR_PWM_TIM_CFG();
 }
