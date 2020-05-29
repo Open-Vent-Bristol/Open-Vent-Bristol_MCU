@@ -1,7 +1,7 @@
 #ifndef GPIO_H
 #define GPIO_H
 
-#include "mcu/utils_avr.h"
+#include "mcu/types.h"
 
 #ifdef __cplusplus
 extern "C"

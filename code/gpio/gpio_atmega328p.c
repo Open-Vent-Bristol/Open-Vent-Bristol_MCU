@@ -15,6 +15,9 @@ void gpio_init(void)
   // MOTOR_IN_A: output
   MOTOR_IN_A_MODE |= (1u << MOTOR_IN_A_PIN);
 
+  // ADC_SPARE: output
+  ADC_SPARE_MODE |= (1u << ADC_SPARE_PIN);
+
   // MOTOR_IN_B, ALERT_ENABLE_n, GPIO_SPARE, SR_MR_n: output
   MOTOR_IN_B_MODE |= (1u << MOTOR_IN_B_PIN);
   ALERT_ENABLE_n_MODE |= (1u << ALERT_ENABLE_n_PIN);
@@ -29,6 +32,13 @@ void gpio_init(void)
 
   // LATCH: output
   LATCH_MODE |= (1u << LATCH_PIN);
+
+  // Disable digital input to ADC pins
+  ADC_DIGITAL_DISABLE |= (1u << ADC_FLOW) |
+                         (1u << ADC_PRESSURE) |
+                         (1u << ADC_VBATT) |
+                         (1u << ADC_MOTOR_CURRENT) |
+                         (1u << ADC_TEMP);
 }
 
 void gpio_set_mask(register_t port, register_size_t pin_mask)

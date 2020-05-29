@@ -1,4 +1,7 @@
 // This file should not be included directly.  Include board/board.h instead and define a board ID, e.g. BOARD_MK1
+#ifndef BOARD_MK1_H
+#define BOARD_MK1_H
+
 #include <avr/io.h>
 
 // Scheduler timer will interrupt at 1 kHz
@@ -12,6 +15,19 @@
 #define MOTOR_PWM_START()   TCCR0B |= (1u << CS01) | (1u << CS00)
 #define MOTOR_PWM_STOP()    TCCR0B &= ~((1u << CS01) | (1u << CS00))
 #define MOTOR_PWM(value)    OCR0B = value
+
+// ADC prescalar 64 chosen for <200 kHz ADC clock (needed for 10-bit resolution)
+#define ADC_PRESCALER       (1u << ADPS2) | (1u << ADPS1)
+#define ADC_DIGITAL_DISABLE DIDR0
+
+typedef enum
+{
+  ADC_FLOW          = ADC0D,
+  ADC_PRESSURE      = ADC1D,
+  ADC_VBATT         = ADC2D,
+  ADC_MOTOR_CURRENT = ADC3D,
+  ADC_TEMP          = ADC7D
+} ADC_channel_t;
 
 // pins 12-17
 #define ALERTS_PORTIN       PINB
@@ -36,18 +52,11 @@
 #define XTAL2_PIN           PORTB7
 
 // pins 23-29
-#define ADC_FLOW_PORT       PORTC
-#define ADC_FLOW_PIN        PORTC0
-#define ADC_PRESSURE_PORT   PORTC
-#define ADC_PRESSURE_PIN    PORTC1
-#define ADC_VBATT_PORT      PORTC
-#define ADC_VBATT_PIN       PORTC2
-#define ADC_MOTOR_CURR_PORT PORTC
-#define ADC_MOTOR_CURR_PIN  PORTC3
 #define MOTOR_IN_A_PORT     PORTC
 #define MOTOR_IN_A_MODE     DDRC
 #define MOTOR_IN_A_PIN      PORTC4
 #define ADC_SPARE_PORT      PORTC
+#define ADC_SPARE_MODE      DDRC
 #define ADC_SPARE_PIN       PORTC5
 
 // pins 30-32
@@ -81,6 +90,4 @@
 #define LATCH_MODE          DDRE
 #define LATCH_PIN           PORTE2
 
-// pin 22
-#define ADC_TEMP_PORT       PORTE
-#define ADC_TEMP_PIN        PORTE3
+#endif /* BOARD_MK1_H */
