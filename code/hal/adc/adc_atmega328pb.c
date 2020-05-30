@@ -1,5 +1,7 @@
 #include "adc/adc.h"
 #include "board/board.h"
+#include <avr/interrupt.h>
+#include <stddef.h>
 
 static ADC_callback_t s_adc_callback = NULL;
 

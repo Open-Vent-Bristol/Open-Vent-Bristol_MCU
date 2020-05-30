@@ -1,0 +1,27 @@
+{
+    "configurations": [
+        {
+            "name": "ATmega328P",
+            "includePath": [
+                "${workspaceFolder}/code/application",
+                "${workspaceFolder}/code/drivers",
+                "${workspaceFolder}/code/hal",
+                "${workspaceFolder}/unittests/frameworks/fff",
+                "${workspaceFolder}/unittests/frameworks/Unity/src",
+                "${workspaceFolder}/unittests/frameworks/Unity/extras/fixture/src",
+                "${workspaceFolder}/unittests/frameworks/Unity/extras/memory/src",
+                "${workspaceFolder}/unittests/mocks"
+            ],
+            "defines": [
+                "__AVR_ATmega328P__",
+                "BOARD_MK1"
+            ],
+            "macFrameworkPath": [],
+            "compilerPath": "/usr/local/bin/avr-gcc",
+            "cStandard": "c99",
+            "cppStandard": "c++98",
+            "intelliSenseMode": "gcc-x86"
+        }
+    ],
+    "version": 4
+}

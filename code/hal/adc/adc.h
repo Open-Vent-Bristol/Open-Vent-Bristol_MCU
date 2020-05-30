@@ -1,7 +1,8 @@
 #ifndef ADC_H
 #define ADC_H
 
-#include "mcu/types.h"
+#include "types/types.h"
+#include "board/board.h"
 #include <stdbool.h>
 
 #ifdef __cplusplus

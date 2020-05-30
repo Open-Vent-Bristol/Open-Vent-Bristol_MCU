@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-typedef volatile uint8_t* register_t;
+typedef volatile uint8_t* MCU_register_t;
 typedef uint8_t register_size_t;
 
 typedef int16_t ADC_resolution_t;

@@ -41,32 +41,32 @@ void gpio_init(void)
                          (1u << ADC_TEMP);
 }
 
-void gpio_set_mask(register_t port, register_size_t pin_mask)
+void gpio_set_mask(MCU_register_t port, register_size_t pin_mask)
 {
   *port |= pin_mask;
 }
 
-void gpio_clear_mask(register_t port, register_size_t pin_mask)
+void gpio_clear_mask(MCU_register_t port, register_size_t pin_mask)
 {
   *port &= ~pin_mask;
 }
 
-register_size_t gpio_read_mask(register_t port, register_size_t pin_mask)
+register_size_t gpio_read_mask(MCU_register_t port, register_size_t pin_mask)
 {
   return (*port & pin_mask);
 }
 
-void gpio_set_pin(register_t port, uint8_t pin_number)
+void gpio_set_pin(MCU_register_t port, uint8_t pin_number)
 {
   *port |= (1u << pin_number);
 }
 
-void gpio_clear_pin(register_t port, uint8_t pin_number)
+void gpio_clear_pin(MCU_register_t port, uint8_t pin_number)
 {
   *port &= ~(1u << pin_number);
 }
 
-uint8_t gpio_read_pin(register_t port, uint8_t pin_number)
+uint8_t gpio_read_pin(MCU_register_t port, uint8_t pin_number)
 {
   uint8_t return_val = 0u;
 

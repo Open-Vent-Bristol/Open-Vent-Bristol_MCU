@@ -1,7 +1,7 @@
 #ifndef GPIO_H
 #define GPIO_H
 
-#include "mcu/types.h"
+#include "types/types.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -20,7 +20,7 @@ void gpio_init(void);
  * @param port
  * @param pin_mask
  */
-void gpio_set_mask(register_t port, register_size_t pin_mask);
+void gpio_set_mask(MCU_register_t port, register_size_t pin_mask);
 
 /**
  * @brief Clear a pin mask on the GPIO port
@@ -28,7 +28,7 @@ void gpio_set_mask(register_t port, register_size_t pin_mask);
  * @param port
  * @param pin_mask
  */
-void gpio_clear_mask(register_t port, register_size_t pin_mask);
+void gpio_clear_mask(MCU_register_t port, register_size_t pin_mask);
 
 /**
  * @brief Check a pin mask against the value of the GPIO port
@@ -40,7 +40,7 @@ void gpio_clear_mask(register_t port, register_size_t pin_mask);
  *                          If all pins were high, the return value will be
  *                          the same as pin_mask.
  */
-register_size_t gpio_read_mask(register_t port, register_size_t pin_mask);
+register_size_t gpio_read_mask(MCU_register_t port, register_size_t pin_mask);
 
 /**
  * @brief Set a single pin (not left shifted)
@@ -48,7 +48,7 @@ register_size_t gpio_read_mask(register_t port, register_size_t pin_mask);
  * @param port
  * @param pin_number
  */
-void gpio_set_pin(register_t port, uint8_t pin_number);
+void gpio_set_pin(MCU_register_t port, uint8_t pin_number);
 
 /**
  * @brief Clear a single pin (not left shifted)
@@ -56,7 +56,7 @@ void gpio_set_pin(register_t port, uint8_t pin_number);
  * @param port
  * @param pin_number
  */
-void gpio_clear_pin(register_t port, uint8_t pin_number);
+void gpio_clear_pin(MCU_register_t port, uint8_t pin_number);
 
 /**
  * @brief Read a single pin (not left shifted)
@@ -66,7 +66,7 @@ void gpio_clear_pin(register_t port, uint8_t pin_number);
  * @param pin_mask
  * @return register_size_t  1 if the pin was high, 0 if the pin was low
  */
-uint8_t gpio_read_pin(register_t port, uint8_t pin_number);
+uint8_t gpio_read_pin(MCU_register_t port, uint8_t pin_number);
 
 #ifdef __cplusplus
 } /* extern "C" */
