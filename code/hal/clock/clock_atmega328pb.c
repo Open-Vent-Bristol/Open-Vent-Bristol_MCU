@@ -1,4 +1,4 @@
-#include "mcu/clock.h"
+#include "clock/clock.h"
 #include "board/board.h"
 
 // NOTE: in order to use the onboard 8MHz crystal, it is necessary to program fuses.  If this is not

@@ -4,6 +4,16 @@
 
 #include <avr/io.h>
 
+#define CPU_CLOCK_HZ        (8000000ul)
+
+// This must be a power of two!
+#define UART_BUFFER_SIZE    (32u)
+
+#define UART_BAUD_RATE      (57600u)
+#define UART_BAUD_SET()     UBRR0L = (CPU_CLOCK_HZ / (UART_BAUD_RATE * 16u)) - 1u; \
+                            UBRR0H = 0u
+#define UART_CFG()          UCSR0B |= (1u << RXCIE0) | (1u << TXCIE0) | (1u << RXEN0) | (1u << TXEN0)
+
 // Scheduler timer will interrupt at 1 kHz
 #define SCHEDULER_TIM_CFG() TCCR1B = (1u << WGM12) | (1u << CS11); \
                             OCR1A = 499u
