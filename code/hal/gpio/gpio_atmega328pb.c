@@ -4,9 +4,10 @@
 
 void gpio_init(void)
 {
-  // ALERTS: input, tri-state
+  // ALERTS: input, tri-state, interrupt
   ALERTS_MODE &= ~(1u << ALERTS_PIN);
   ALERTS_PULLUP &= ~(1u << ALERTS_PIN);
+  ALERTS_INT_REG |= (1u << ALERTS_INT_CHAN);
 
   // MUX_A, MUX_B: output
   MUX_A_MODE |= (1u << MUX_A_PIN);
@@ -26,9 +27,10 @@ void gpio_init(void)
   SR_MR_n_MODE |= (1u << SR_MR_n_PIN);
   SR_MR_n_PORT |= (1u << SR_MR_n_PIN);
 
-  // SWITCHES: input, tri-state
+  // SWITCHES: input, tri-state, interrupt
   SWITCHES_MODE &= ~(1u << SWITCHES_PIN);
   SWITCHES_PULLUP &= ~(1u << SWITCHES_PIN);
+  SWITCHES_INT_REG |= (1u << SWITCHES_INT_CHAN);
 
   // LATCH: output
   LATCH_MODE |= (1u << LATCH_PIN);
@@ -39,6 +41,9 @@ void gpio_init(void)
                          (1u << ADC_VBATT) |
                          (1u << ADC_MOTOR_CURRENT) |
                          (1u << ADC_TEMP);
+
+  // Enable pin change interrupts - TODO: move to multiplexer driver
+  PIN_CHANGE_INT_CFG();
 }
 
 void gpio_set_mask(MCU_register_t port, register_size_t pin_mask)
@@ -76,4 +81,16 @@ uint8_t gpio_read_pin(MCU_register_t port, uint8_t pin_number)
   }
 
   return return_val;
+}
+
+// TODO: move to multiplexer driver
+ISR(ALERTS_INT_ISR)
+{
+
+}
+
+// TODO: move to multiplexer driver
+ISR(SWITCHES_INT_ISR)
+{
+
 }

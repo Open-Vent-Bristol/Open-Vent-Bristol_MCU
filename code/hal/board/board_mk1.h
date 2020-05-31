@@ -24,11 +24,13 @@
 #define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM02) | (1u << WGM00)
 #define MOTOR_PWM_START()   TCCR0B |= (1u << CS01) | (1u << CS00)
 #define MOTOR_PWM_STOP()    TCCR0B &= ~((1u << CS01) | (1u << CS00))
-#define MOTOR_PWM(value)    OCR0B = value
+#define MOTOR_PWM(value)    OCR0B = (value & 0xFF)
 
 // ADC prescalar 64 chosen for <200 kHz ADC clock (needed for 10-bit resolution)
 #define ADC_PRESCALER       (1u << ADPS2) | (1u << ADPS1)
 #define ADC_DIGITAL_DISABLE DIDR0
+
+#define PIN_CHANGE_INT_CFG() PCICR = (1u << PCIE2) | (1u << PCIE0)
 
 typedef enum
 {
@@ -44,6 +46,9 @@ typedef enum
 #define ALERTS_PULLUP       PORTB
 #define ALERTS_MODE         DDRB
 #define ALERTS_PIN          PORTB0
+#define ALERTS_INT_CHAN     PCINT0
+#define ALERTS_INT_REG      PCMSK0
+#define ALERTS_INT_ISR      PCINT0_vect
 #define MUX_A_PORT          PORTB
 #define MUX_A_MODE          DDRB
 #define MUX_A_PIN           PORTB1
@@ -94,6 +99,9 @@ typedef enum
 #define SWITCHES_PULLUP     PORTD
 #define SWITCHES_MODE       DDRD
 #define SWITCHES_PIN        PORTD7
+#define SWITCHES_INT_CHAN   PCINT23
+#define SWITCHES_INT_REG    PCMSK2
+#define SWITCHES_INT_ISR    PCINT2_vect
 
 // pin 19
 #define LATCH_PORT          PORTE
