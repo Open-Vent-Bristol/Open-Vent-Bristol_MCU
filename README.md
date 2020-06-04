@@ -1,6 +1,6 @@
-OpenVent 
+# [OpenVent-Bristol](https://openventbristol.co.uk/)
 
-Introduction 
+# Introduction 
 
 Ventilation is the only known available treatment for sufferers of COVID-19. Existing ventilation machines in hospitals are complex general purpose machines costing £10s of thousands. The availability of the existing ventilators is no where near enough to meet the predicted required numbers, for example in the UK around 5000 ventilators currently exist within the NHS but it is predicted they will need around 30,000 in just a few weeks. Critically ill patients left without ventilation treatment are in danger of losing their life.
 
@@ -8,7 +8,15 @@ As far as I understand, one effect of the virus as well as damaging the lungs, i
 
 An analogy: Imagine inflating a balloon, letting it deflate completely, then re-inflating it, that is like CPAP. If you inflated the balloon, deflated it half way, then re-inflated it, that's more like the treatment needed for the worse sufferers.
 
-Assumptions
+# How to build OpenVent 3.0
+
+Key links:
+  - Instructables: https://www.instructables.com/id/OpenVent-Bristol-V20-COVID-19-Rapid-Manufacture-Ve/
+  - CAD drawing: https://grabcad.com/library/openvent-bristol-v3-0-covid-19-rapid-manufacture-ventilator-bvm-ambubag-1
+  - Video: https://www.youtube.com/watch?v=uROo2yemTfk&feature=youtu.be
+
+# Design information
+## Assumptions
 
 1. BVM design does not vary drastically, with the same basic diameters required to fit within the frame. 
 2. That whomever produces this is able to produce the physical components to a standard. 
@@ -17,7 +25,7 @@ Assumptions
 5. That the figure of tje global average of around 1 doctor to 10 intensive paitents.
 6. Power at some point could be lost or be inconsistent from source. 
 
-Design Principles
+## Design Principles
 
 1. for a very simple low cost design.
 
@@ -27,7 +35,7 @@ Design Principles
 
 4. to work reliably and with the lowest risk to the patient.
 
-Restrictions
+## Restrictions
 
 It is our intention to rework the code over time to improve the safety margins and reliability by reworking the code against a industry recognised standard. As part of this we are/will be applying based off NASA's The Power of Ten (http://spinroot.com/gerard/pdf/P10.pdf). We have listed them below, for reference when making changes to the code. 
 
@@ -42,7 +50,7 @@ It is our intention to rework the code over time to improve the safety margins a
 9. Restrict the use of pointers to one layer of referencing. 
 10. Make sure you have you complier set to it's most stringent, make sure the code executes with ANY errors. 
 
-Limitations
+## Limitations
 
 1. At this time these rules have only be partly applied to the current version of the code, do not assume that these have been enforced.
 
@@ -61,3 +69,5 @@ Improvement for next version
   - Add auto switch-over to battery back up
   - Add voltage divider & safety code to give auidable & visual alarm when battery is running out
   - Code in the motorSpeed POT to allow adjustment for different motors
+
+https://openventbristol.co.uk/
