@@ -36,15 +36,6 @@
 
 #define PIN_CHANGE_INT_CFG() PCICR = (1u << PCIE2) | (1u << PCIE0)
 
-typedef enum
-{
-  ADC_FLOW          = ADC0D,
-  ADC_PRESSURE      = ADC1D,
-  ADC_VBATT         = ADC2D,
-  ADC_MOTOR_CURRENT = ADC3D,
-  ADC_TEMP          = ADC7D
-} ADC_channel_t;
-
 // pins 12-17
 #define ALERTS_PORTIN       PINB
 #define ALERTS_PULLUP       PORTB
@@ -53,10 +44,9 @@ typedef enum
 #define ALERTS_INT_CHAN     PCINT0
 #define ALERTS_INT_REG      PCMSK0
 #define ALERTS_INT_ISR      PCINT0_vect
-#define MUX_A_PORT          PORTB
+#define MUX_PORT          PORTB
 #define MUX_A_MODE          DDRB
 #define MUX_A_PIN           PORTB1
-#define MUX_B_PORT          PORTB
 #define MUX_B_MODE          DDRB
 #define MUX_B_PIN           PORTB2
 #define SPI_MOSI_PORT       PORTB
@@ -111,5 +101,43 @@ typedef enum
 #define LATCH_PORT          PORTE
 #define LATCH_MODE          DDRE
 #define LATCH_PIN           PORTE2
+
+typedef enum
+{
+  ADC_FLOW          = ADC0D,
+  ADC_PRESSURE      = ADC1D,
+  ADC_VBATT         = ADC2D,
+  ADC_MOTOR_CURRENT = ADC3D,
+  ADC_TEMP          = ADC7D
+} ADC_channel_t;
+
+#define MUX_SELECT_MASK       ((1u << MUX_A_PIN) | (1u << MUX_B_PIN))
+#define MUX_SELECT_BANK_MASK  (1u)
+#if (MUX_SELECT_MASK & MUX_SELECT_BANK_MASK)
+#error MUX_SELECT_BANK_MASK bit overlaps MUX_SELECT_MASK!
+#endif
+
+/**
+ * @brief Type to aid selection of multiplexer channels
+ * @note MEMBRANE_SW values have an extra bit set that is removed by MUX_SELECT_MASK
+ * when sampling/setting.  This bit only serves to distinguish the two banks
+ */
+typedef enum
+{
+  MUX_SELECT_CASE_INTERLOCK = 0u,
+  MUX_SELECT_PRESSURE_ALERT = (1u << MUX_A_PIN),
+  MUX_SELECT_FLOW_ALERT     = (1u << MUX_B_PIN),
+  MUX_SELECT_VBATT_ALERT    = ((1u << MUX_A_PIN) | (1u << MUX_B_PIN)),
+  MUX_SELECT_MEMBRANE_SW_0  = MUX_SELECT_BANK_MASK,
+  MUX_SELECT_MEMBRANE_SW_1  = MUX_SELECT_BANK_MASK | (1u << MUX_A_PIN),
+  MUX_SELECT_MEMBRANE_SW_2  = MUX_SELECT_BANK_MASK | (1u << MUX_B_PIN),
+  MUX_SELECT_MEMBRANE_SW_3  = MUX_SELECT_BANK_MASK | ((1u << MUX_A_PIN) | (1u << MUX_B_PIN)),
+} multiplexer_select_t;
+
+typedef enum
+{
+  MUX_BANK_0                = (1u << ALERTS_PIN),
+  MUX_BANK_1                = (1u << SWITCHES_PIN)
+} multiplexer_bank_t;
 
 #endif /* BOARD_MK1_H */

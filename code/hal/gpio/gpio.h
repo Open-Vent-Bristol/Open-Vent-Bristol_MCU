@@ -31,6 +31,17 @@ void gpio_set_mask(MCU_register_t port, register_size_t pin_mask);
 void gpio_clear_mask(MCU_register_t port, register_size_t pin_mask);
 
 /**
+ * @brief Overwrite the port to a pin_mask value
+ * @note This will also clear any zeroed bits in the mask.  gpio_set_mask may
+ * be more appropriate.
+ * @note Improper use may cause pin change interrupts.
+ *
+ * @param port
+ * @param pin_mask
+ */
+void gpio_write_mask(MCU_register_t port, register_size_t pin_mask);
+
+/**
  * @brief Check a pin mask against the value of the GPIO port
  * @note Input and output registers may differ
  *
