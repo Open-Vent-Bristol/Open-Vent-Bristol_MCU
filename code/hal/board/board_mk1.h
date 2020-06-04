@@ -29,6 +29,10 @@
 // ADC prescalar 64 chosen for <200 kHz ADC clock (needed for 10-bit resolution)
 #define ADC_PRESCALER       (1u << ADPS2) | (1u << ADPS1)
 #define ADC_DIGITAL_DISABLE DIDR0
+#define ADC_RESOLUTION_BITS (10u)
+
+// Thermistor
+#define THERM_FIXED_RESIST  (10000u)
 
 #define PIN_CHANGE_INT_CFG() PCICR = (1u << PCIE2) | (1u << PCIE0)
 
