@@ -24,7 +24,7 @@ void spi_init(void)
   spi.available = true;
 }
 
-bool spi_busy(void)
+bool spi_available(void)
 {
   return spi.available;
 }

@@ -44,7 +44,7 @@
 #define ALERTS_INT_CHAN     PCINT0
 #define ALERTS_INT_REG      PCMSK0
 #define ALERTS_INT_ISR      PCINT0_vect
-#define MUX_PORT          PORTB
+#define MUX_PORT            PORTB
 #define MUX_A_MODE          DDRB
 #define MUX_A_PIN           PORTB1
 #define MUX_B_MODE          DDRB
@@ -139,5 +139,26 @@ typedef enum
   MUX_BANK_0                = (1u << ALERTS_PIN),
   MUX_BANK_1                = (1u << SWITCHES_PIN)
 } multiplexer_bank_t;
+
+/**
+ * @brief Pin descriptions for parallel output of shift register
+ */
+typedef enum
+{
+  SR_PIN_RESET              = 0u,
+  SR_PIN_WRITE              = 1u,
+  SR_PIN_ENABLE             = 2u,
+  SR_PIN_DATA               = 3u
+} shift_register_pin_t;
+
+typedef enum
+{
+  SR_CHANNEL_0              = 0u,
+  SR_CHANNEL_1              = 1u
+} shift_register_offset_t;
+
+typedef uint8_t shift_register_size_t;
+
+#define SHIFT_REGISTER_SIZE_BYTES (2u)
 
 #endif /* BOARD_MK1_H */

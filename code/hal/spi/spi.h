@@ -20,7 +20,7 @@ void spi_init(void);
  * @return true       SPI device is available
  * @return false      SPI device is unavailable
  */
-bool spi_busy(void);
+bool spi_available(void);
 
 /**
  * @brief Prepare to start a new transaction.
