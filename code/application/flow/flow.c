@@ -1,5 +1,4 @@
 #include "flow/flow.h"
-#include "flow/flow_parameters.def"
 
 #ifdef UTEST_MODE
 // TODO - mock this properly and get rid of this pp block
@@ -10,6 +9,8 @@ uint16_t pgm_read_word_near(const void* position)
 #else
 #include <avr/pgmspace.h>
 #endif
+
+#include "flow/flow_parameters.def"
 
 int16_t Get_Flow_Rate(int16_t pressure_delta,
                       int16_t back_pressure,

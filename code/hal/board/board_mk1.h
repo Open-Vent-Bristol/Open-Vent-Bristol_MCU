@@ -9,7 +9,7 @@
 // This must be a power of two!
 #define UART_BUFFER_SIZE    (32u)
 
-#define UART_BAUD_RATE      (57600u)
+#define UART_BAUD_RATE      (57600ul)
 #define UART_BAUD_SET()     UBRR0L = (CPU_CLOCK_HZ / (UART_BAUD_RATE * 16u)) - 1u; \
                             UBRR0H = 0u
 #define UART_CFG()          UCSR0B |= (1u << RXCIE0) | (1u << TXCIE0) | (1u << RXEN0) | (1u << TXEN0)
@@ -104,11 +104,11 @@
 
 typedef enum
 {
-  ADC_FLOW          = ADC0D,
-  ADC_PRESSURE      = ADC1D,
-  ADC_VBATT         = ADC2D,
-  ADC_MOTOR_CURRENT = ADC3D,
-  ADC_TEMP          = ADC7D
+  ADC_FLOW          = 0u,
+  ADC_PRESSURE      = 1u,
+  ADC_VBATT         = 2u,
+  ADC_MOTOR_CURRENT = 3u,
+  ADC_TEMP          = 7u
 } ADC_channel_t;
 
 #define MUX_SELECT_MASK       ((1u << MUX_A_PIN) | (1u << MUX_B_PIN))

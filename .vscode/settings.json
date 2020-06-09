@@ -22,6 +22,6 @@
   },
 
   "files.associations": {
-      "*.out": "log"
+      "*.h": "c"
   }
 }

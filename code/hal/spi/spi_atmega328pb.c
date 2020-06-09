@@ -2,7 +2,6 @@
 #include "board/board.h"
 #include "gpio/gpio.h"
 #include <avr/interrupt.h>
-#include <string.h>
 
 typedef struct
 {
@@ -11,17 +10,19 @@ typedef struct
   bool available;
 } spi_t;
 
-static volatile spi_t spi;
+static volatile spi_t spi =
+{
+  .chip_select_port = NULL,
+  .chip_select_pin = 0u,
+  .available = true
+};
 
 void spi_init(void)
 {
   // Interrupt, enable, LSB first, master, idle clock high, speed is fcpu/128
-  SPCR0 = (1u << SPIE0) | (1u << SPE0) | (1u << DORD0) |
-          (1u << MSTR0) | (1u << CPOL0) |
-          (1u << SPR01) | (1u << SPR00);
-
-  memset(spi, 0u, sizeof(spi));
-  spi.available = true;
+  SPCR0 = (1u << SPIE) | (1u << SPE) | (1u << DORD) |
+          (1u << MSTR) | (1u << CPOL) |
+          (1u << SPR1) | (1u << SPR0);
 }
 
 bool spi_available(void)
@@ -70,7 +71,7 @@ bool spi_command(uint8_t command)
 
 // }
 
-ISR(SPI_STC_vect)
+ISR(SPI0_STC_vect)
 {
   // Transaction complete - pull chip select high and mark the device as available
   gpio_set_pin(spi.chip_select_port, spi.chip_select_pin);

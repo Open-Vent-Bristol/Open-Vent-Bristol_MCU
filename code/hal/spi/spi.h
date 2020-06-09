@@ -2,6 +2,7 @@
 #define SPI_H
 
 #include <stddef.h>
+#include <stdbool.h>
 #include "types/types.h"
 
 #ifdef __cplusplus
@@ -73,4 +74,4 @@ bool spi_command(uint8_t command);
 } /* extern "C" */
 #endif
 
-#endif SPI_H
+#endif /* SPI_H */

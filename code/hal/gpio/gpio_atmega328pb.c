@@ -1,6 +1,7 @@
 #include "gpio/gpio.h"
 #include "board/board.h"
 #include <stdint.h>
+#include <avr/interrupt.h>
 
 void gpio_init(void)
 {

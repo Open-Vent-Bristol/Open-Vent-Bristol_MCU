@@ -12,19 +12,19 @@ void uart_configure(void)
 void uart_start_transmission(void)
 {
   // Wait for the UDR0 register to become empty
-  while (UCSR0A & (1u << UDRE0) == 0u) {};
+  while ((UCSR0A & (1u << UDRE0)) == 0u) {};
 
   UDR0 = tx_buffer.data[tx_buffer.read_position];
   tx_buffer.length--;
 }
 
-ISR(USART_RX_vect)
+ISR(USART0_RX_vect)
 {
   rx_buffer.data[rx_buffer.write_position] = UDR0;
   rx_buffer.length++;
 }
 
-ISR(USART_TX_vect)
+ISR(USART0_TX_vect)
 {
   UDR0 = tx_buffer.data[tx_buffer.read_position];
   tx_buffer.length--;
