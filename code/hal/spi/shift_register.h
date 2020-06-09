@@ -15,6 +15,11 @@ extern "C"
 void shift_register_init(void);
 
 /**
+ * @brief Clears the value currently held in the shift register and latches
+ */
+void shift_register_clear(void);
+
+/**
  * @brief Write to a single shift register channel - useful for writing to a single register or one
  * of several series-connected registers in one operation
  *
