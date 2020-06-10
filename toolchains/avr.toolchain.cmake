@@ -3,6 +3,9 @@ set(CMAKE_SYSTEM_PROCESSOR AVR)
 
 set(TOOLCHAIN_PREFIX avr-)
 
+set(CMAKE_C_COMPILER_WORKS 1)
+set(CMAKE_CXX_COMPILER_WORKS 1)
+
 set(COMMON_FLAGS "-mmcu=atmega328pb -Wall -Werror -mcall-prologues")
 
 set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}gcc CACHE INTERNAL "C Compiler")
