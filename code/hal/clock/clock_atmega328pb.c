@@ -1,6 +1,10 @@
 #include "clock/clock.h"
 #include "board/board.h"
 
+#include <avr/interrupt.h>
+
+static void(*scheduler_callback)(void) = 0;
+
 // NOTE: in order to use the onboard 8MHz crystal, it is necessary to program fuses.  If this is not
 // performed, the internal RC oscillator is used.
 // CKSEL = 0xF
@@ -23,4 +27,27 @@ void clock_init(void)
 
   SCHEDULER_TIM_CFG();
   MOTOR_PWM_TIM_CFG();
+}
+
+void clock_scheduler_start(void)
+{
+  SCHEDULER_START();
+}
+
+void clock_scheduler_stop(void)
+{
+  SCHEDULER_STOP();
+}
+
+void clock_set_scheduler_ms_callback(void(*callback)(void))
+{
+  scheduler_callback = callback;
+}
+
+ISR(SCHEDULER_INT_ISR)
+{
+  if(scheduler_callback)
+  {
+    (*scheduler_callback)();
+  }
 }

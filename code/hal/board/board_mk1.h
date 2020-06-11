@@ -19,6 +19,7 @@
                             OCR1A = 499u
 #define SCHEDULER_START()   TIMSK1 |= (1u << OCIE1A)
 #define SCHEDULER_STOP()    TIMSK1 &= ~(1u << OCIE1A)
+#define SCHEDULER_INT_ISR   TIMER1_COMPA_vect
 
 // Motor PWM 125 kHz, phase correct
 #define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM02) | (1u << WGM00)
