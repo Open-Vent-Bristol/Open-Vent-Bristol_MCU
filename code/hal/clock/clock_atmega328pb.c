@@ -24,3 +24,18 @@ void clock_init(void)
   SCHEDULER_TIM_CFG();
   MOTOR_PWM_TIM_CFG();
 }
+
+void clock_motor_pwm_enable(void)
+{
+  MOTOR_PWM_START();
+}
+
+void clock_motor_pwm_disable(void)
+{
+  MOTOR_PWM_STOP();
+}
+
+void clock_motor_pwm_set(uint8_t value)
+{
+  MOTOR_PWM(value);
+}
