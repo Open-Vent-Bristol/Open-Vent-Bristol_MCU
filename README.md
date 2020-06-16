@@ -2,37 +2,40 @@
 
 # Introduction 
 
-Ventilation is the only known available treatment for sufferers of COVID-19. Existing ventilation machines in hospitals are complex general purpose machines costing £10s of thousands. The availability of the existing ventilators is no where near enough to meet the predicted required numbers, for example in the UK around 5000 ventilators currently exist within the NHS but it is predicted they will need around 30,000 in just a few weeks. Critically ill patients left without ventilation treatment are in danger of losing their life.
-
-As far as I understand, one effect of the virus as well as damaging the lungs, it also produces a very sticky mucus in the lungs which causes the lungs to collapse and makes it very difficult for the patent to breath of their own accord. Ventilation can be delivered either via intubation or a well sealed mask and delivers continuous positive air pressure into the lungs to keep them inflated at all times. Conscious less ill patents can be aided using a CPAP (Continuous Positive Airway Pressure) ventilation device like a sleep apnea device, this delivers a constant air of the same flow rate and pressure. The more critically ill patients need a machine to breath for them which varies the pressure and flow according to inhale and exhale and relies on maintaining a good seal and a PEEP valve to keep the lungs continually inflated.
+Ventilation is the only known available treatment for sufferers of COVID-19. One of the effects of the virus as well as damaging the lungs, is also that it produces a very sticky mucus in the lungs which causes the lungs to collapse and makes it very difficult for the patent to breath of their own accord. Ventilation can be delivered either via intubation or a well sealed mask and delivers continuous positive air pressure into the lungs to keep them inflated at all times. Conscious less ill patents can be aided using a CPAP (Continuous Positive Airway Pressure) ventilation device like a sleep apnea device, this delivers a constant air of the same flow rate and pressure. The more critically ill patients need a machine to breath for them which varies the pressure and flow according to inhale and exhale and relies on maintaining a good seal and a PEEP valve to keep the lungs continually inflated.
 
 An analogy: Imagine inflating a balloon, letting it deflate completely, then re-inflating it, that is like CPAP. If you inflated the balloon, deflated it half way, then re-inflated it, that's more like the treatment needed for the worse sufferers.
 
-# How to build OpenVent 3.0
+# How to build OpenVent
 
-Key links:
+## V2.0:
   - Instructables: https://www.instructables.com/id/OpenVent-Bristol-V20-COVID-19-Rapid-Manufacture-Ve/
-  - CAD drawing: https://grabcad.com/library/openvent-bristol-v3-0-covid-19-rapid-manufacture-ventilator-bvm-ambubag-1
-  - Video: https://www.youtube.com/watch?v=uROo2yemTfk&feature=youtu.be
+  - CAD: https://grabcad.com/library/openvent-bristol-v2-0-covid-19-rapid-manufacture-ventilator-bvm-ambubag-2
+  - Videos:
+    - https://www.youtube.com/watch?v=RIKmd1mEYg4
+    - https://www.youtube.com/watch?v=M4Qg_H6V9DY&t=2s
+    - https://www.youtube.com/watch?v=Nv8YVDp8wuQ
+    - https://www.youtube.com/watch?v=RtxiVJMbwBY
+
+## V3.0:
+  - CAD: https://grabcad.com/library/openvent-bristol-v3-0-covid-19-rapid-manufacture-ventilator-bvm-ambubag-1
+  - Intro: https://www.youtube.com/watch?v=QZ1g1FmOCdQ
+  - More to follow...
 
 # Design information
 ## Assumptions
 
-1. BVM design does not vary drastically, with the same basic diameters required to fit within the frame. 
-2. That whomever produces this is able to produce the physical components to a standard. 
-3. That on average a human breaths between 8-30 breathes per minute depending on a number of factors.  
-4. Humans can start having negative effects from asphyxia in around 90 seconds. 
-5. That the figure of tje global average of around 1 doctor to 10 intensive paitents.
-6. Power at some point could be lost or be inconsistent from source. 
+1. That whomever produces this is able to produce the physical components to a standard. 
+2. That on average a human breaths between 8-30 breathes per minute depending on a number of factors.  
+3. Humans can start having negative effects from asphyxia in around 90 seconds. 
+4. That the figure of tje global average of around 1 doctor to 10 intensive paitents.
+5. Power at some point could be lost or be inconsistent from source. 
 
 ## Design Principles
 
 1. for a very simple low cost design.
-
 2. made using readily available components.
-
 3. that can be manufactured quickly and easily in small quantities or on mass at low cost.
-
 4. to work reliably and with the lowest risk to the patient.
 
 ## Restrictions
@@ -53,13 +56,10 @@ It is our intention to rework the code over time to improve the safety margins a
 ## Limitations
 
 1. At this time these rules have only be partly applied to the current version of the code, do not assume that these have been enforced.
-
 2. There is no test currently for checking if the motor has been wired correctly. So testing without a bag hooked up is nessesary.
-
 3. Doesn't meet the NHS requirements at this time, but it is the intention to get as close as practicable. 
 
-
-Improvement for next version
+## Improvement for next version
   - Pressure sensor + buzzer
   - Test pressure sensor with test lung
   - Impliment safety alarm (auidable & visual) code with pressure sensor (including timeouts)
