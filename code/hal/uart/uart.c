@@ -14,6 +14,8 @@ void uart_init(void)
 
   // Setup MCU UART peripheral
   uart_configure();
+
+  uart_write("Hello\n", 6u);
 }
 
 uint8_t uart_available(void)
@@ -37,7 +39,7 @@ uint8_t uart_capacity(uint8_t length)
   return capacity;
 }
 
-uint8_t uart_read(uint8_t* const data_in, uint8_t max_length)
+uint8_t uart_read(char* const data_in, uint8_t max_length)
 {
   uint8_t read = 0u;
 
@@ -64,7 +66,7 @@ uint8_t uart_read(uint8_t* const data_in, uint8_t max_length)
   return read;
 }
 
-uint8_t uart_peek(uint8_t* const data_in, uint8_t max_length)
+uint8_t uart_peek(char* const data_in, uint8_t max_length)
 {
   uint8_t read = 0u;
 
@@ -92,7 +94,7 @@ uint8_t uart_peek(uint8_t* const data_in, uint8_t max_length)
   return read;
 }
 
-uint8_t uart_write(const uint8_t* const data_out, uint8_t length)
+uint8_t uart_write(const char* const data_out, uint8_t length)
 {
   uint8_t written = 0u;
 

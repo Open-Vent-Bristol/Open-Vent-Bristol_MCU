@@ -3,6 +3,7 @@
 #define BOARD_MK1_H
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #define CPU_CLOCK_HZ        (8000000ul)
 
@@ -19,6 +20,7 @@
                             OCR1A = 499u
 #define SCHEDULER_START()   TIMSK1 |= (1u << OCIE1A)
 #define SCHEDULER_STOP()    TIMSK1 &= ~(1u << OCIE1A)
+#define SCHEDULER_ISR()     ISR(TIMER1_COMPA_vect)
 
 // Motor PWM 125 kHz, phase correct
 #define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM02) | (1u << WGM00)
@@ -117,6 +119,11 @@ typedef enum
 #error MUX_SELECT_BANK_MASK bit overlaps MUX_SELECT_MASK!
 #endif
 
+#define MUX_BANK_0_PORT     ALERTS_PORTIN
+#define MUX_BANK_1_PORT     SWITCHES_PORTIN
+#define MUX_BANK_0_PIN      ALERTS_PIN
+#define MUX_BANK_1_PIN      SWITCHES_PIN
+
 /**
  * @brief Type to aid selection of multiplexer channels
  * @note MEMBRANE_SW values have an extra bit set that is removed by MUX_SELECT_MASK
@@ -133,12 +140,6 @@ typedef enum
   MUX_SELECT_MEMBRANE_SW_2  = MUX_SELECT_BANK_MASK | (1u << MUX_B_PIN),
   MUX_SELECT_MEMBRANE_SW_3  = MUX_SELECT_BANK_MASK | ((1u << MUX_A_PIN) | (1u << MUX_B_PIN)),
 } multiplexer_select_t;
-
-typedef enum
-{
-  MUX_BANK_0                = (1u << ALERTS_PIN),
-  MUX_BANK_1                = (1u << SWITCHES_PIN)
-} multiplexer_bank_t;
 
 /**
  * @brief Pin descriptions for parallel output of shift register

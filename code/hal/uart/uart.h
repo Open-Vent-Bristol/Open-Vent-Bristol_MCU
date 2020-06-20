@@ -36,7 +36,7 @@ uint8_t uart_capacity(uint8_t length);
  * @param max_length  Maximum number of bytes to read.  Normally sizeof(data_in)
  * @return uint8_t    Number of bytes read
  */
-uint8_t uart_read(uint8_t* const data_in, uint8_t max_length);
+uint8_t uart_read(char* const data_in, uint8_t max_length);
 
 /**
  * @brief Read bytes from the UART RX buffer without removing them from the buffer.  If the buffer contains insufficient
@@ -46,7 +46,7 @@ uint8_t uart_read(uint8_t* const data_in, uint8_t max_length);
  * @param max_length  Maximum number of bytes to read.  Normally sizeof(data_in)
  * @return uint8_t    Number of bytes read
  */
-uint8_t uart_peek(uint8_t* const data_in, uint8_t max_length);
+uint8_t uart_peek(char* const data_in, uint8_t max_length);
 
 /**
  * @brief Write bytes to the UART TX buffer.  If the buffer has insufficient space, no bytes will be written
@@ -55,7 +55,7 @@ uint8_t uart_peek(uint8_t* const data_in, uint8_t max_length);
  * @param length      Number of bytes to write.  Normally sizeof(data_out)
  * @return uint8_t    Number of bytes written (length or 0)
  */
-uint8_t uart_write(const uint8_t* const data_out, uint8_t length);
+uint8_t uart_write(const char* const data_out, uint8_t length);
 
 #ifdef __cplusplus
 } /* extern "C" */

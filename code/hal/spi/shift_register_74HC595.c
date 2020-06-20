@@ -6,12 +6,12 @@ uint8_t s_unified_data[SHIFT_REGISTER_SIZE_BYTES];
 
 void shift_register_init(void)
 {
-  spi_setup_transaction(LATCH_PORT, LATCH_PIN);
+  spi_setup_transaction(&LATCH_PORT, LATCH_PIN);
 }
 
 void shift_register_clear(void)
 {
-  gpio_set_pin(SR_MR_n_PORT, SR_MR_n_PIN);
+  gpio_set_pin(&SR_MR_n_PORT, SR_MR_n_PIN);
 }
 
 bool shift_register_write_byte(shift_register_offset_t offset, shift_register_size_t data)
@@ -21,7 +21,7 @@ bool shift_register_write_byte(shift_register_offset_t offset, shift_register_si
   if (success)
   {
     // Clear reset pin
-    gpio_clear_pin(SR_MR_n_PORT, SR_MR_n_PIN);
+    gpio_clear_pin(&SR_MR_n_PORT, SR_MR_n_PIN);
 
     s_unified_data[offset] = data;
     spi_command(data);
@@ -38,7 +38,7 @@ bool shift_register_write_bytes(const void* const data, size_t length)
   if (success)
   {
     // Clear reset pin
-    gpio_clear_pin(SR_MR_n_PORT, SR_MR_n_PIN);
+    gpio_clear_pin(&SR_MR_n_PORT, SR_MR_n_PIN);
 
     if (length >= SHIFT_REGISTER_SIZE_BYTES)
     {
