@@ -21,6 +21,7 @@ SCHEDULER_ISR()
 int main(void)
 {
   clock_init();
+  gpio_init();
   spi_init();
   uart_init();
 

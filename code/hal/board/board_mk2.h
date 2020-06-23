@@ -101,9 +101,9 @@
 #define SWITCHES_INT_ISR    PCINT2_vect
 
 // pin 19
-#define LATCH_PORT          ADC_SPARE_PORT
-#define LATCH_MODE          ADC_SPARE_MODE
-#define LATCH_PIN           ADC_SPARE_PIN
+#define LATCH_PORT          PORTE
+#define LATCH_MODE          DDRE
+#define LATCH_PIN           PORTE2
 
 typedef enum
 {

@@ -1,4 +1,4 @@
 target_sources(OpenVent_hal
   PUBLIC
-    adc_${MCU_TARGET}.c
+    adc_atmega328pb.c
 )

@@ -1,5 +1,5 @@
 target_sources(OpenVent_hal
   PUBLIC
-    gpio_${MCU_TARGET}.c
+    gpio_atmega328pb.c
     multiplexer_74HC4052.c
 )

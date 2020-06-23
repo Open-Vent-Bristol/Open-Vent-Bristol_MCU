@@ -13,14 +13,16 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
   set(BOARD_CONFIG BOARD_MK1)
 # endif()
 
+# This definition is used to select the correct source files in the hal
 if(${BOARD_CONFIG} STREQUAL BOARD_MK1)
-  # This definition is used to select the correct source files in the hal
+  set(MCU_TARGET atmega328p)
+elseif(${BOARD_CONFIG} STREQUAL BOARD_MK2)
   set(MCU_TARGET atmega328pb)
-
-  add_definitions(
-    -D${BOARD_CONFIG}
-  )
 endif()
+
+add_definitions(
+  -D${BOARD_CONFIG}
+)
 
 add_executable(OpenVent_firmware)
 add_executable(OpenVent_ftp)

@@ -6,7 +6,7 @@ set(TOOLCHAIN_PREFIX avr-)
 set(CMAKE_C_COMPILER_WORKS 1)
 set(CMAKE_CXX_COMPILER_WORKS 1)
 
-set(COMMON_FLAGS "-mmcu=atmega328pb -Wall -Werror -mcall-prologues")
+set(COMMON_FLAGS "-mmcu=atmega328p -Wall -Werror -mcall-prologues")
 
 set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}gcc CACHE INTERNAL "C Compiler")
 set(CMAKE_ASM_COMPILER ${CMAKE_C_COMPILER} CACHE INTERNAL "ASM Compiler")
