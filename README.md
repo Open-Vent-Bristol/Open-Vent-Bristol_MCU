@@ -8,6 +8,12 @@ An analogy: Imagine inflating a balloon, letting it deflate completely, then re-
 
 # How to build OpenVent
 
+## V3.0:
+  - CAD: https://grabcad.com/library/openvent-bristol-v3-0-covid-19-rapid-manufacture-ventilator-bvm-ambubag-1
+  - Intro video: https://www.youtube.com/watch?v=QZ1g1FmOCdQ
+  - Intro PDF booklet: https://drive.google.com/file/d/1xVMRs1YF4JOr-rho1WLeN0ZFE9bkD8ca/view?usp=sharing
+  - More to follow...
+
 ## V2.0:
   - Instructables: https://www.instructables.com/id/OpenVent-Bristol-V20-COVID-19-Rapid-Manufacture-Ve/
   - CAD: https://grabcad.com/library/openvent-bristol-v2-0-covid-19-rapid-manufacture-ventilator-bvm-ambubag-2
@@ -16,11 +22,6 @@ An analogy: Imagine inflating a balloon, letting it deflate completely, then re-
     - https://www.youtube.com/watch?v=M4Qg_H6V9DY&t=2s
     - https://www.youtube.com/watch?v=Nv8YVDp8wuQ
     - https://www.youtube.com/watch?v=RtxiVJMbwBY
-
-## V3.0:
-  - CAD: https://grabcad.com/library/openvent-bristol-v3-0-covid-19-rapid-manufacture-ventilator-bvm-ambubag-1
-  - Intro: https://www.youtube.com/watch?v=QZ1g1FmOCdQ
-  - More to follow...
 
 # Design information
 ## Assumptions
@@ -58,16 +59,5 @@ It is our intention to rework the code over time to improve the safety margins a
 1. At this time these rules have only be partly applied to the current version of the code, do not assume that these have been enforced.
 2. There is no test currently for checking if the motor has been wired correctly. So testing without a bag hooked up is nessesary.
 3. Doesn't meet the NHS requirements at this time, but it is the intention to get as close as practicable. 
-
-## Improvement for next version
-  - Pressure sensor + buzzer
-  - Test pressure sensor with test lung
-  - Impliment safety alarm (auidable & visual) code with pressure sensor (including timeouts)
-  - Secure the bag down better
-  - Remove global variables
-  - Add LCD screen + button shield to read back pressure valves & other valves
-  - Add auto switch-over to battery back up
-  - Add voltage divider & safety code to give auidable & visual alarm when battery is running out
-  - Code in the motorSpeed POT to allow adjustment for different motors
 
 https://openventbristol.co.uk/
