@@ -20,7 +20,8 @@ void gpio_init(void)
   // ADC_SPARE: output
   ADC_SPARE_MODE |= (1u << ADC_SPARE_PIN);
 
-  // MOTOR_IN_B, ALERT_ENABLE_n, GPIO_SPARE, SR_MR_n: output
+  // MOTOR_PWM, MOTOR_IN_B, ALERT_ENABLE_n, GPIO_SPARE, SR_MR_n: output
+  MOTOR_PWM_MODE |= (1u << MOTOR_PWM_PIN);
   MOTOR_IN_B_MODE |= (1u << MOTOR_IN_B_PIN);
   ALERT_ENABLE_n_MODE |= (1u << ALERT_ENABLE_n_PIN);
   ALERT_ENABLE_n_PORT |= (1u << ALERT_ENABLE_n_PIN);

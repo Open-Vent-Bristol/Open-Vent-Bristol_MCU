@@ -24,8 +24,11 @@ add_definitions(
   -D${BOARD_CONFIG}
 )
 
-add_executable(OpenVent_firmware)
-add_executable(OpenVent_ftp)
+add_executable(OpenVent_firmware.elf)
+add_executable(OpenVent_ftp.elf)
+add_executable(OpenVent_minimal.elf
+  functional_test/minimal.c
+)
 
 include_directories(
   application
@@ -38,7 +41,7 @@ add_subdirectory(drivers)
 add_subdirectory(hal)
 add_subdirectory(functional_test)
 
-target_link_libraries(OpenVent_firmware
+target_link_libraries(OpenVent_firmware.elf
   OpenVent_application
   OpenVent_drivers
   OpenVent_hal

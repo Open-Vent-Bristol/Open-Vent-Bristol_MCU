@@ -17,16 +17,16 @@
                             UCSR0C = (1u << UCSZ00) | (1u << UCSZ01)
 
 // Scheduler timer will interrupt at 1 kHz
-#define SCHEDULER_TIM_CFG() TCCR1B = (1u << WGM12) | (1u << CS11); \
-                            OCR1A = 499u
+#define SCHEDULER_TIM_CFG() OCR1A = 124u; \
+                            TCCR1B = (1u << WGM12) | (1u << CS11) | (1u << CS10)
 #define SCHEDULER_START()   TIMSK1 |= (1u << OCIE1A)
 #define SCHEDULER_STOP()    TIMSK1 &= ~(1u << OCIE1A)
 #define SCHEDULER_ISR()     ISR(TIMER1_COMPA_vect)
 
-// Motor PWM 125 kHz, phase correct
-#define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM02) | (1u << WGM00)
-#define MOTOR_PWM_START()   TCCR0B |= (1u << CS01) | (1u << CS00)
-#define MOTOR_PWM_STOP()    TCCR0B &= ~((1u << CS01) | (1u << CS00))
+// Motor PWM 3.9 kHz, phase correct
+#define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM00)
+#define MOTOR_PWM_START()   TCCR0B |= (1u << CS01)
+#define MOTOR_PWM_STOP()    TCCR0B &= ~(1u << CS01)
 #define MOTOR_PWM(value)    OCR0B = (value & 0xFF)
 
 // ADC prescalar 64 chosen for <200 kHz ADC clock (needed for 10-bit resolution)
@@ -88,7 +88,10 @@
 #define GPIO_SPARE_MODE     DDRD
 #define GPIO_SPARE_PIN      PORTD4
 
-// pins 10-11
+// pins 9-11
+#define MOTOR_PWM_PORT      PORTD
+#define MOTOR_PWM_MODE      DDRD
+#define MOTOR_PWM_PIN       PORTD5
 #define SR_MR_n_PORT        PORTD
 #define SR_MR_n_MODE        DDRD
 #define SR_MR_n_PIN         PORTD6
