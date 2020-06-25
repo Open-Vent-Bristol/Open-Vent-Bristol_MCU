@@ -1,7 +1,6 @@
 target_sources(OpenVent_ftp.elf
   PUBLIC
     ftp_main.c
-    adc_test.c
     gpio_test.c
     spi_test.c
     uart_test.c
