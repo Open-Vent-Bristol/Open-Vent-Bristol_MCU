@@ -112,7 +112,7 @@ uint8_t uart_write(const char* const data_out, uint8_t length)
     }
   }
 
-  // Kick off the transmission of the first byte if required
+  // Kick off the transmission
   uart_start_transmission();
 
   return written;

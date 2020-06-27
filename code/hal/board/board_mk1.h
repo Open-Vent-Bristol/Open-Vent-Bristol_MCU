@@ -11,10 +11,7 @@
 #define UART_BUFFER_SIZE    (32u)
 
 #define UART_BAUD_RATE      (57600ul)
-#define UART_BAUD_SET()     UBRR0L = (CPU_CLOCK_HZ / (UART_BAUD_RATE * 16u)) - 1u; \
-                            UBRR0H = 0u
-#define UART_CFG()          UCSR0B |= (1u << RXCIE0) | (1u << TXCIE0) | (1u << RXEN0) | (1u << TXEN0); \
-                            UCSR0C = (1u << UCSZ00) | (1u << UCSZ01)
+#define UART_BAUD_SET       ((CPU_CLOCK_HZ / (UART_BAUD_RATE * 16ul)) - 1ul)
 
 // Scheduler timer will interrupt at 1 kHz
 #define SCHEDULER_TIM_CFG() OCR1A = 124u; \
