@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include "types/types.h"
 
+#define SPI_NO_COMMAND    (0xFF)
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -49,13 +51,13 @@ bool spi_command(uint8_t command);
  * If the SPI device is busy, the transaction will not be started
  * @note Not implemented!
  *
- * @param command     Command to send (0xFF to skip command phase)
+ * @param command     Command to send (SPI_NO_COMMAND to skip command phase)
  * @param data_out    Data to write
  * @param length      Length of write (normally sizeof(data_out))
  * @return true       Transaction started
  * @return false      SPI device is unavailable
  */
-// bool spi_write(uint8_t command, const uint8_t* const data_out, uint8_t length);
+bool spi_write(uint8_t command, const uint8_t* const data_out, uint8_t length);
 
 /**
  * @brief Start a SPI read transaction.
@@ -68,7 +70,7 @@ bool spi_command(uint8_t command);
  * @return true       Transaction started
  * @return false      SPI device is unavailable
  */
-// bool spi_read(uint8_t command, uint8_t* const data_in, uint8_t max_length);
+bool spi_read(uint8_t command, uint8_t* const data_in, uint8_t max_length);
 
 #ifdef __cplusplus
 } /* extern "C" */

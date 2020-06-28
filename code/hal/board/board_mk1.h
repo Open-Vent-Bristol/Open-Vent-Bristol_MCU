@@ -10,6 +10,8 @@
 // This must be a power of two!
 #define UART_BUFFER_SIZE    (32u)
 
+#define SPI_BUFFER_SIZE     (2u)
+
 #define UART_BAUD_RATE      (57600ul)
 #define UART_BAUD_SET       ((CPU_CLOCK_HZ / (UART_BAUD_RATE * 16ul)) - 1ul)
 

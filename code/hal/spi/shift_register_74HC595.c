@@ -24,7 +24,7 @@ bool shift_register_write_byte(shift_register_offset_t offset, shift_register_si
     gpio_clear_pin(&SR_MR_n_PORT, SR_MR_n_PIN);
 
     s_unified_data[offset] = data;
-    spi_command(data);
+    success = spi_write(SPI_NO_COMMAND, s_unified_data, sizeof(s_unified_data));
   }
 
   return success;
@@ -52,7 +52,7 @@ bool shift_register_write_bytes(const void* const data, size_t length)
     for (size_t i = 0u; i < byte_length; i++)
     {
       s_unified_data[i] = ((uint8_t*)data)[i];
-      spi_command(s_unified_data[i]);
+      success = spi_write(SPI_NO_COMMAND, s_unified_data, sizeof(s_unified_data));
     }
   }
 
