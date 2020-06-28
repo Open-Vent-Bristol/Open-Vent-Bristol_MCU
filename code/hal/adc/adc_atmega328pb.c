@@ -7,6 +7,9 @@ static ADC_callback_t s_adc_callback = NULL;
 
 void adc_init(void)
 {
+  // Use AREF pin
+  ADMUX = (1u << REFS0);
+
   // Enable ADC
   ADCSRA = (1u << ADEN) | ADC_PRESCALER;
 }
@@ -15,10 +18,8 @@ bool adc_read_interrupt(ADC_channel_t channel, ADC_callback_t callback)
 {
   bool return_val = false;
 
-  // Check for an existing measurement underway by inspecting the reading bit and the
-  // multiplexer channel
-  if (((ADCSRA & (1u << ADSC)) == 0u) |
-      (ADMUX & ((1u << MUX3) | (1u << MUX2) | (1u << MUX1) | (1u << MUX0))))
+  // Check for an existing measurement underway by inspecting the reading bit
+  if ((ADCSRA & (1u << ADSC)) == 0u)
   {
     ADMUX |= channel;
 
@@ -37,26 +38,21 @@ ADC_resolution_t adc_read_blocking(ADC_channel_t channel)
 {
   ADC_resolution_t reading = -1;
 
-  // Check for an existing measurement underway by inspecting the reading bit and the
-  // multiplexer channel
-  if (((ADCSRA & (1u << ADSC)) == 0u) |
-      (ADMUX & ((1u << MUX3) | (1u << MUX2) | (1u << MUX1) | (1u << MUX0))))
+  // Check for an existing measurement underway by inspecting the reading bit
+  if ((ADCSRA & (1u << ADSC)) == 0u)
   {
     ADMUX |= channel;
 
-    // Disable interrupt and start reading
-    ADCSRA &= ~(1u << ADIE);
+    // Start reading
     ADCSRA |= (1u << ADSC);
 
     // Block until the reading bit is cleared by hardware
     while ((ADCSRA & (1u << ADSC)) != 0u) {};
 
-    // Get the reading from the ADC registers (disable all interrupts during 16-bit read)
-    sei();
-    reading = ((ADCL << 8u) & 0xFF) | (ADCL & 0xFF);
-    cli();
+    // Get the reading from the ADC registers
+    reading = ADC;
 
-    // Clear the channel to release the ADC for a new reading
+    // Clear the channel
     ADMUX &= ~((1u << MUX3) | (1u << MUX2) | (1u << MUX1) | (1u << MUX0));
   }
 
@@ -69,11 +65,11 @@ ISR(ADC_vect)
   if (s_adc_callback != NULL)
   {
     // Get the reading from the ADC registers
-    ADC_resolution_t reading = ((ADCL << 8u) & 0xFF) | (ADCL & 0xFF);
-
-    // Clear the channel to release the ADC for a new reading
-    ADMUX &= ~((1u << MUX3) | (1u << MUX2) | (1u << MUX1) | (1u << MUX0));
-
+    ADC_resolution_t reading = ADC;
     s_adc_callback(reading);
   }
+
+  // Disable interrupt and clear the channel
+  ADCSRA &= ~(1u << ADIE);
+  ADMUX &= ~((1u << MUX3) | (1u << MUX2) | (1u << MUX1) | (1u << MUX0));
 }

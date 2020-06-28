@@ -159,29 +159,40 @@ void process_command(ftp_command_t* command)
 
   if (digital_reading == 0u)
   {
+    uart_write(string_newline, sizeof(string_newline));
     uart_write(string_low, sizeof(string_low));
   }
   else if (digital_reading == 1u)
   {
+    uart_write(string_newline, sizeof(string_newline));
     uart_write(string_high, sizeof(string_high));
   }
   else if (adc_reading != -1)
   {
     // 5 spaces will work for anything up to a 16-bit ADC
     char mirror_str[5] = {'\0'};
-    int8_t i = 0u;
+    uint8_t i = 0u;
     while (adc_reading)
     {
-      uint8_t tenth = adc_reading / 10u;
-      mirror_str[i++] = adc_reading - tenth + '0';
+      ADC_resolution_t tenth = adc_reading / 10u;
+      mirror_str[i++] = adc_reading - (tenth * 10u) + '0';
       adc_reading = tenth;
     }
 
+    uart_write(string_newline, sizeof(string_newline));
+
     // Characters are in reverse order!
-    while (i >= 0u)
+    if (i == 0u)
     {
-      char chr = mirror_str[--i];
-      uart_write(&chr, 1u);
+      char zero = '0';
+      uart_write(&zero, 1u);
+    }
+    else
+    {
+      for (; i > 0u; i--)
+      {
+        uart_write(&mirror_str[i - 1u], 1u);
+      }
     }
   }
 
