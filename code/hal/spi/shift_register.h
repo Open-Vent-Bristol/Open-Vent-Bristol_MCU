@@ -2,6 +2,7 @@
 #define SHIFT_REGISTER_H
 
 #include <stddef.h>
+#include <stdbool.h>
 #include "board/board.h"
 
 #ifdef __cplusplus

@@ -14,12 +14,7 @@ void clock_init(void)
   CLKPR = 0u;
 
   // Disable clocks to unused peripherals
-  PRR0 |= (1u << PRTWI0) | (1u << PRUSART1); // Disable I2C0 and USART1 interfaces
-  PRR1 |= (1u << PRTIM3)                     // Disable timer 3
-          | (1u << PRSPI1)                   // Disable SPI1 interface
-          | (1u << PRTIM4)                   // Disable timer 4
-          | (1u << PRPTC)                    // Disable touch interface
-          | (1u << PRTWI1);                  // Disable I2C1 interface
+  PRR |= (1u << PRTWI); // Disable I2C
 
   SCHEDULER_TIM_CFG();
   MOTOR_PWM_TIM_CFG();

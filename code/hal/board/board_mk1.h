@@ -3,6 +3,7 @@
 #define BOARD_MK1_H
 
 #include <avr/io.h>
+#include <avr/interrupt.h>
 
 #define CPU_CLOCK_HZ        (8000000ul)
 
@@ -10,20 +11,19 @@
 #define UART_BUFFER_SIZE    (32u)
 
 #define UART_BAUD_RATE      (57600ul)
-#define UART_BAUD_SET()     UBRR0L = (CPU_CLOCK_HZ / (UART_BAUD_RATE * 16u)) - 1u; \
-                            UBRR0H = 0u
-#define UART_CFG()          UCSR0B |= (1u << RXCIE0) | (1u << TXCIE0) | (1u << RXEN0) | (1u << TXEN0)
+#define UART_BAUD_SET       ((CPU_CLOCK_HZ / (UART_BAUD_RATE * 16ul)) - 1ul)
 
 // Scheduler timer will interrupt at 1 kHz
-#define SCHEDULER_TIM_CFG() TCCR1B = (1u << WGM12) | (1u << CS11); \
-                            OCR1A = 499u
+#define SCHEDULER_TIM_CFG() OCR1A = 124u; \
+                            TCCR1B = (1u << WGM12) | (1u << CS11) | (1u << CS10)
 #define SCHEDULER_START()   TIMSK1 |= (1u << OCIE1A)
 #define SCHEDULER_STOP()    TIMSK1 &= ~(1u << OCIE1A)
+#define SCHEDULER_ISR()     ISR(TIMER1_COMPA_vect)
 
-// Motor PWM 125 kHz, phase correct
-#define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM02) | (1u << WGM00)
-#define MOTOR_PWM_START()   TCCR0B |= (1u << CS01) | (1u << CS00)
-#define MOTOR_PWM_STOP()    TCCR0B &= ~((1u << CS01) | (1u << CS00))
+// Motor PWM 3.9 kHz, phase correct
+#define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM00)
+#define MOTOR_PWM_START()   TCCR0B |= (1u << CS01)
+#define MOTOR_PWM_STOP()    TCCR0B &= ~(1u << CS01)
 #define MOTOR_PWM(value)    OCR0B = (value & 0xFF)
 
 // ADC prescalar 64 chosen for <200 kHz ADC clock (needed for 10-bit resolution)
@@ -50,10 +50,14 @@
 #define MUX_B_MODE          DDRB
 #define MUX_B_PIN           PORTB2
 #define SPI_MOSI_PORT       PORTB
+#define SPI_MOSI_MODE       DDRB
 #define SPI_MOSI_PIN        PORTB3
-#define SPI_MISO_PORT       PORTB
+#define SPI_MISO_PORTIN     PINB
+#define SPI_MISO_PULLUP     PORTB
+#define SPI_MISO_MODE       DDRB
 #define SPI_MISO_PIN        PORTB4
 #define SPI_SCK_PORT        PORTB
+#define SPI_SCK_MODE        DDRB
 #define SPI_SCK_PIN         PORTB5
 #define XTAL1_PORT          PORTB
 #define XTAL1_PIN           PORTB6
@@ -85,7 +89,10 @@
 #define GPIO_SPARE_MODE     DDRD
 #define GPIO_SPARE_PIN      PORTD4
 
-// pins 10-11
+// pins 9-11
+#define MOTOR_PWM_PORT      PORTD
+#define MOTOR_PWM_MODE      DDRD
+#define MOTOR_PWM_PIN       PORTD5
 #define SR_MR_n_PORT        PORTD
 #define SR_MR_n_MODE        DDRD
 #define SR_MR_n_PIN         PORTD6
@@ -98,9 +105,9 @@
 #define SWITCHES_INT_ISR    PCINT2_vect
 
 // pin 19
-#define LATCH_PORT          PORTE
-#define LATCH_MODE          DDRE
-#define LATCH_PIN           PORTE2
+#define LATCH_PORT          ADC_SPARE_PORT
+#define LATCH_MODE          ADC_SPARE_MODE
+#define LATCH_PIN           ADC_SPARE_PIN
 
 typedef enum
 {
@@ -117,6 +124,11 @@ typedef enum
 #error MUX_SELECT_BANK_MASK bit overlaps MUX_SELECT_MASK!
 #endif
 
+#define MUX_BANK_0_PORT     ALERTS_PORTIN
+#define MUX_BANK_1_PORT     SWITCHES_PORTIN
+#define MUX_BANK_0_PIN      ALERTS_PIN
+#define MUX_BANK_1_PIN      SWITCHES_PIN
+
 /**
  * @brief Type to aid selection of multiplexer channels
  * @note MEMBRANE_SW values have an extra bit set that is removed by MUX_SELECT_MASK
@@ -128,17 +140,11 @@ typedef enum
   MUX_SELECT_PRESSURE_ALERT = (1u << MUX_A_PIN),
   MUX_SELECT_FLOW_ALERT     = (1u << MUX_B_PIN),
   MUX_SELECT_VBATT_ALERT    = ((1u << MUX_A_PIN) | (1u << MUX_B_PIN)),
-  MUX_SELECT_MEMBRANE_SW_0  = MUX_SELECT_BANK_MASK,
   MUX_SELECT_MEMBRANE_SW_1  = MUX_SELECT_BANK_MASK | (1u << MUX_A_PIN),
-  MUX_SELECT_MEMBRANE_SW_2  = MUX_SELECT_BANK_MASK | (1u << MUX_B_PIN),
+  MUX_SELECT_MEMBRANE_SW_2  = MUX_SELECT_BANK_MASK,
   MUX_SELECT_MEMBRANE_SW_3  = MUX_SELECT_BANK_MASK | ((1u << MUX_A_PIN) | (1u << MUX_B_PIN)),
+  MUX_SELECT_MEMBRANE_SW_4  = MUX_SELECT_BANK_MASK | (1u << MUX_B_PIN),
 } multiplexer_select_t;
-
-typedef enum
-{
-  MUX_BANK_0                = (1u << ALERTS_PIN),
-  MUX_BANK_1                = (1u << SWITCHES_PIN)
-} multiplexer_bank_t;
 
 /**
  * @brief Pin descriptions for parallel output of shift register

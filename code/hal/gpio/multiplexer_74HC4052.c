@@ -10,10 +10,10 @@ void multiplexer_select_channel(multiplexer_select_t channel)
   // Must disable global interrupts while doing read-modify-write
   cli();
 
-  uint8_t pin_mask = gpio_read_mask(MUX_PORT, REGISTER_SIZE_MAX);
-  pin_mask &= MUX_SELECT_MASK;
+  uint8_t pin_mask = gpio_read_mask(&MUX_PORT, REGISTER_SIZE_MAX);
+  pin_mask &= ~MUX_SELECT_MASK;
   pin_mask |= (channel & MUX_SELECT_MASK);
-  gpio_write_mask(MUX_PORT, pin_mask);
+  gpio_write_mask(&MUX_PORT, pin_mask);
 
   // Reenable global interrupts
   sei();
@@ -24,13 +24,14 @@ void multiplexer_select_channel(multiplexer_select_t channel)
 uint8_t multiplexer_digital_read_current_channel(void)
 {
   uint8_t return_val = 0u;
-  MCU_register_t port = s_current_channel & MUX_SELECT_BANK_MASK;
-  uint8_t pin_mask = s_current_channel & MUX_SELECT_MASK;
-  register_size_t pin_val = gpio_read_mask(port, pin_mask);
 
-  if (pin_val != 0u)
+  if ((s_current_channel & MUX_SELECT_BANK_MASK) == 0u)
   {
-    return_val = 1u;
+    return_val = gpio_read_pin(&MUX_BANK_0_PORT, MUX_BANK_0_PIN);
+  }
+  else
+  {
+    return_val = gpio_read_pin(&MUX_BANK_1_PORT, MUX_BANK_1_PIN);
   }
 
   return return_val;

@@ -5,9 +5,9 @@
 
 void gpio_init(void)
 {
-  // ALERTS: input, tri-state, interrupt
+  // ALERTS: input, pullup, interrupt
   ALERTS_MODE &= ~(1u << ALERTS_PIN);
-  ALERTS_PULLUP &= ~(1u << ALERTS_PIN);
+  ALERTS_PULLUP |= (1u << ALERTS_PIN);
   ALERTS_INT_REG |= (1u << ALERTS_INT_CHAN);
 
   // MUX_A, MUX_B: output
@@ -20,7 +20,8 @@ void gpio_init(void)
   // ADC_SPARE: output
   ADC_SPARE_MODE |= (1u << ADC_SPARE_PIN);
 
-  // MOTOR_IN_B, ALERT_ENABLE_n, GPIO_SPARE, SR_MR_n: output
+  // MOTOR_PWM, MOTOR_IN_B, ALERT_ENABLE_n, GPIO_SPARE, SR_MR_n: output
+  MOTOR_PWM_MODE |= (1u << MOTOR_PWM_PIN);
   MOTOR_IN_B_MODE |= (1u << MOTOR_IN_B_PIN);
   ALERT_ENABLE_n_MODE |= (1u << ALERT_ENABLE_n_PIN);
   ALERT_ENABLE_n_PORT |= (1u << ALERT_ENABLE_n_PIN);
@@ -28,13 +29,21 @@ void gpio_init(void)
   SR_MR_n_MODE |= (1u << SR_MR_n_PIN);
   SR_MR_n_PORT |= (1u << SR_MR_n_PIN);
 
-  // SWITCHES: input, tri-state, interrupt
+  // SWITCHES: input, pullup, interrupt
   SWITCHES_MODE &= ~(1u << SWITCHES_PIN);
-  SWITCHES_PULLUP &= ~(1u << SWITCHES_PIN);
+  SWITCHES_PULLUP |= (1u << SWITCHES_PIN);
   SWITCHES_INT_REG |= (1u << SWITCHES_INT_CHAN);
 
   // LATCH: output
   LATCH_MODE |= (1u << LATCH_PIN);
+
+  // SPI_SCK, SPI_MOSI: output
+  SPI_SCK_MODE |= (1u << SPI_SCK_PIN);
+  SPI_MOSI_MODE |= (1u << SPI_MOSI_PIN);
+
+  // SPI_MISO: input, pullup
+  SPI_MISO_MODE &= ~(1u << SPI_MISO_PIN);
+  SPI_MISO_PULLUP |= (1u << SPI_MISO_PIN);
 
   // Disable digital input to ADC pins
   ADC_DIGITAL_DISABLE |= (1u << ADC_FLOW) |
@@ -55,6 +64,11 @@ void gpio_set_mask(MCU_register_t port, register_size_t pin_mask)
 void gpio_clear_mask(MCU_register_t port, register_size_t pin_mask)
 {
   *port &= ~pin_mask;
+}
+
+void gpio_write_mask(MCU_register_t port, register_size_t pin_mask)
+{
+  *port = pin_mask;
 }
 
 register_size_t gpio_read_mask(MCU_register_t port, register_size_t pin_mask)

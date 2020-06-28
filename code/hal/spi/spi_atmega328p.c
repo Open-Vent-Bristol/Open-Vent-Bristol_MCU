@@ -20,9 +20,9 @@ static volatile spi_t spi =
 void spi_init(void)
 {
   // Interrupt, enable, LSB first, master, idle clock high, speed is fcpu/128
-  SPCR0 = (1u << SPIE) | (1u << SPE) | (1u << DORD) |
-          (1u << MSTR) | (1u << CPOL) |
-          (1u << SPR1) | (1u << SPR0);
+  SPCR = (1u << SPIE) | (1u << SPE) | (1u << DORD) |
+         (1u << MSTR) | (1u << CPOL) |
+         (1u << SPR1) | (1u << SPR0);
 }
 
 bool spi_available(void)
@@ -53,7 +53,7 @@ bool spi_command(uint8_t command)
     gpio_clear_pin(spi.chip_select_port, spi.chip_select_pin);
 
     // Put the command into the data register
-    SPDR0 = command;
+    SPDR = command;
 
     return_val = true;
   }
@@ -71,7 +71,7 @@ bool spi_command(uint8_t command)
 
 // }
 
-ISR(SPI0_STC_vect)
+ISR(SPI_STC_vect)
 {
   // Transaction complete - pull chip select high and mark the device as available
   gpio_set_pin(spi.chip_select_port, spi.chip_select_pin);

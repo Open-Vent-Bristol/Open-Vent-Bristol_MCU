@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "ATmega328PB",
+            "name": "ATmega328P",
             "includePath": [
                 "${workspaceFolder}/code/application",
                 "${workspaceFolder}/code/drivers",
@@ -13,7 +13,7 @@
                 "${workspaceFolder}/unittests/mocks"
             ],
             "defines": [
-                "__AVR_ATmega328PB__",
+                "__AVR_ATmega328P__",
                 "BOARD_MK1"
             ],
             "macFrameworkPath": [],
