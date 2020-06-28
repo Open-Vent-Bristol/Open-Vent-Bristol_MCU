@@ -37,6 +37,14 @@ void gpio_init(void)
   // LATCH: output
   LATCH_MODE |= (1u << LATCH_PIN);
 
+  // SPI_SCK, SPI_MOSI: output
+  SPI_SCK_MODE |= (1u << SPI_SCK_PIN);
+  SPI_MOSI_MODE |= (1u << SPI_MOSI_PIN);
+
+  // SPI_MISO: input, pullup
+  SPI_MISO_MODE &= ~(1u << SPI_MISO_PIN);
+  SPI_MISO_PULLUP |= (1u << SPI_MISO_PIN);
+
   // Disable digital input to ADC pins
   ADC_DIGITAL_DISABLE |= (1u << ADC_FLOW) |
                          (1u << ADC_PRESSURE) |

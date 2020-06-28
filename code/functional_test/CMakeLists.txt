@@ -9,7 +9,3 @@ target_sources(OpenVent_ftp.elf
 target_link_libraries(OpenVent_ftp.elf
   OpenVent_hal
 )
-
-if(${MCU_TARGET} STREQUAL atmega328pb)
-  add_dependencies(OpenVent_ftp.elf crtatmega328pb)
-endif()

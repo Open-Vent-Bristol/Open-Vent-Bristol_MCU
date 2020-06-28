@@ -1,7 +1,7 @@
 #include "board/board.h"
 #include "clock/clock.h"
 #include "gpio/gpio.h"
-// #include "spi/spi.h"
+#include "spi/spi.h"
 #include "uart/uart.h"
 #include "adc/adc.h"
 #include "ftp_types.h"
@@ -9,7 +9,7 @@
 
 void process_command(ftp_command_t* command);
 extern void uart_ftp_get_command(ftp_command_t* command);
-// extern void spi_ftp_run(void);
+extern void spi_ftp_run(void);
 
 static const char string_error_not_implemented[] = " - not implemented";
 static const char string_high[] = "HIGH";
@@ -34,9 +34,10 @@ int main(void)
 
   clock_init();
   gpio_init();
-  // spi_init();
   uart_init();
   adc_init();
+  spi_init();
+  spi_setup_transaction(&LATCH_PORT, LATCH_PIN);
 
   SCHEDULER_START();
 
@@ -148,9 +149,9 @@ void process_command(ftp_command_t* command)
       break;
 
     case PRINT_SPI:
-      // spi_ftp_run();
-      // uart_write("- check scope", 13u);
-      //break;
+      spi_ftp_run();
+      uart_write("- check scope", 13u);
+      break;
 
     case NONE:
       uart_write(string_error_not_implemented, sizeof(string_error_not_implemented));

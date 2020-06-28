@@ -50,10 +50,14 @@
 #define MUX_B_MODE          DDRB
 #define MUX_B_PIN           PORTB2
 #define SPI_MOSI_PORT       PORTB
+#define SPI_MOSI_MODE       DDRB
 #define SPI_MOSI_PIN        PORTB3
-#define SPI_MISO_PORT       PORTB
+#define SPI_MISO_PORTIN     PINB
+#define SPI_MISO_PULLUP     PORTB
+#define SPI_MISO_MODE       DDRB
 #define SPI_MISO_PIN        PORTB4
 #define SPI_SCK_PORT        PORTB
+#define SPI_SCK_MODE        DDRB
 #define SPI_SCK_PIN         PORTB5
 #define XTAL1_PORT          PORTB
 #define XTAL1_PIN           PORTB6

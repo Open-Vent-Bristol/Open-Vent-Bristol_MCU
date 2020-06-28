@@ -16,8 +16,6 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # This definition is used to select the correct source files in the hal
 if(${BOARD_CONFIG} STREQUAL BOARD_MK1)
   set(MCU_TARGET atmega328p)
-elseif(${BOARD_CONFIG} STREQUAL BOARD_MK2)
-  set(MCU_TARGET atmega328pb)
 endif()
 
 add_definitions(
