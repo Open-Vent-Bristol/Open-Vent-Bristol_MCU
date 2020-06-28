@@ -114,19 +114,19 @@ void process_command(ftp_command_t* command)
       break;
 
     case READ_SWITCH_1:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_0);
-      break;
-
-    case READ_SWITCH_2:
       digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_1);
       break;
 
-    case READ_SWITCH_3:
+    case READ_SWITCH_2:
       digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_2);
       break;
 
-    case READ_SWITCH_4:
+    case READ_SWITCH_3:
       digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_3);
+      break;
+
+    case READ_SWITCH_4:
+      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_4);
       break;
 
     case RUN_MOTOR_IN:

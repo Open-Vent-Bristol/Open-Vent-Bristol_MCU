@@ -11,9 +11,9 @@ void multiplexer_select_channel(multiplexer_select_t channel)
   cli();
 
   uint8_t pin_mask = gpio_read_mask(&MUX_PORT, REGISTER_SIZE_MAX);
-  pin_mask &= MUX_SELECT_MASK;
+  pin_mask &= ~MUX_SELECT_MASK;
   pin_mask |= (channel & MUX_SELECT_MASK);
-  gpio_set_mask(&MUX_PORT, pin_mask);
+  gpio_write_mask(&MUX_PORT, pin_mask);
 
   // Reenable global interrupts
   sei();

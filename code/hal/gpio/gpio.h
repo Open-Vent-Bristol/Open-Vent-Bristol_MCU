@@ -39,7 +39,7 @@ void gpio_clear_mask(MCU_register_t port, register_size_t pin_mask);
  * @param port
  * @param pin_mask
  */
-void gpio_set_mask(MCU_register_t port, register_size_t pin_mask);
+void gpio_write_mask(MCU_register_t port, register_size_t pin_mask);
 
 /**
  * @brief Check a pin mask against the value of the GPIO port

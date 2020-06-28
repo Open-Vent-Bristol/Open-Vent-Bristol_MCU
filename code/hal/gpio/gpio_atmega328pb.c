@@ -5,9 +5,9 @@
 
 void gpio_init(void)
 {
-  // ALERTS: input, tri-state, interrupt
+  // ALERTS: input, pullup, interrupt
   ALERTS_MODE &= ~(1u << ALERTS_PIN);
-  ALERTS_PULLUP &= ~(1u << ALERTS_PIN);
+  ALERTS_PULLUP |= (1u << ALERTS_PIN);
   ALERTS_INT_REG |= (1u << ALERTS_INT_CHAN);
 
   // MUX_A, MUX_B: output
@@ -29,9 +29,9 @@ void gpio_init(void)
   SR_MR_n_MODE |= (1u << SR_MR_n_PIN);
   SR_MR_n_PORT |= (1u << SR_MR_n_PIN);
 
-  // SWITCHES: input, tri-state, interrupt
+  // SWITCHES: input, pullup, interrupt
   SWITCHES_MODE &= ~(1u << SWITCHES_PIN);
-  SWITCHES_PULLUP &= ~(1u << SWITCHES_PIN);
+  SWITCHES_PULLUP |= (1u << SWITCHES_PIN);
   SWITCHES_INT_REG |= (1u << SWITCHES_INT_CHAN);
 
   // LATCH: output
@@ -56,6 +56,11 @@ void gpio_set_mask(MCU_register_t port, register_size_t pin_mask)
 void gpio_clear_mask(MCU_register_t port, register_size_t pin_mask)
 {
   *port &= ~pin_mask;
+}
+
+void gpio_write_mask(MCU_register_t port, register_size_t pin_mask)
+{
+  *port = pin_mask;
 }
 
 register_size_t gpio_read_mask(MCU_register_t port, register_size_t pin_mask)
