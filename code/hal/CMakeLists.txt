@@ -7,3 +7,7 @@ add_subdirectory(gpio)
 add_subdirectory(spi)
 add_subdirectory(types)
 add_subdirectory(uart)
+
+if($(MCU_TARGET) STREQUAL stm32l4)
+  add_subdirectory(stm32l4)
+endif()

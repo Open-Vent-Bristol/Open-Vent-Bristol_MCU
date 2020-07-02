@@ -10,11 +10,13 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # if(${BOARD_CONFIG})
 # else()
-  set(BOARD_CONFIG BOARD_MK1)
+  set(BOARD_CONFIG BOARD_MK2)
 # endif()
 
 # This definition is used to select the correct source files in the hal
-if(${BOARD_CONFIG} STREQUAL BOARD_MK1)
+if(${BOARD_CONFIG} STREQUAL BOARD_MK2)
+  set(MCU_TARGET stm32l4)
+elseif(${BOARD_CONFIG} STREQUAL BOARD_MK1)
   set(MCU_TARGET atmega328p)
 endif()
 
@@ -33,6 +35,12 @@ include_directories(
   drivers
   hal
 )
+
+if($(MCU_TARGET) STREQUAL stm32l4)
+  include_directories(
+    hal/stm32l4
+  )
+endif()
 
 add_subdirectory(application)
 add_subdirectory(drivers)
