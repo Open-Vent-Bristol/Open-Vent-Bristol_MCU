@@ -8,6 +8,7 @@
                 "${workspaceFolder}/code/hal",
                 "${workspaceFolder}/code/hal/stm32l4",
                 "${workspaceFolder}/code/hal/stm32l4/CMSIS/Device/ST/STM32L4xx/Include",
+                "${workspaceFolder}/code/hal/stm32l4/CMSIS/Core/Include",
                 "${workspaceFolder}/unittests/frameworks/fff",
                 "${workspaceFolder}/unittests/frameworks/Unity/src",
                 "${workspaceFolder}/unittests/frameworks/Unity/extras/fixture/src",
@@ -15,8 +16,9 @@
                 "${workspaceFolder}/unittests/mocks"
             ],
             "defines": [
-                "STM32L412C8",
-                "BOARD_MK1"
+                "STM32L412xx",
+                "BOARD_MK2",
+                "USE_FULL_LL_DRIVER"
             ],
             "macFrameworkPath": [],
             "compilerPath": "/usr/local/bin/avr-gcc",
