@@ -1,0 +1,27 @@
+{
+  "doxdocgen.generic.paramTemplate": "@param {param} ",
+  "doxdocgen.generic.returnTemplate": "@return {type} ",
+  "doxdocgen.generic.dateTemplate": "@date {date}",
+  "doxdocgen.generic.briefTemplate": "{text}",
+
+  "files.trimTrailingWhitespace": true,
+
+  "[c]": {
+      "editor.rulers": [100],
+      "editor.tabSize": 2,
+  },
+
+  "[cpp]": {
+      "editor.rulers": [120],
+      "editor.tabSize": 2,
+  },
+
+  "[python]": {
+      "editor.rulers": [120],
+      "editor.tabSize": 2,
+  },
+
+  "files.associations": {
+      "*.h": "c"
+  }
+}

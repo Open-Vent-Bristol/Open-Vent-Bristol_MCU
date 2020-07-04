@@ -17,5 +17,7 @@ include_directories(
   ../frameworks/Unity/extras/fixture/src
   ../frameworks/Unity/extras/memory/src
   ../mocks
-  ../../code
+  ../../code/application
+  ../../code/drivers
+  ../../code/hal
 )

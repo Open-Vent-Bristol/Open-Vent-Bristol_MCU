@@ -6,7 +6,7 @@ enable_testing()
 
 add_executable(flow_unittest
   ${UNITY_SRC}
-  ../../code/flow/flow.c
+  ../../code/application/flow/flow.c
   flow_unittest.c
   all_tests.c
 )
