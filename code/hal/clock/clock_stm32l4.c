@@ -19,7 +19,6 @@ void clock_init(void)
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
 
   // Set peripheral clock sources - TODO: move to drivers
-  LL_RCC_SetUSARTClockSource(LL_RCC_USART1_CLKSOURCE_SYSCLK);
   // SCHEDULER_TIM_CFG();
   // MOTOR_PWM_TIM_CFG();
 }

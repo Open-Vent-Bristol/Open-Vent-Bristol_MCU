@@ -21,7 +21,6 @@
 #define UART_BUFFER_SIZE    (32u)
 
 #define UART_BAUD_RATE      (57600ul)
-// #define UART_BAUD_SET       ((CPU_CLOCK_HZ / (UART_BAUD_RATE * 16ul)) - 1ul)
 
 // Scheduler timer will interrupt at 1 kHz
 // #define SCHEDULER_TIM_CFG()
