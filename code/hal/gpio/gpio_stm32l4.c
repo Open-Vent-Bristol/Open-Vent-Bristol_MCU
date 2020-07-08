@@ -62,39 +62,39 @@ void gpio_init(void)
 
 void gpio_set_mask(MCU_register_t port, register_size_t pin_mask)
 {
-  *port |= pin_mask;
+  LL_GPIO_SetOutputPin(port, pin_mask);
 }
 
 void gpio_clear_mask(MCU_register_t port, register_size_t pin_mask)
 {
-  *port &= ~pin_mask;
+  LL_GPIO_ResetOutputPin(port, pin_mask);
 }
 
 void gpio_write_mask(MCU_register_t port, register_size_t pin_mask)
 {
-  *port = pin_mask;
+  LL_GPIO_WriteOutputPort(port, pin_mask);
 }
 
 register_size_t gpio_read_mask(MCU_register_t port, register_size_t pin_mask)
 {
-  return (*port & pin_mask);
+  return LL_GPIO_SetInputPin(port, pin_mask);
 }
 
 void gpio_set_pin(MCU_register_t port, uint8_t pin_number)
 {
-  *port |= (1u << pin_number);
+  LL_GPIO_SetOutputPin(port, (1u << pin_number));
 }
 
 void gpio_clear_pin(MCU_register_t port, uint8_t pin_number)
 {
-  *port &= ~(1u << pin_number);
+  LL_GPIO_ResetOutputPin(port, (1u << pin_number));
 }
 
 uint8_t gpio_read_pin(MCU_register_t port, uint8_t pin_number)
 {
   uint8_t return_val = 0u;
 
-  if (*port & (1u << pin_number))
+  if (LL_GPIO_SetInputPin(port, (1u << pin_number)))
   {
     return_val = 1u;
   }

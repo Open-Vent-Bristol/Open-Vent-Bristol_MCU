@@ -115,6 +115,8 @@
 #define LED_PORT            GPIOC
 #define LED_PIN             LL_GPIO_PIN_15
 
+#define PARALLEL_PORT       LCD_PORT
+
 // typedef enum
 // {
 //   ADC_FLOW          = 0u,
