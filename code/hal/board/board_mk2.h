@@ -2,8 +2,10 @@
 #ifndef BOARD_MK2_H
 #define BOARD_MK2_H
 
-#define STM32L412xx
-#define USE_FULL_LL_DRIVER
+#define CPU_CLOCK_HZ        ((uint32_t)16000000U)
+// TODO - using NUCLEO 476RG board at the moment which has no HSE oscillator
+#define HSI_VALUE           CPU_CLOCK_HZ
+// #define HSE_VALUE           CPU_CLOCK_HZ
 
 #include "stm32l4/stm32l4xx_ll_adc.h"
 #include "stm32l4/stm32l4xx_ll_bus.h"
@@ -15,9 +17,6 @@
 #include "stm32l4/stm32l4xx_ll_usart.h"
 #include "stm32l4/stm32l4xx_ll_utils.h"
 
-#define CPU_CLOCK_HZ        ((uint32_t)16000000U)
-#define HSE_VALUE           CPU_CLOCK_HZ
-
 // This must be a power of two!
 #define UART_BUFFER_SIZE    (32u)
 
@@ -25,21 +24,20 @@
 // #define UART_BAUD_SET       ((CPU_CLOCK_HZ / (UART_BAUD_RATE * 16ul)) - 1ul)
 
 // Scheduler timer will interrupt at 1 kHz
-// #define SCHEDULER_TIM_CFG() OCR1A = 124u; \
-//                             TCCR1B = (1u << WGM12) | (1u << CS11) | (1u << CS10)
+// #define SCHEDULER_TIM_CFG()
 #define SCHEDULER_START()   LL_TIM_EnableCounter(TIM6_BASE)
 #define SCHEDULER_STOP()    LL_TIM_DisableCounter(TIM6_BASE)
 #define SCHEDULER_ISR()     void TIM6_IRQHandler(void)
 
 // Motor PWM 3.9 kHz, phase correct
-// #define MOTOR_PWM_TIM_CFG() TCCR0A = (1u << COM0B1) | (1u << WGM00)
+// #define MOTOR_PWM_TIM_CFG()
 #define MOTOR_PWM_START()   LL_TIM_DisableCounter(TIM2_BASE)
 #define MOTOR_PWM_STOP()    LL_TIM_DisableCounter(TIM2_BASE)
-// #define MOTOR_PWM(value)    OCR0B = (value & 0xFF)
+// #define MOTOR_PWM(value)
 
 // ADC prescalar 64 chosen for <200 kHz ADC clock (needed for 10-bit resolution)
-// #define ADC_PRESCALER       (1u << ADPS2) | (1u << ADPS1)
-// #define ADC_DIGITAL_DISABLE DIDR0
+// #define ADC_PRESCALER
+// #define ADC_DIGITAL_DISABLE
 // #define ADC_RESOLUTION_BITS (10u)
 
 // Thermistor
@@ -124,6 +122,6 @@
 //   ADC_VBATT         = 2u,
 //   ADC_MOTOR_CURRENT = 3u,
 //   ADC_TEMP          = 7u
-} ADC_channel_t;
+// } ADC_channel_t;
 
 #endif /* BOARD_MK2_H */

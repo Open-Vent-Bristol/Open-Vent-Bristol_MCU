@@ -4,11 +4,14 @@
 void clock_init(void)
 {
   // Enable the external crystal oscillator and wait for it to stabilise
-  LL_RCC_HSE_Enable();
-  while (!LL_RCC_HSE_IsReady());
+  // LL_RCC_HSE_Enable();
+  // while (!LL_RCC_HSE_IsReady());
+  LL_RCC_HSI_Enable();
+  while (!LL_RCC_HSI_IsReady());
 
   // Set system clock to use HSE
-  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSE);
+  // LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSE);
+  LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSI);
 
   // Set bus prescalers
   LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);

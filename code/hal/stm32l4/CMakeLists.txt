@@ -1,9 +1,8 @@
-add_definitions(
-  -DUSE_FULL_LL_DRIVER
-)
-
 target_sources(OpenVent_hal
   PUBLIC
+    # CMSIS/Device/ST/STM32L4xx/Source/Templates/gcc/startup_stm32l412xx.s
+    CMSIS/Device/ST/STM32L4xx/Source/Templates/gcc/startup_stm32l476xx.s
+    CMSIS/Device/ST/STM32L4xx/Source/Templates/system_stm32l4xx.c
     src/stm32l4xx_ll_adc.c
     # src/stm32l4xx_ll_comp.c
     # src/stm32l4xx_ll_crc.c

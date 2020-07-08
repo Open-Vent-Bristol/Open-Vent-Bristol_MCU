@@ -101,15 +101,3 @@ uint8_t gpio_read_pin(MCU_register_t port, uint8_t pin_number)
 
   return return_val;
 }
-
-// TODO: move to multiplexer driver
-ISR(ALERTS_INT_ISR)
-{
-
-}
-
-// TODO: move to multiplexer driver
-ISR(SWITCHES_INT_ISR)
-{
-
-}

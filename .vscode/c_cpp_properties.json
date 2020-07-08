@@ -1,6 +1,31 @@
 {
     "configurations": [
         {
+            "name": "NUCLEO-L476RG",
+            "includePath": [
+                "${workspaceFolder}/code/application",
+                "${workspaceFolder}/code/drivers",
+                "${workspaceFolder}/code/hal",
+                "${workspaceFolder}/code/hal/stm32l4",
+                "${workspaceFolder}/code/hal/stm32l4/CMSIS/Device/ST/STM32L4xx/Include",
+                "${workspaceFolder}/code/hal/stm32l4/CMSIS/Core/Include",
+                "${workspaceFolder}/unittests/frameworks/fff",
+                "${workspaceFolder}/unittests/frameworks/Unity/src",
+                "${workspaceFolder}/unittests/frameworks/Unity/extras/fixture/src",
+                "${workspaceFolder}/unittests/frameworks/Unity/extras/memory/src",
+                "${workspaceFolder}/unittests/mocks"
+            ],
+            "defines": [
+                "STM32L476xx",
+                "BOARD_MK2",
+                "USE_FULL_LL_DRIVER"
+            ],
+            "compilerPath": "/Users/donaldr/include/bin/arm-none-eabi-gcc",
+            "cStandard": "c99",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "gcc-x86"
+        },
+        {
             "name": "STM32L412C8",
             "includePath": [
                 "${workspaceFolder}/code/application",
@@ -20,10 +45,9 @@
                 "BOARD_MK2",
                 "USE_FULL_LL_DRIVER"
             ],
-            "macFrameworkPath": [],
-            "compilerPath": "/usr/local/bin/avr-gcc",
+            "compilerPath": "/Users/donaldr/include/bin/arm-none-eabi-gcc",
             "cStandard": "c99",
-            "cppStandard": "c++98",
+            "cppStandard": "c++14",
             "intelliSenseMode": "gcc-x86"
         },
         {
@@ -42,7 +66,6 @@
                 "__AVR_ATmega328P__",
                 "BOARD_MK1"
             ],
-            "macFrameworkPath": [],
             "compilerPath": "/usr/local/bin/avr-gcc",
             "cStandard": "c99",
             "cppStandard": "c++98",

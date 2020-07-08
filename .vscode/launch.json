@@ -1,0 +1,36 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "openocd",
+      "gdbTarget": ":3333",
+      "cwd": "${workspaceRoot}",
+      "executable": "./code/build/OpenVent_minimal.elf",
+      "armToolchainPath": "",
+      "name": "Debug (OpenOCD, NUCLEO-L476RG)",
+      "device": "STM32L476RG",
+      "configFiles": [
+        ".vscode/openocd.cfg"
+      ],
+      "postLaunchCommands": [
+        "load"
+      ],
+      "svdFile": ".vscode/STM32L4x6.svd"
+    },
+    {
+      "name": "Python: Current File",
+      "type": "python",
+      "request": "launch",
+      "program": "${file}",
+      "console": "integratedTerminal",
+      "args": [
+        "16", "2"
+      ]
+    }
+  ]
+}
