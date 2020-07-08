@@ -5,6 +5,10 @@
 void uart_configure(void)
 {
   LL_RCC_SetUSARTClockSource(LL_RCC_USART1_CLKSOURCE_SYSCLK);
+
+  // Enable clocks
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_USART1);
+
   LL_USART_DeInit(USART1);
 
   LL_USART_ClockInitTypeDef usart_clock_init_struct;
