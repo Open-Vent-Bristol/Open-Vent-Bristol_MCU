@@ -34,10 +34,7 @@
 #define MOTOR_PWM_STOP()    LL_TIM_DisableCounter(TIM2_BASE)
 // #define MOTOR_PWM(value)
 
-// ADC prescalar 64 chosen for <200 kHz ADC clock (needed for 10-bit resolution)
-// #define ADC_PRESCALER
-// #define ADC_DIGITAL_DISABLE
-// #define ADC_RESOLUTION_BITS (10u)
+#define ADC_RESOLUTION_BITS (12u)
 
 // Thermistor
 #define THERM_FIXED_RESIST  (10000u)
@@ -116,13 +113,15 @@
 
 #define PARALLEL_PORT       LCD_PORT
 
-// typedef enum
-// {
-//   ADC_FLOW          = 0u,
-//   ADC_PRESSURE      = 1u,
-//   ADC_VBATT         = 2u,
-//   ADC_MOTOR_CURRENT = 3u,
-//   ADC_TEMP          = 7u
-// } ADC_channel_t;
+typedef enum
+{
+  ADC_SOUNDER       = LL_ADC_CHANNEL_5,
+  ADC_MOTOR_CURRENT = LL_ADC_CHANNEL_6,
+  ADC_VBATT         = LL_ADC_CHANNEL_7,
+  ADC_PRESSURE      = LL_ADC_CHANNEL_8,
+  ADC_FLOW          = LL_ADC_CHANNEL_9,
+  ADC_TEMP          = LL_ADC_CHANNEL_10,
+  ADC_SPARE         = LL_ADC_CHANNEL_11
+} ADC_channel_t;
 
 #endif /* BOARD_MK2_H */
