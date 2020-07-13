@@ -4,3 +4,9 @@
 [submodule "unittests/frameworks/fff"]
 	path = unittests/frameworks/fff
 	url = https://github.com/meekrosoft/fff.git
+[submodule "unittests/frameworks/googletest"]
+	path = unittests/frameworks/googletest
+	url = https://github.com/google/googletest
+[submodule "extern/googletest"]
+	path = extern/googletest
+	url = https://github.com/google/googletest.git
