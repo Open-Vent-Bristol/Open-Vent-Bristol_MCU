@@ -6,7 +6,7 @@
 
 typedef struct
 {
-  MCU_register_t chip_select_port;
+  gpio_register_t chip_select_port;
   register_size_t chip_select_pin;
   uint8_t out_buffer[SPI_BUFFER_SIZE];
   uint8_t out_data_length;
@@ -37,7 +37,7 @@ bool spi_available(void)
   return spi.available;
 }
 
-bool spi_setup_transaction(MCU_register_t chip_select_port, register_size_t chip_select_pin)
+bool spi_setup_transaction(gpio_register_t chip_select_port, register_size_t chip_select_pin)
 {
   if (spi.available)
   {

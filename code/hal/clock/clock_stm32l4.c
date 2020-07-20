@@ -18,7 +18,9 @@ void clock_init(void)
   LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
 
-  // Set peripheral clock sources - TODO: move to drivers
-  // SCHEDULER_TIM_CFG();
-  // MOTOR_PWM_TIM_CFG();
+  // SysTick config for scheduler
+  // IMPORTANT: the AHBPrescaler setting above must be accounted for if non-zero
+  SysTick_Config((CPU_CLOCK_HZ / SCHEDULER_HZ) - 1u);
+
+  // Motor PWM timer - TODO
 }

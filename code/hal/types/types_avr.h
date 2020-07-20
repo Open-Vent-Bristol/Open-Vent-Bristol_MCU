@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-typedef volatile uint8_t* MCU_register_t;
+typedef volatile uint8_t* gpio_register_t;
 typedef uint8_t register_size_t;
 #define REGISTER_SIZE_MAX   (0xFF)
 

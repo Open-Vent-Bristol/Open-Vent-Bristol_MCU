@@ -10,7 +10,7 @@
       "servertype": "openocd",
       "gdbTarget": ":3333",
       "cwd": "${workspaceRoot}",
-      "executable": "./code/build/OpenVent_minimal.elf",
+      "executable": "./code/build/OpenVent_ftp.elf",
       "armToolchainPath": "",
       "name": "Debug (OpenOCD, NUCLEO-L476RG)",
       "device": "STM32L476RG",

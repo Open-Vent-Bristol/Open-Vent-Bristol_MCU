@@ -1,9 +1,10 @@
 #ifndef TYPES_ARM_H
 #define TYPES_ARM_H
 
+#include "stm32l4xx.h"
 #include <stdint.h>
 
-typedef volatile uint32_t* MCU_register_t;
+typedef GPIO_TypeDef* gpio_register_t;
 typedef uint32_t register_size_t;
 #define REGISTER_SIZE_MAX   (0xFFFF)
 

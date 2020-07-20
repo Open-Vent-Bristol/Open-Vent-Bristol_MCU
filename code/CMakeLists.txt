@@ -30,7 +30,7 @@ add_definitions(
 )
 
 # add_executable(OpenVent_firmware.elf)
-# add_executable(OpenVent_ftp.elf)
+add_executable(OpenVent_ftp.elf)
 add_executable(OpenVent_minimal.elf)
 
 include_directories(
@@ -58,9 +58,9 @@ add_subdirectory(functional_test)
 #   OpenVent_hal
 # )
 
-# target_link_libraries(OpenVent_ftp.elf
-#   OpenVent_hal
-# )
+target_link_libraries(OpenVent_ftp.elf
+  OpenVent_hal
+)
 
 target_link_libraries(OpenVent_minimal.elf
   OpenVent_hal
