@@ -32,9 +32,7 @@ int main(void)
   clock_init();
   gpio_init();
   uart_init();
-  // adc_init(); - TODO
-
-  // sei(); - TODO
+  adc_init();
 
   uart_write(string_welcome, sizeof(string_welcome));
   uart_write(string_newline, sizeof(string_newline));
@@ -72,36 +70,36 @@ void process_command(ftp_command_t* command)
   switch(command->instruction)
   {
     case READ_ANALOGUE_FLOW:
-      // adc_reading = adc_read_blocking(ADC_FLOW);
-      // break;
+      adc_reading = adc_read_blocking(ADC_FLOW);
+      break;
 
     case READ_ANALOGUE_PRESSURE:
-      // adc_reading = adc_read_blocking(ADC_PRESSURE);
-      // break;
+      adc_reading = adc_read_blocking(ADC_PRESSURE);
+      break;
 
     case READ_ANALOGUE_VBATT:
-      // adc_reading = adc_read_blocking(ADC_VBATT);
-      // break;
+      adc_reading = adc_read_blocking(ADC_VBATT);
+      break;
 
     case READ_ANALOGUE_MOTOR:
-      // adc_reading = adc_read_blocking(ADC_MOTOR_CURRENT);
-      // break;
+      adc_reading = adc_read_blocking(ADC_MOTOR_CURRENT);
+      break;
 
     case READ_ANALOGUE_TEMP:
-      // adc_reading = adc_read_blocking(ADC_TEMP);
-      // break;
+      adc_reading = adc_read_blocking(ADC_TEMP);
+      break;
 
     case READ_ANALOGUE_SOUNDER:
-      // adc_reading = adc_read_blocking(ADC_SOUNDER);
-      // break;
+      adc_reading = adc_read_blocking(ADC_SOUNDER);
+      break;
 
     case READ_ANALOGUE_OXYGEN:
-      // adc_reading = adc_read_blocking(ADC_OXYGEN);
-      // break;
+      adc_reading = adc_read_blocking(ADC_OXYGEN);
+      break;
 
     case READ_ANALOGUE_SPARE:
-      // adc_reading = adc_read_blocking(ADC_SPARE);
-      // break;
+      adc_reading = adc_read_blocking(ADC_SPARE);
+      break;
 
     case READ_ALERT_INTERLOCK:
       uart_write(string_error_not_implemented, sizeof(string_error_not_implemented));

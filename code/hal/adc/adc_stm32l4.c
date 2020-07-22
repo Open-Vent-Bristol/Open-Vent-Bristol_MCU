@@ -2,7 +2,30 @@
 #include "board/board.h"
 #include <stddef.h>
 
-static ADC_callback_t s_adc_callback = NULL;
+typedef enum
+{
+  ADC_PERIPH_1      = 0,
+  ADC_PERIPH_2      = 1,
+
+  // Peripheral indexes must be above this line
+  ADC_PERIPH_COUNT,
+  ADC_PERIPH_NONE   = -1
+} ADC_peripheral_t;
+
+typedef struct
+{
+  bool available;
+  ADC_TypeDef* adc_registers;
+  ADC_callback_t callback;
+} ADC_handle_t;
+
+static ADC_handle_t s_adc_handles[ADC_PERIPH_COUNT] =
+{
+  { .available = true, .adc_registers = ADC1, .callback = NULL },
+  { .available = true, .adc_registers = ADC2, .callback = NULL }
+};
+
+static ADC_peripheral_t assign_peripheral(ADC_channel_t channel);
 
 void adc_init(void)
 {
@@ -35,27 +58,26 @@ void adc_init(void)
   LL_ADC_REG_Init(ADC1, &adc_reg_init_struct);
   LL_ADC_REG_Init(ADC2, &adc_reg_init_struct);
 
+  LL_ADC_Enable(ADC1);
+  LL_ADC_Enable(ADC2);
+
   // Setup interrupts
   NVIC_SetPriority(ADC1_2_IRQn, 0);
-  NVIC_EnableIRQ(ADC1_2_IRQn)
+  NVIC_EnableIRQ(ADC1_2_IRQn);
 }
 
 bool adc_read_interrupt(ADC_channel_t channel, ADC_callback_t callback)
 {
   bool return_val = false;
 
-  // Check for an existing measurement underway by inspecting the reading bit
-  if (LL_ADC_REG_IsConversionOngoing(ADC1) == 0u)
+  ADC_peripheral_t peripheral = assign_peripheral(channel);
+  if (peripheral != ADC_PERIPH_NONE)
   {
-    ADMUX |= channel;
+    // Enable interrupt
+    LL_ADC_EnableIT_EOC(s_adc_handles[peripheral].adc_registers);
 
-    // Assign the callback
-    s_adc_callback = callback;
-
-    // Start reading and enable interrupt
-    LL_ADC_EnableIT_EOC(ADC1);
-    LL_ADC_REG_StartConversion(ADC1);
-    return_val = true;
+    // Start reading
+    LL_ADC_REG_StartConversion(s_adc_handles[peripheral].adc_registers);
   }
 
   return return_val;
@@ -65,25 +87,64 @@ ADC_resolution_t adc_read_blocking(ADC_channel_t channel)
 {
   ADC_resolution_t reading = -1;
 
-  // Check for an existing measurement underway by inspecting the reading bit
-  if (LL_ADC_REG_IsConversionOngoing(ADC1) == 0u)
+  ADC_peripheral_t peripheral = assign_peripheral(channel);
+  if (peripheral != ADC_PERIPH_NONE)
   {
-    ADMUX |= channel;
-
     // Start reading
-    LL_ADC_REG_StartConversion(ADC1);
+    LL_ADC_REG_StartConversion(s_adc_handles[peripheral].adc_registers);
 
     // Block until the reading bit is cleared by hardware
-    while (LL_ADC_REG_IsConversionOngoing(ADC1) != 0u) {};
+    while (LL_ADC_REG_IsConversionOngoing(s_adc_handles[peripheral].adc_registers) != 0u) {};
 
     // Get the reading from the ADC registers
-    reading = LL_ADC_REG_ReadConversionData12(ADC1);;
+    reading = LL_ADC_REG_ReadConversionData12(s_adc_handles[peripheral].adc_registers);
 
-    // Clear the channel
-    ADMUX &= ~((1u << MUX3) | (1u << MUX2) | (1u << MUX1) | (1u << MUX0));
+    s_adc_handles[peripheral].available = true;
   }
 
   return reading;
+}
+
+static ADC_peripheral_t assign_peripheral(ADC_channel_t channel)
+{
+  ADC_peripheral_t peripheral = ADC_PERIPH_NONE;
+
+  switch (channel)
+  {
+    case ADC_PRESSURE:
+    case ADC_OXYGEN:
+      // These channels are ADC1 only
+      if (s_adc_handles[ADC_PERIPH_1].available)
+      {
+        peripheral = ADC_PERIPH_1;
+      }
+      break;
+
+    case ADC_SOUNDER:
+    case ADC_MOTOR_CURRENT:
+    case ADC_VBATT:
+    case ADC_FLOW:
+    case ADC_TEMP:
+    case ADC_SPARE:
+      // Since these channels can be used with either ADC, try ADC2 first
+      // so as to not block the pressure and oxygen sensors
+      if (s_adc_handles[ADC_PERIPH_2].available)
+      {
+        peripheral = ADC_PERIPH_2;
+      }
+      else if (s_adc_handles[ADC_PERIPH_1].available)
+      {
+        peripheral = ADC_PERIPH_1;
+      }
+      break;
+  }
+
+  if (peripheral != ADC_PERIPH_NONE)
+  {
+    s_adc_handles[peripheral].available = false;
+  }
+
+  return peripheral;
 }
 
 // ADC complete interrupt will take the reading and push it out via the callback
@@ -93,29 +154,33 @@ void ADC1_2_IRQHandler(void)
   {
     LL_ADC_ClearFlag_EOC(ADC1);
 
-    if (s_adc_callback != NULL)
+    if (s_adc_handles[ADC_PERIPH_1].callback != NULL)
     {
       LL_ADC_DisableIT_EOC(ADC1);
 
       // Get the reading from the ADC register
       ADC_resolution_t reading = LL_ADC_REG_ReadConversionData12(ADC1);
 
-      s_adc_callback(reading);
+      s_adc_handles[ADC_PERIPH_1].callback(reading);
     }
+
+    s_adc_handles[ADC_PERIPH_1].available = true;
   }
 
   if (LL_ADC_IsActiveFlag_EOC(ADC2) != 0u)
   {
     LL_ADC_ClearFlag_EOC(ADC2);
 
-    if (s_adc_callback != NULL)
+    if (s_adc_handles[ADC_PERIPH_2].callback != NULL)
     {
       LL_ADC_DisableIT_EOC(ADC2);
 
       // Get the reading from the ADC register
       ADC_resolution_t reading = LL_ADC_REG_ReadConversionData12(ADC2);
 
-      s_adc_callback(reading);
+      s_adc_handles[ADC_PERIPH_2].callback(reading);
     }
+
+    s_adc_handles[ADC_PERIPH_2].available = true;
   }
 }

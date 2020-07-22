@@ -8,7 +8,7 @@ if(${MCU_TARGET} STREQUAL atmega328p)
   add_subdirectory(spi)
 endif()
 
-# add_subdirectory(adc)
+add_subdirectory(adc)
 add_subdirectory(board)
 add_subdirectory(clock)
 add_subdirectory(gpio)
