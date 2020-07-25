@@ -12,8 +12,11 @@ void gpio_init(void)
   LL_GPIO_InitTypeDef adc_init_struct = ADC_PIN_CFG;
   adc_init_struct.Pin = ADC_A_MASK;
   LL_GPIO_Init(ADC_A_PORT, &adc_init_struct);
+  LL_GPIO_EnablePinAnalogControl(ADC_A_PORT, ADC_A_MASK);
+
   adc_init_struct.Pin = ADC_B_MASK;
   LL_GPIO_Init(ADC_B_PORT, &adc_init_struct);
+  LL_GPIO_EnablePinAnalogControl(ADC_B_PORT, ADC_B_MASK);
 
   // ALERT, SWITCH, PGOOD, STAT1, STAT2: input, pullup, interrupt
   LL_GPIO_InitTypeDef in_init_struct = IN_PU_PIN_CFG;

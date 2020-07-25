@@ -2,10 +2,15 @@
 #ifndef BOARD_MK2_H
 #define BOARD_MK2_H
 
-#define CPU_CLOCK_HZ        ((uint32_t)16000000U)
+#define CPU_CLOCK_HZ        ((uint32_t)16000000u)
 // TODO - using NUCLEO 476RG board at the moment which has no HSE oscillator
 #define HSI_VALUE           CPU_CLOCK_HZ
 // #define HSE_VALUE           CPU_CLOCK_HZ
+
+// CLOCK_DELAY only to be used during system initialisation (Note: divide by 2u compensates for two
+// instructions per loop)
+#define CLOCK_DELAY(usec)   {uint32_t index = (usec * (CPU_CLOCK_HZ / 1000000u)) / 2u; \
+                            while (index-- != 0u);}
 
 #include "stm32l4/stm32l4xx_ll_adc.h"
 #include "stm32l4/stm32l4xx_ll_bus.h"
