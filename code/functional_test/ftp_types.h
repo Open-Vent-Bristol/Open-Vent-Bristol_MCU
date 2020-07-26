@@ -34,7 +34,7 @@ ftp_instruction_t;
 typedef struct
 {
   ftp_instruction_t instruction;
-  uint8_t arg;
+  uint16_t arg;
 } ftp_command_t;
 
 #endif /* FTP_TYPES_H */
