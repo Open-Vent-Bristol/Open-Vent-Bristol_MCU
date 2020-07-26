@@ -51,10 +51,12 @@
 #define SCHEDULER_STOP()    SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk
 #define SCHEDULER_ISR()     void SysTick_Handler(void)
 
-// Motor PWM 3.9 kHz, phase correct
-#define MOTOR_PWM_START()   LL_TIM_DisableCounter(TIM2)
-#define MOTOR_PWM_STOP()    LL_TIM_EnableCounter(TIM2)
-#define MOTOR_PWM(value)    LL_TIM_SetAutoReload(TIM2, value)
+// Motor PWM 3.9 kHz, phase correct, with PRESCALER == 3u and TOP == 1023u
+#define MOTOR_PWM_PRESCALER (3u)
+#define MOTOR_PWM_TOP       (1023u)
+#define MOTOR_PWM(value)    LL_TIM_OC_SetCompareCH1(TIM2, value); LL_TIM_GenerateEvent_UPDATE(TIM2)
+#define MOTOR_PWM_START()   LL_TIM_EnableCounter(TIM2); LL_TIM_GenerateEvent_UPDATE(TIM2)
+#define MOTOR_PWM_STOP()    MOTOR_PWM(0u); LL_TIM_DisableCounter(TIM2); LL_TIM_GenerateEvent_UPDATE(TIM2)
 
 #define ADC_RESOLUTION_BITS (12u)
 
@@ -103,7 +105,7 @@
 // MOTOR_PWM on TIM2 CH1
 #define MOTOR_PWM_PORT      GPIOA
 #define MOTOR_PWM_PIN       (5u)
-#define MOTOR_PWM_PIN_CFG   { (1u << MOTOR_PWM_PIN), LL_GPIO_MODE_ALTERNATE, LL_GPIO_SPEED_MEDIUM, LL_GPIO_OUTPUT_PUSHPULL, LL_GPIO_PULL_NO, LL_GPIO_AF_1 }
+#define MOTOR_PWM_PIN_CFG   { (1u << MOTOR_PWM_PIN), LL_GPIO_MODE_ALTERNATE, LL_GPIO_SPEED_HIGH, LL_GPIO_OUTPUT_PUSHPULL, LL_GPIO_PULL_DOWN, LL_GPIO_AF_1 }
 
 #define LCD_PORT            GPIOB
 #define LCD_RS_PIN          (0u)

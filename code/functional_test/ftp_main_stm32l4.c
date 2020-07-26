@@ -152,9 +152,9 @@ void process_command(ftp_command_t* command)
       break;
 
     case MOTOR_STOP:
-      // TODO
-      uart_write(string_error_not_implemented, sizeof(string_error_not_implemented));
-      // MOTOR_PWM_STOP();
+      gpio_clear_pin(MOTOR_IN_PORT, MOTOR_IN_A_PIN);
+      gpio_clear_pin(MOTOR_IN_PORT, MOTOR_IN_B_PIN);
+      MOTOR_PWM_STOP();
       break;
 
     case READ_ALERT_FLOW:
