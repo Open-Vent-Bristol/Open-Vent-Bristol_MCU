@@ -51,8 +51,8 @@
 #define SCHEDULER_STOP()    SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk
 #define SCHEDULER_ISR()     void SysTick_Handler(void)
 
-// Motor PWM 3.9 kHz, phase correct, with PRESCALER == 3u and TOP == 1023u
-#define MOTOR_PWM_PRESCALER (3u)
+// Motor PWM 3.9 kHz, when phase correct (centred), with PRESCALER == 1u and TOP == 1023u
+#define MOTOR_PWM_PRESCALER (1u)
 #define MOTOR_PWM_TOP       (1023u)
 #define MOTOR_PWM(value)    LL_TIM_OC_SetCompareCH1(TIM2, value); LL_TIM_GenerateEvent_UPDATE(TIM2)
 #define MOTOR_PWM_START()   LL_TIM_EnableCounter(TIM2); LL_TIM_GenerateEvent_UPDATE(TIM2)

@@ -39,7 +39,7 @@ static void motor_pwm_init(void)
   LL_TIM_InitTypeDef tim_init_struct =
   {
     .Prescaler = MOTOR_PWM_PRESCALER,
-    .CounterMode = LL_TIM_COUNTERMODE_UP,
+    .CounterMode = LL_TIM_COUNTERMODE_CENTER_UP_DOWN,
     .Autoreload = MOTOR_PWM_TOP,
     .ClockDivision = LL_TIM_CLOCKDIVISION_DIV1,
     .RepetitionCounter = 0u
