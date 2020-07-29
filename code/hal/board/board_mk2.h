@@ -18,6 +18,7 @@
 #include "stm32l4/stm32l4xx_ll_gpio.h"
 #include "stm32l4/stm32l4xx_ll_pwr.h"
 #include "stm32l4/stm32l4xx_ll_rcc.h"
+#include "stm32l4/stm32l4xx_ll_system.h"
 #include "stm32l4/stm32l4xx_ll_tim.h"
 #include "stm32l4/stm32l4xx_ll_usart.h"
 #include "stm32l4/stm32l4xx_ll_utils.h"
@@ -125,6 +126,13 @@
 #define SWITCH_4_PIN        (11u)
 #define SWITCH_MASK         ((1u << SWITCH_1_PIN) | (1u << SWITCH_2_PIN) | (1u << SWITCH_3_PIN) | (1u << SWITCH_4_PIN))
 
+#define SWITCH_INT_PORT     LL_SYSCFG_EXTI_PORTB
+#define SWITCH_INT_PIN_MASK ((1u << SWITCH_1_PIN) | (1u << SWITCH_2_PIN) | (1u << SWITCH_3_PIN) | (1u << SWITCH_4_PIN))
+#define SWITCH_1_INT        LL_SYSCFG_EXTI_LINE8
+#define SWITCH_2_INT        LL_SYSCFG_EXTI_LINE9
+#define SWITCH_3_INT        LL_SYSCFG_EXTI_LINE10
+#define SWITCH_4_INT        LL_SYSCFG_EXTI_LINE11
+
 #define MOTOR_IN_PORT       GPIOB
 #define MOTOR_IN_A_PIN      (12u)
 #define MOTOR_IN_B_PIN      (13u)
@@ -136,6 +144,11 @@
 #define ALERT_VBATT_N_PIN   (9u)
 #define ALERT_PRESS_N_PIN   (11u)
 #define ALERT_MASK          ((1u << ALERT_MOTOR_A_N_PIN) | (1u << ALERT_MOTOR_B_N_PIN) | (1u << ALERT_VBATT_N_PIN) | (1u << ALERT_PRESS_N_PIN))
+
+#define ALERT_INT_PORT      LL_SYSCFG_EXTI_PORTC // ALERT_MOTOR_A/B_N only
+#define ALERT_INT_PIN_MASK  ((1u << ALERT_MOTOR_A_N_PIN) | (1u << ALERT_MOTOR_B_N_PIN))
+#define ALERT_MOTOR_A_N_INT LL_SYSCFG_EXTI_LINE4
+#define ALERT_MOTOR_B_N_INT LL_SYSCFG_EXTI_LINE5
 
 #define CHARGE_CONTROL_PORT GPIOB
 #define CHARGE_CONTROL_PIN  (14u)

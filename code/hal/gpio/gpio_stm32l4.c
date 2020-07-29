@@ -8,6 +8,9 @@ void gpio_init(void)
   LL_AHB2_GRP1_EnableClock(
     LL_AHB2_GRP1_PERIPH_GPIOA | LL_AHB2_GRP1_PERIPH_GPIOB | LL_AHB2_GRP1_PERIPH_GPIOC);
 
+  // Clock for EXTI
+  LL_APB2_GRP1_EnableClock(LL_APB2_GRP1_PERIPH_SYSCFG);
+
   // ADC pins
   LL_GPIO_InitTypeDef adc_init_struct = ADC_PIN_CFG;
   adc_init_struct.Pin = ADC_A_MASK;
@@ -18,7 +21,7 @@ void gpio_init(void)
   LL_GPIO_Init(ADC_B_PORT, &adc_init_struct);
   LL_GPIO_EnablePinAnalogControl(ADC_B_PORT, ADC_B_MASK);
 
-  // ALERT, SWITCH, PGOOD, STAT1, STAT2: input, pullup, interrupt
+  // ALERT, SWITCH, PGOOD, STAT1, STAT2: input, pullup
   LL_GPIO_InitTypeDef in_init_struct = IN_PU_PIN_CFG;
   in_init_struct.Pin = ALERT_MASK;
   LL_GPIO_Init(ALERT_PORT, &in_init_struct);
@@ -34,7 +37,28 @@ void gpio_init(void)
 
   in_init_struct.Pin = CHARGE_STAT_MASK;
   LL_GPIO_Init(CHARGE_STAT_PORT, &in_init_struct);
-  // TODO - EXTI
+
+  // GPIO falling interrupts for ALERT, SWITCH
+  LL_SYSCFG_SetEXTISource(ALERT_INT_PORT, ALERT_MOTOR_A_N_INT);
+  LL_SYSCFG_SetEXTISource(ALERT_INT_PORT, ALERT_MOTOR_B_N_INT);
+  LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_1_INT);
+  LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_2_INT);
+  LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_3_INT);
+  LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_4_INT);
+  LL_EXTI_EnableIT_0_31(ALERT_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
+  LL_EXTI_EnableFallingTrig_0_31(ALERT_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
+
+  // IRQ for ALERT_MOTOR_A_N
+  NVIC_SetPriority(EXTI4_IRQn, 1u);
+  NVIC_EnableIRQ(EXTI4_IRQn);
+
+  // IRQ for ALERT_MOTOR_B_N, SWITCH_1, SWITCH_2
+  NVIC_SetPriority(EXTI9_5_IRQn, 1u);
+  NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+  // IRQ for SWITCH_3, SWITCH_4
+  NVIC_SetPriority(EXTI15_10_IRQn, 1u);
+  NVIC_EnableIRQ(EXTI15_10_IRQn);
 
   // MOTOR_IN_A/B, LCD, CE_CONTROL, ALERT_ENABLE, LED: output
   LL_GPIO_InitTypeDef out_init_struct = OUT_PIN_CFG;
@@ -107,4 +131,55 @@ uint8_t gpio_read_pin(gpio_register_t port, uint8_t pin_number)
   }
 
   return return_val;
+}
+
+// ISR for ALERT_MOTOR_A_N
+void EXTI4_IRQHandler(void)
+{
+  if (LL_EXTI_IsActiveFlag_0_31(1u << ALERT_MOTOR_A_N_PIN))
+  {
+    LL_EXTI_ClearFlag_0_31(1u << ALERT_MOTOR_A_N_PIN);
+
+    // TODO - callback
+  }
+}
+
+// ISR for ALERT_MOTOR_B_N, SWITCH_1, SWITCH_2
+void EXTI9_5_IRQHandler(void)
+{
+  if (LL_EXTI_IsActiveFlag_0_31(1u << ALERT_MOTOR_B_N_PIN))
+  {
+    LL_EXTI_ClearFlag_0_31(1u << ALERT_MOTOR_B_N_PIN);
+
+    // TODO - callback
+  }
+  else if (LL_EXTI_IsActiveFlag_0_31(1u << SWITCH_1_PIN))
+  {
+    LL_EXTI_ClearFlag_0_31(1u << SWITCH_1_PIN);
+
+    // TODO - callback
+  }
+  else if (LL_EXTI_IsActiveFlag_0_31(1u << SWITCH_2_PIN))
+  {
+    LL_EXTI_ClearFlag_0_31(1u << SWITCH_2_PIN);
+
+    // TODO - callback
+  }
+}
+
+// ISR for SWITCH_3, SWITCH_4
+void EXTI15_10_IRQHandler(void)
+{
+  if (LL_EXTI_IsActiveFlag_0_31(1u << SWITCH_3_PIN))
+  {
+    LL_EXTI_ClearFlag_0_31(1u << SWITCH_3_PIN);
+
+    // TODO - callback
+  }
+  else if (LL_EXTI_IsActiveFlag_0_31(1u << SWITCH_4_PIN))
+  {
+    LL_EXTI_ClearFlag_0_31(1u << SWITCH_4_PIN);
+
+    // TODO - callback
+  }
 }
