@@ -10,13 +10,19 @@
 
 void parallel_port_write_byte(uint8_t value)
 {
-  LL_GPIO_SetOutputPin(PARALLEL_PORT, (0xFF0000 | value));
+  unsigned bitsets = (unsigned)value & 0x000000ff;
+  unsigned bitclears = ((unsigned)(~value) << 16) & 0x00ff0000;
+
+  LL_GPIO_SetOutputPin(PARALLEL_PORT, (bitsets | bitclears));
 }
 
 void parallel_port_write(const uint8_t* const values, size_t length)
 {
   for (size_t i = 0u; i < length; i++)
   {
-    LL_GPIO_SetOutputPin(PARALLEL_PORT, (0xFF0000 | values[i]));
+    unsigned bitsets = (unsigned)(values[i]) & 0x000000ff;
+    unsigned bitclears = ((unsigned)(~values[i]) << 16) & 0x00ff0000;
+
+    LL_GPIO_SetOutputPin(PARALLEL_PORT, (bitsets | bitclears));
   }
 }

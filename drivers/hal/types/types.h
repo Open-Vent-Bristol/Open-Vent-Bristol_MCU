@@ -3,6 +3,8 @@
 
 #if defined(BOARD_MK1)
 #include "types/types_avr.h"
+#elif defined(BOARD_MK2)
+#include "types/types_arm.h"
 #elif defined(BOARD_SIMULATED) || defined(BOARD_MOCK)
 #include "types/types_x86.h"
 #endif
@@ -16,11 +18,5 @@
 #define TESTABLE_SUFFIX
 #define TESTABLE_DESTRUCTOR(name)
 #endif
-
-
-enum class Error {
-  NONE,
-  SENSORS_NOT_READY
-};
 
 #endif /* TYPES_H */
