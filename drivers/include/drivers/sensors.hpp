@@ -2,6 +2,7 @@
 #define DRIVERS_SENSORS_H
 
 #include "types/types.h"
+#include "drivers/error.hpp"
 #include <atomic>
 
 enum class SensorType

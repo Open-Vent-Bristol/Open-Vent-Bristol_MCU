@@ -3,10 +3,10 @@ cmake_minimum_required(VERSION 3.13)
 project(OpenVent_firmware
     VERSION 1.0
     DESCRIPTION "OpenVent Firmware"
-    LANGUAGES CXX
+    LANGUAGES C CXX ASM
 )
 
-option(PACKAGE_TESTS "Build the tests" ON)
+option(PACKAGE_TESTS "Build the tests" OFF)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # specify the C++ standard
@@ -15,19 +15,21 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # if(${BOARD_CONFIG})
 # else()
-  set(BOARD_CONFIG BOARD_SIMULATED)
+  set(BOARD_CONFIG BOARD_MK2)
 # endif()
 
 # This definition is used to select the correct source files in the hal
 if(${BOARD_CONFIG} STREQUAL BOARD_MK1)
   set(MCU_TARGET atmega328p)
+elseif(${BOARD_CONFIG} STREQUAL BOARD_MK2)
+  set(MCU_TARGET stm32l4)
 endif()
 
 add_definitions(
   -D${BOARD_CONFIG}
 )
 
-if(PACKAGE_TESTS)
+if(${PACKAGE_TESTS})
   enable_testing()
   include(GoogleTest)
   add_subdirectory("extern/googletest")

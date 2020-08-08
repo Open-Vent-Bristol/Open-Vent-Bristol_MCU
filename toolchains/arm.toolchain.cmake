@@ -15,7 +15,7 @@ set(CMAKE_C_FLAGS   "${COMMON_FLAGS} -std=c99 " CACHE INTERNAL "C Compiler optio
 set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -std=c++14 " CACHE INTERNAL "C++ Compiler options")
 set(CMAKE_ASM_FLAGS "${COMMON_FLAGS} -x assembler-with-cpp " CACHE INTERNAL "ASM Compiler options")
 set(CMAKE_EXE_LINKER_FLAGS
-    "-mcpu=cortex-m4 -T${PROJECT_SOURCE_DIRECTORY}/../toolchains/STM32L476RGTX_FLASH.ld --specs=nosys.specs -Wl,-Map=${CMAKE_PROJECT_NAME}.map -Wl,--gc-sections -static --specs=nano.specs -Wl,--start-group -lc -lm -Wl,--end-group"
+    "-mcpu=cortex-m4 -T${CMAKE_CURRENT_LIST_DIR}/STM32L476RGTX_FLASH.ld --specs=nosys.specs -Wl,-Map=${CMAKE_PROJECT_NAME}.map -Wl,--gc-sections -static --specs=nano.specs -Wl,--start-group -lc -lm -Wl,--end-group"
     CACHE INTERNAL "Linker options")
 
 set(CMAKE_C_FLAGS_DEBUG "-Og -g3" CACHE INTERNAL "C Compiler options for debug build type")

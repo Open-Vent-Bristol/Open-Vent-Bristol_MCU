@@ -9,6 +9,6 @@ target_include_directories(OpenVent_firmware
 )
 target_link_libraries(OpenVent_firmware PUBLIC OpenVent_drivers)
 
-if(PACKAGE_TESTS)
+if(${PACKAGE_TESTS})
   add_subdirectory(tests)
 endif()
