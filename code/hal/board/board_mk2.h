@@ -73,7 +73,8 @@
 #define ADC_A_OXYGEN_PIN    (1u)
 #define ADC_A_TEMP_PIN      (2u)
 #define ADC_A_SPARE_PIN     (3u)
-#define ADC_A_MASK          ((1u << ADC_A_PRESSURE_PIN) | (1u << ADC_A_OXYGEN_PIN) | (1u << ADC_A_TEMP_PIN) | (1u << ADC_A_SPARE_PIN))
+#define ADC_A_FLOW_GAIN_PIN (8u)
+#define ADC_A_MASK          ((1u << ADC_A_PRESSURE_PIN) | (1u << ADC_A_OXYGEN_PIN) | (1u << ADC_A_TEMP_PIN) | (1u << ADC_A_SPARE_PIN) | (1u << ADC_A_FLOW_GAIN_PIN))
 
 #define ADC_B_PORT          GPIOC
 #define ADC_B_SOUNDER_PIN   (0u)
@@ -102,6 +103,19 @@
 #define USB_DM_PIN_CFG      { (1u << USB_DM_PIN), LL_GPIO_MODE_ALTERNATE, LL_GPIO_SPEED_VERY_HIGH, LL_GPIO_OUTPUT_OPENDRAIN, LL_GPIO_PULL_NO, LL_GPIO_AF_10 }
 #define USB_DP_PIN          (12u)
 #define USB_DP_PIN_CFG      { (1u << USB_DP_PIN), LL_GPIO_MODE_ALTERNATE, LL_GPIO_SPEED_VERY_HIGH, LL_GPIO_OUTPUT_OPENDRAIN, LL_GPIO_PULL_NO, LL_GPIO_AF_10 }
+
+#define MOTOR_ON_PORT       GPIOA
+#define MOTOR_ON_PIN        (4u)
+#define MOTOR_ON_MASK       (1u << MOTOR_ON_PIN)
+
+#define MOTOR_INFO_PORT     GPIOA
+#define MOTOR_INFO_STAT_PIN (7u)
+#define MOTOR_INFO_POS_PIN  (15u)
+#define MOTOR_INFO_MASK     ((1u << MOTOR_INFO_STAT_PIN) | (1u << MOTOR_INFO_POS_PIN))
+
+#define MOTOR_INFO_INT_PORT     LL_SYSCFG_EXTI_PORTA
+#define MOTOR_INFO_INT_PIN_MASK (1u << MOTOR_INFO_POS_PIN)
+#define MOTOR_INFO_POS_INT      LL_SYSCFG_EXTI_LINE15
 
 // MOTOR_PWM on TIM2 CH1
 #define MOTOR_PWM_PORT      GPIOA
@@ -167,6 +181,10 @@
 #define CHARGE_STAT1_PIN    (12u)
 #define CHARGE_STAT_MASK    ((1u << CHARGE_STAT2_PIN) | (1u << CHARGE_STAT1_PIN))
 
+#define VOLT_5_ENABLE_PORT  GPIOC
+#define VOLT_5_ENABLE_PIN   (7u)
+#define VOLT_5_ENABLE_MASK  (1u << VOLT_5_ENABLE_PIN)
+
 #define ALERT_ENABLE_N_PORT GPIOC
 #define ALERT_ENABLE_N_PIN  (13u)
 #define ALERT_ENABLE_N_MASK (1u << ALERT_ENABLE_N_PIN)
@@ -187,6 +205,7 @@ typedef enum
   ADC_OXYGEN        = LL_ADC_CHANNEL_6, // ADC1 only
   ADC_TEMP          = LL_ADC_CHANNEL_7, // ADC1 or ADC2
   ADC_SPARE         = LL_ADC_CHANNEL_8  // ADC1 or ADC2
+  // ADC_FLOW_GAIN     = LL_ADC_CHANNEL_?  // Not connected!
 } ADC_channel_t;
 
 #endif /* BOARD_MK2_H */

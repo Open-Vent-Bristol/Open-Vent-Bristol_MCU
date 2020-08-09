@@ -23,6 +23,9 @@ void gpio_init(void)
 
   // ALERT, SWITCH, PGOOD, STAT1, STAT2: input, pullup
   LL_GPIO_InitTypeDef in_init_struct = IN_PU_PIN_CFG;
+  in_init_struct.Pin = MOTOR_INFO_MASK;
+  LL_GPIO_Init(MOTOR_INFO_PORT, &in_init_struct);
+
   in_init_struct.Pin = ALERT_MASK;
   LL_GPIO_Init(ALERT_PORT, &in_init_struct);
 
@@ -38,15 +41,16 @@ void gpio_init(void)
   in_init_struct.Pin = CHARGE_STAT_MASK;
   LL_GPIO_Init(CHARGE_STAT_PORT, &in_init_struct);
 
-  // GPIO falling interrupts for ALERT, SWITCH
+  // GPIO falling interrupts for MOTOR_INFO_POS, ALERT, SWITCH
+  LL_SYSCFG_SetEXTISource(MOTOR_INFO_INT_PORT, MOTOR_INFO_POS_INT);
   LL_SYSCFG_SetEXTISource(ALERT_INT_PORT, ALERT_MOTOR_A_N_INT);
   LL_SYSCFG_SetEXTISource(ALERT_INT_PORT, ALERT_MOTOR_B_N_INT);
   LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_1_INT);
   LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_2_INT);
   LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_3_INT);
   LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_4_INT);
-  LL_EXTI_EnableIT_0_31(ALERT_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
-  LL_EXTI_EnableFallingTrig_0_31(ALERT_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
+  LL_EXTI_EnableIT_0_31(MOTOR_INFO_INT_PIN_MASK | ALERT_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
+  LL_EXTI_EnableFallingTrig_0_31(MOTOR_INFO_INT_PIN_MASK | ALERT_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
 
   // IRQ for ALERT_MOTOR_A_N
   NVIC_SetPriority(EXTI4_IRQn, 1u);
@@ -56,12 +60,15 @@ void gpio_init(void)
   NVIC_SetPriority(EXTI9_5_IRQn, 1u);
   NVIC_EnableIRQ(EXTI9_5_IRQn);
 
-  // IRQ for SWITCH_3, SWITCH_4
+  // IRQ for MOTOR_INFO_POS, SWITCH_3, SWITCH_4
   NVIC_SetPriority(EXTI15_10_IRQn, 1u);
   NVIC_EnableIRQ(EXTI15_10_IRQn);
 
-  // MOTOR_IN_A/B, LCD, CE_CONTROL, ALERT_ENABLE, LED: output
+  // MOTOR_ON, MOTOR_IN_A/B, LCD, CE_CONTROL, ALERT_ENABLE, LED: output
   LL_GPIO_InitTypeDef out_init_struct = OUT_PIN_CFG;
+
+  out_init_struct.Pin = MOTOR_ON_MASK;
+  LL_GPIO_Init(MOTOR_ON_PORT, &out_init_struct);
 
   out_init_struct.Pin = MOTOR_IN_MASK;
   LL_GPIO_Init(MOTOR_IN_PORT, &out_init_struct);
@@ -71,6 +78,9 @@ void gpio_init(void)
 
   out_init_struct.Pin = CHARGE_CONTROL_MASK;
   LL_GPIO_Init(CHARGE_CONTROL_PORT, &out_init_struct);
+
+  out_init_struct.Pin = VOLT_5_ENABLE_MASK;
+  LL_GPIO_Init(VOLT_5_ENABLE_PORT, &out_init_struct);
 
   out_init_struct.Pin = ALERT_ENABLE_N_MASK;
   LL_GPIO_Init(ALERT_ENABLE_N_PORT, &out_init_struct);
