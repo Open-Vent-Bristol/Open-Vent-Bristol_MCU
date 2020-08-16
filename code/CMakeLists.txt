@@ -45,6 +45,8 @@ if(${MCU_TARGET} STREQUAL stm32l4)
     hal/stm32l4/CMSIS/Include
     hal/stm32l4/CMSIS/Device/ST/STM32L4xx/Include
   )
+
+  add_executable(OpenVent_stm32l4_adc_test.elf)
 endif()
 
 # add_subdirectory(application)
@@ -65,3 +67,9 @@ target_link_libraries(OpenVent_ftp.elf
 target_link_libraries(OpenVent_minimal.elf
   OpenVent_hal
 )
+
+if(${MCU_TARGET} STREQUAL stm32l4)
+  target_link_libraries(OpenVent_stm32l4_adc_test.elf
+    OpenVent_hal
+  )
+endif()

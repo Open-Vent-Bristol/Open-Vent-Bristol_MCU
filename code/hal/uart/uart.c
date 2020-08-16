@@ -15,7 +15,7 @@ void uart_init(void)
   // Setup MCU UART peripheral
   uart_configure();
 
-  uart_write("Hello\n", 6u);
+  uart_write("Hello!\r\n", 8u);
 }
 
 uint8_t uart_available(void)

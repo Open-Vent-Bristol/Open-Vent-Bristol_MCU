@@ -15,3 +15,10 @@ target_sources(OpenVent_minimal.elf
   PUBLIC
     minimal_${MCU_TARGET}.c
 )
+
+if(${MCU_TARGET} STREQUAL stm32l4)
+  target_sources(OpenVent_stm32l4_adc_test.elf
+    PUBLIC
+      adc_test_stm32l4.c
+  )
+endif()

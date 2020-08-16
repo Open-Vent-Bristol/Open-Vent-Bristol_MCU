@@ -144,7 +144,7 @@ uint8_t gpio_read_pin(gpio_register_t port, uint8_t pin_number)
 }
 
 // ISR for ALERT_MOTOR_A_N
-void EXTI4_IRQHandler(void)
+__WEAK void EXTI4_IRQHandler(void)
 {
   if (LL_EXTI_IsActiveFlag_0_31(1u << ALERT_MOTOR_A_N_PIN))
   {
@@ -155,7 +155,7 @@ void EXTI4_IRQHandler(void)
 }
 
 // ISR for ALERT_MOTOR_B_N, SWITCH_1, SWITCH_2
-void EXTI9_5_IRQHandler(void)
+__WEAK void EXTI9_5_IRQHandler(void)
 {
   if (LL_EXTI_IsActiveFlag_0_31(1u << ALERT_MOTOR_B_N_PIN))
   {
@@ -178,7 +178,7 @@ void EXTI9_5_IRQHandler(void)
 }
 
 // ISR for SWITCH_3, SWITCH_4
-void EXTI15_10_IRQHandler(void)
+__WEAK void EXTI15_10_IRQHandler(void)
 {
   if (LL_EXTI_IsActiveFlag_0_31(1u << SWITCH_3_PIN))
   {
