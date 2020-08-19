@@ -48,17 +48,10 @@ void start_ramp(void)
   g_ramping = true;
 }
 
-void EXTI4_IRQHandler(void)
-{
-  LL_EXTI_ClearFlag_0_31(1u << ALERT_MOTOR_A_N_PIN);
-  LL_EXTI_DisableIT_0_31(ALERT_INT_PIN_MASK);
-  start_ramp();
-}
-
 void EXTI9_5_IRQHandler(void)
 {
-  LL_EXTI_ClearFlag_0_31(1u << ALERT_MOTOR_B_N_PIN);
-  LL_EXTI_DisableIT_0_31(ALERT_INT_PIN_MASK);
+  LL_EXTI_ClearFlag_0_31((1u << SWITCH_1_PIN) | (1u << SWITCH_2_PIN));
+  LL_EXTI_DisableIT_0_31((1u << SWITCH_1_PIN) | (1u << SWITCH_2_PIN));
   start_ramp();
 }
 
@@ -69,19 +62,17 @@ int main(void)
   clock_init();
   gpio_init();
 
-  // Need interrupts on either edge, so can use either rising on ALERT_MOTOR_A_N_PIN or
-  // falling on ALERT_MOTOR_B_N_PIN.  The former already setup for PULL_UP, so fix this first
-  LL_GPIO_SetPinPull(ALERT_PORT, (1u << ALERT_MOTOR_A_N_PIN), LL_GPIO_PULL_DOWN);
-  LL_EXTI_DisableFallingTrig_0_31(1u << ALERT_MOTOR_A_N_PIN);
-  LL_EXTI_EnableRisingTrig_0_31(1u << ALERT_MOTOR_A_N_PIN);
-  NVIC_SetPriority(EXTI4_IRQn, 1u);
+  // Need interrupts on either edge, so can use either rising on SWITCH_1 or
+  // falling on SWITCH_2.  The former already setup for PULL_UP, so fix this first
+  LL_GPIO_SetPinPull(SWITCH_PORT, (1u << SWITCH_1_PIN), LL_GPIO_PULL_DOWN);
+  LL_EXTI_DisableFallingTrig_0_31(1u << SWITCH_1_PIN);
+  LL_EXTI_EnableRisingTrig_0_31(1u << SWITCH_1_PIN);
   NVIC_SetPriority(EXTI9_5_IRQn, 1u);
 
   uart_init();
   adc_init();
 
   // Enable GPIO interrupts
-  NVIC_EnableIRQ(EXTI4_IRQn);
   NVIC_EnableIRQ(EXTI9_5_IRQn);
 
   while (1u)
@@ -96,8 +87,7 @@ int main(void)
     // Once the buffer is full, print it out in CSV through the UART port
     if (g_ramping && (g_index == g_ramp_end_index))
     {
-      LL_EXTI_ClearFlag_0_31(1u << ALERT_MOTOR_A_N_PIN);
-      LL_EXTI_ClearFlag_0_31(1u << ALERT_MOTOR_B_N_PIN);
+      LL_EXTI_ClearFlag_0_31((1u << SWITCH_1_PIN) | (1u << SWITCH_2_PIN));
 
       // After the recording, send all data points out through the serial port,
       // with the pre-trigger buffer first
@@ -117,7 +107,7 @@ int main(void)
       g_ramping = false;
 
       // Re-enable GPIO interrupts
-      LL_EXTI_EnableIT_0_31(ALERT_INT_PIN_MASK);
+      LL_EXTI_EnableIT_0_31((1u << SWITCH_1_PIN) | (1u << SWITCH_2_PIN));
     }
   }
 }

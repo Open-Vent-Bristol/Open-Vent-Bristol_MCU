@@ -52,9 +52,9 @@
 #define SCHEDULER_STOP()    SysTick->CTRL &= ~SysTick_CTRL_ENABLE_Msk
 #define SCHEDULER_ISR()     void SysTick_Handler(void)
 
-// Motor PWM 3.9 kHz, when phase correct (centred), with PRESCALER == 1u and TOP == 1023u
+// Motor PWM 15.6 kHz, when phase correct (centred), with PRESCALER == 1u and TOP == 255u
 #define MOTOR_PWM_PRESCALER (1u)
-#define MOTOR_PWM_TOP       (1023u)
+#define MOTOR_PWM_TOP       (255u)
 #define MOTOR_PWM(value)    LL_TIM_OC_SetCompareCH1(TIM2, value); LL_TIM_GenerateEvent_UPDATE(TIM2)
 #define MOTOR_PWM_START()   LL_TIM_EnableCounter(TIM2); LL_TIM_GenerateEvent_UPDATE(TIM2)
 #define MOTOR_PWM_STOP()    MOTOR_PWM(0u); LL_TIM_DisableCounter(TIM2); LL_TIM_GenerateEvent_UPDATE(TIM2)
@@ -73,7 +73,7 @@
 #define ADC_A_OXYGEN_PIN    (1u)
 #define ADC_A_TEMP_PIN      (2u)
 #define ADC_A_SPARE_PIN     (3u)
-#define ADC_A_FLOW_GAIN_PIN (8u)
+#define ADC_A_FLOW_GAIN_PIN (4u)
 #define ADC_A_MASK          ((1u << ADC_A_PRESSURE_PIN) | (1u << ADC_A_OXYGEN_PIN) | (1u << ADC_A_TEMP_PIN) | (1u << ADC_A_SPARE_PIN) | (1u << ADC_A_FLOW_GAIN_PIN))
 
 #define ADC_B_PORT          GPIOC
@@ -108,14 +108,25 @@
 #define MOTOR_ON_PIN        (4u)
 #define MOTOR_ON_MASK       (1u << MOTOR_ON_PIN)
 
-#define MOTOR_INFO_PORT     GPIOA
-#define MOTOR_INFO_STAT_PIN (7u)
-#define MOTOR_INFO_POS_PIN  (15u)
-#define MOTOR_INFO_MASK     ((1u << MOTOR_INFO_STAT_PIN) | (1u << MOTOR_INFO_POS_PIN))
+#define MOTOR_INFO_A_PORT         GPIOA
+#define MOTOR_INFO_A_ENC1_PIN     (6u)
+#define MOTOR_INFO_A_STAT_PIN     (7u)
+#define MOTOR_INFO_A_ENC2_PIN     (8u)
+#define MOTOR_INFO_A_LIM2_PIN     (15u)
+#define MOTOR_INFO_A_MASK         ((1u << MOTOR_INFO_A_ENC1_PIN) | (1u << MOTOR_INFO_A_STAT_PIN) | (1u << MOTOR_INFO_A_ENC2_PIN) | (1u << MOTOR_INFO_A_LIM2_PIN))
 
-#define MOTOR_INFO_INT_PORT     LL_SYSCFG_EXTI_PORTA
-#define MOTOR_INFO_INT_PIN_MASK (1u << MOTOR_INFO_POS_PIN)
-#define MOTOR_INFO_POS_INT      LL_SYSCFG_EXTI_LINE15
+#define MOTOR_INFO_A_INT_PORT     LL_SYSCFG_EXTI_PORTA
+#define MOTOR_INFO_A_INT_PIN_MASK ((1u << MOTOR_INFO_A_ENC1_PIN) | (1u << MOTOR_INFO_A_LIM2_PIN))
+#define MOTOR_INFO_A_ENC1_INT     LL_SYSCFG_EXTI_LINE6
+#define MOTOR_INFO_A_LIM2_INT     LL_SYSCFG_EXTI_LINE15
+
+#define MOTOR_INFO_B_PORT         GPIOD
+#define MOTOR_INFO_B_LIM1_PIN     (2u)
+#define MOTOR_INFO_B_MASK         (1u << MOTOR_INFO_B_LIM1_PIN)
+
+#define MOTOR_INFO_B_INT_PORT     LL_SYSCFG_EXTI_PORTD
+#define MOTOR_INFO_B_INT_PIN_MASK (1u << MOTOR_INFO_B_LIM1_PIN)
+#define MOTOR_INFO_B_LIM1_INT     LL_SYSCFG_EXTI_LINE2
 
 // MOTOR_PWM on TIM2 CH1
 #define MOTOR_PWM_PORT      GPIOA
@@ -153,16 +164,11 @@
 #define MOTOR_IN_MASK       ((1u << MOTOR_IN_A_PIN) | (1u << MOTOR_IN_B_PIN))
 
 #define ALERT_PORT          GPIOC
-#define ALERT_MOTOR_A_N_PIN (4u)
 #define ALERT_MOTOR_B_N_PIN (5u)
+#define ALERT_MOTOR_A_N_PIN (6u)
 #define ALERT_VBATT_N_PIN   (9u)
 #define ALERT_PRESS_N_PIN   (11u)
 #define ALERT_MASK          ((1u << ALERT_MOTOR_A_N_PIN) | (1u << ALERT_MOTOR_B_N_PIN) | (1u << ALERT_VBATT_N_PIN) | (1u << ALERT_PRESS_N_PIN))
-
-#define ALERT_INT_PORT      LL_SYSCFG_EXTI_PORTC // ALERT_MOTOR_A/B_N only
-#define ALERT_INT_PIN_MASK  ((1u << ALERT_MOTOR_A_N_PIN) | (1u << ALERT_MOTOR_B_N_PIN))
-#define ALERT_MOTOR_A_N_INT LL_SYSCFG_EXTI_LINE4
-#define ALERT_MOTOR_B_N_INT LL_SYSCFG_EXTI_LINE5
 
 #define CHARGE_CONTROL_PORT GPIOB
 #define CHARGE_CONTROL_PIN  (14u)
@@ -173,7 +179,7 @@
 #define CHARGE_PGOOD_MASK   (1u << CHARGE_PGOOD_PIN)
 
 #define CHARGE_ISNS_PORT    GPIOC
-#define CHARGE_ISNS_PIN     (6u)
+#define CHARGE_ISNS_PIN     (4u)
 #define CHARGE_ISNS_MASK    (1u << CHARGE_ISNS_PIN)
 
 #define CHARGE_STAT_PORT    GPIOC
@@ -204,8 +210,8 @@ typedef enum
   ADC_PRESSURE      = LL_ADC_CHANNEL_5, // ADC1 only
   ADC_OXYGEN        = LL_ADC_CHANNEL_6, // ADC1 only
   ADC_TEMP          = LL_ADC_CHANNEL_7, // ADC1 or ADC2
-  ADC_SPARE         = LL_ADC_CHANNEL_8  // ADC1 or ADC2
-  // ADC_FLOW_GAIN     = LL_ADC_CHANNEL_?  // Not connected!
+  ADC_SPARE         = LL_ADC_CHANNEL_8, // ADC1 or ADC2
+  ADC_FLOW_GAIN     = LL_ADC_CHANNEL_9  // ADC1 or ADC2
 } ADC_channel_t;
 
 #endif /* BOARD_MK2_H */

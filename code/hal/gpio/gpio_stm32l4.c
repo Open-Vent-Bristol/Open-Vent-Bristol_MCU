@@ -21,10 +21,13 @@ void gpio_init(void)
   LL_GPIO_Init(ADC_B_PORT, &adc_init_struct);
   LL_GPIO_EnablePinAnalogControl(ADC_B_PORT, ADC_B_MASK);
 
-  // ALERT, SWITCH, PGOOD, STAT1, STAT2: input, pullup
+  // MOTOR_INFO, ALERT, SWITCH, PGOOD, STAT1, STAT2: input, pullup
   LL_GPIO_InitTypeDef in_init_struct = IN_PU_PIN_CFG;
-  in_init_struct.Pin = MOTOR_INFO_MASK;
-  LL_GPIO_Init(MOTOR_INFO_PORT, &in_init_struct);
+  in_init_struct.Pin = MOTOR_INFO_A_MASK;
+  LL_GPIO_Init(MOTOR_INFO_A_PORT, &in_init_struct);
+
+  in_init_struct.Pin = MOTOR_INFO_B_MASK;
+  LL_GPIO_Init(MOTOR_INFO_B_PORT, &in_init_struct);
 
   in_init_struct.Pin = ALERT_MASK;
   LL_GPIO_Init(ALERT_PORT, &in_init_struct);
@@ -42,15 +45,15 @@ void gpio_init(void)
   LL_GPIO_Init(CHARGE_STAT_PORT, &in_init_struct);
 
   // GPIO falling interrupts for MOTOR_INFO_POS, ALERT, SWITCH
-  LL_SYSCFG_SetEXTISource(MOTOR_INFO_INT_PORT, MOTOR_INFO_POS_INT);
-  LL_SYSCFG_SetEXTISource(ALERT_INT_PORT, ALERT_MOTOR_A_N_INT);
-  LL_SYSCFG_SetEXTISource(ALERT_INT_PORT, ALERT_MOTOR_B_N_INT);
+  LL_SYSCFG_SetEXTISource(MOTOR_INFO_A_INT_PORT, MOTOR_INFO_A_ENC1_INT);
+  LL_SYSCFG_SetEXTISource(MOTOR_INFO_A_INT_PORT, MOTOR_INFO_A_LIM2_INT);
+  LL_SYSCFG_SetEXTISource(MOTOR_INFO_B_INT_PORT, MOTOR_INFO_B_LIM1_INT);
   LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_1_INT);
   LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_2_INT);
   LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_3_INT);
   LL_SYSCFG_SetEXTISource(SWITCH_INT_PORT, SWITCH_4_INT);
-  LL_EXTI_EnableIT_0_31(MOTOR_INFO_INT_PIN_MASK | ALERT_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
-  LL_EXTI_EnableFallingTrig_0_31(MOTOR_INFO_INT_PIN_MASK | ALERT_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
+  LL_EXTI_EnableIT_0_31(MOTOR_INFO_A_INT_PIN_MASK | MOTOR_INFO_B_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
+  LL_EXTI_EnableFallingTrig_0_31(MOTOR_INFO_A_INT_PIN_MASK | MOTOR_INFO_B_INT_PIN_MASK | SWITCH_INT_PIN_MASK);
 
   // IRQ for ALERT_MOTOR_A_N
   NVIC_SetPriority(EXTI4_IRQn, 1u);
@@ -143,23 +146,23 @@ uint8_t gpio_read_pin(gpio_register_t port, uint8_t pin_number)
   return return_val;
 }
 
-// ISR for ALERT_MOTOR_A_N
-__WEAK void EXTI4_IRQHandler(void)
+// ISR for MOTOR_INFO_B_LIM1
+__WEAK void EXTI2_IRQHandler(void)
 {
-  if (LL_EXTI_IsActiveFlag_0_31(1u << ALERT_MOTOR_A_N_PIN))
+  if (LL_EXTI_IsActiveFlag_0_31(1u << MOTOR_INFO_B_LIM1_PIN))
   {
-    LL_EXTI_ClearFlag_0_31(1u << ALERT_MOTOR_A_N_PIN);
+    LL_EXTI_ClearFlag_0_31(1u << MOTOR_INFO_B_LIM1_PIN);
 
     // TODO - callback
   }
 }
 
-// ISR for ALERT_MOTOR_B_N, SWITCH_1, SWITCH_2
+// ISR for MOTOR_INFO_A_ENC1_PIN, SWITCH_1, SWITCH_2
 __WEAK void EXTI9_5_IRQHandler(void)
 {
-  if (LL_EXTI_IsActiveFlag_0_31(1u << ALERT_MOTOR_B_N_PIN))
+  if (LL_EXTI_IsActiveFlag_0_31(1u << MOTOR_INFO_A_ENC1_PIN))
   {
-    LL_EXTI_ClearFlag_0_31(1u << ALERT_MOTOR_B_N_PIN);
+    LL_EXTI_ClearFlag_0_31(1u << MOTOR_INFO_A_ENC1_PIN);
 
     // TODO - callback
   }
@@ -177,10 +180,16 @@ __WEAK void EXTI9_5_IRQHandler(void)
   }
 }
 
-// ISR for SWITCH_3, SWITCH_4
+// ISR for SWITCH_3, SWITCH_4, MOTOR_INFO_A_LIM2
 __WEAK void EXTI15_10_IRQHandler(void)
 {
-  if (LL_EXTI_IsActiveFlag_0_31(1u << SWITCH_3_PIN))
+  if (LL_EXTI_IsActiveFlag_0_31(1u << MOTOR_INFO_A_LIM2_PIN))
+  {
+    LL_EXTI_ClearFlag_0_31(1u << MOTOR_INFO_A_LIM2_PIN);
+
+    // TODO - callback
+  }
+  else if (LL_EXTI_IsActiveFlag_0_31(1u << SWITCH_3_PIN))
   {
     LL_EXTI_ClearFlag_0_31(1u << SWITCH_3_PIN);
 

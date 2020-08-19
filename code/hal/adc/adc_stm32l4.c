@@ -154,6 +154,7 @@ static ADC_peripheral_t assign_peripheral(ADC_channel_t channel)
     case ADC_FLOW:
     case ADC_TEMP:
     case ADC_SPARE:
+    case ADC_FLOW_GAIN:
       // Since these channels can be used with either ADC, try ADC2 first
       // so as to not block the pressure and oxygen sensors
       if (s_adc_handles[ADC_PERIPH_2].available)
