@@ -34,7 +34,7 @@ bool spi_available(void);
  * @return true             SPI device is available
  * @return false            SPI device is unavailable
  */
-bool spi_setup_transaction(MCU_register_t chip_select_port, register_size_t chip_select_pin);
+bool spi_setup_transaction(gpio_register_t chip_select_port, register_size_t chip_select_pin);
 
 /**
  * @brief Start a command only SPI transaction.

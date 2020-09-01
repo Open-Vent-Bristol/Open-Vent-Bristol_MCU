@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+      "cschlosser.doxdocgen",
+      "ms-vscode.cpptools",
+      "marus25.cortex-debug"
+  ]
+}

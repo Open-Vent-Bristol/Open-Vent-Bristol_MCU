@@ -2,7 +2,7 @@
 #include "ftp_types.h"
 #include <string.h>
 
-static const char string_error_large[] = " - arg too large (0-255)\r\n>";
+static const char string_error_large[] = " - arg too large (0-1023)\r\n>";
 static const char string_error_unrecognised[] = " - unrecognised\r\n>";
 
 /**
@@ -33,6 +33,8 @@ void uart_ftp_get_command(ftp_command_t* command)
       case READ_ALERT_PRESSURE:
       case READ_ALERT_FLOW:
       case READ_ALERT_VBATT:
+      case READ_ALERT_MOTOR_A:
+      case READ_ALERT_MOTOR_B:
       case READ_SWITCH_1:
       case READ_SWITCH_2:
       case READ_SWITCH_3:
@@ -42,6 +44,9 @@ void uart_ftp_get_command(ftp_command_t* command)
       case READ_ANALOGUE_VBATT:
       case READ_ANALOGUE_MOTOR:
       case READ_ANALOGUE_TEMP:
+      case READ_ANALOGUE_SOUNDER:
+      case READ_ANALOGUE_OXYGEN:
+      case READ_ANALOGUE_SPARE:
       case MOTOR_STOP:
       case RUN_MOTOR_IN:
       case RUN_MOTOR_OUT:
@@ -62,14 +67,14 @@ void uart_ftp_get_command(ftp_command_t* command)
         // Argument
         if (s_command.instruction != NONE)
         {
-          if (s_command.arg > (UINT8_MAX / 10u))
+          s_command.arg *= 10u;
+          s_command.arg += (new_char - '0');
+
+          if (s_command.arg > 1023u)
           {
             uart_write(string_error_large, sizeof(string_error_large));
-          }
-          else
-          {
-            s_command.arg *= 10u;
-            s_command.arg += (new_char - '0');
+            s_command.instruction = NONE;
+            s_command.arg = 0u;
           }
         }
         break;

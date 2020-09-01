@@ -10,6 +10,8 @@ typedef enum
   READ_ALERT_PRESSURE     = 'w',
   READ_ALERT_FLOW         = 'e',
   READ_ALERT_VBATT        = 'r',
+  READ_ALERT_MOTOR_A      = 't',
+  READ_ALERT_MOTOR_B      = 'y',
   READ_SWITCH_1           = 'a',
   READ_SWITCH_2           = 's',
   READ_SWITCH_3           = 'd',
@@ -19,6 +21,9 @@ typedef enum
   READ_ANALOGUE_VBATT     = 'c',
   READ_ANALOGUE_MOTOR     = 'v',
   READ_ANALOGUE_TEMP      = 'b',
+  READ_ANALOGUE_SOUNDER   = 'n',
+  READ_ANALOGUE_OXYGEN    = 'm',
+  READ_ANALOGUE_SPARE     = ',',
   MOTOR_STOP              = 'u',
   RUN_MOTOR_IN            = 'i',
   RUN_MOTOR_OUT           = 'o',
@@ -29,7 +34,7 @@ ftp_instruction_t;
 typedef struct
 {
   ftp_instruction_t instruction;
-  uint8_t arg;
+  uint16_t arg;
 } ftp_command_t;
 
 #endif /* FTP_TYPES_H */
