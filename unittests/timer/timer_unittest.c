@@ -42,7 +42,7 @@ TEST(timer_tests, tick_all_processes_all_timers)
   timer_t timer1 =
   {
     .remaining_ticks = 20,
-    .unique_id = TIMER_1
+    .unique_id = TIMER_ALARM_SERVICE
   };
 
   timer_t timer2 =
@@ -70,7 +70,7 @@ TEST(timer_tests, tick_all_processes_all_timers)
   };
 
   s_timers[TIMER_ACTUATOR_SERVICE - TIMER_START_INDEX] = &timer0;
-  s_timers[TIMER_1 - TIMER_START_INDEX] = &timer1;
+  s_timers[TIMER_ALARM_SERVICE - TIMER_START_INDEX] = &timer1;
   s_timers[TIMER_2 - TIMER_START_INDEX] = &timer2;
   s_timers[TIMER_3 - TIMER_START_INDEX] = &timer3;
   s_timers[TIMER_4 - TIMER_START_INDEX] = &timer4;
@@ -88,13 +88,13 @@ TEST(timer_tests, tick_all_processes_all_timers)
 
 TEST(timer_tests, attach_pointer)
 {
-  test_timer.unique_id = TIMER_1;
+  test_timer.unique_id = TIMER_ALARM_SERVICE;
 
   timer_attach(&test_timer);
-  TEST_ASSERT_NOT_NULL(s_timers[TIMER_1 - TIMER_START_INDEX]);
+  TEST_ASSERT_NOT_NULL(s_timers[TIMER_ALARM_SERVICE - TIMER_START_INDEX]);
 
   timer_attach(NULL);
-  TEST_ASSERT_EQUAL_PTR(&test_timer, s_timers[TIMER_1 - TIMER_START_INDEX]);
+  TEST_ASSERT_EQUAL_PTR(&test_timer, s_timers[TIMER_ALARM_SERVICE - TIMER_START_INDEX]);
 }
 
 TEST(timer_tests, attach_only_valid_index)
