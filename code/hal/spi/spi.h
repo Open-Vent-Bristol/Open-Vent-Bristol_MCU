@@ -65,8 +65,8 @@ bool spi_write(uint8_t command, const uint8_t* const data_out, uint8_t length);
  * @note Not implemented!
  *
  * @param command     Command to send
- * @param data_in     Data to write
- * @param max_length  Length of write (normally sizeof(data_in))
+ * @param data_in     Data to read
+ * @param max_length  Length of read (normally sizeof(data_in))
  * @return true       Transaction started
  * @return false      SPI device is unavailable
  */
