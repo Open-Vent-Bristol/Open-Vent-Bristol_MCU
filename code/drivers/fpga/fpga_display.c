@@ -32,31 +32,29 @@
 enum display_index
 {
   // TOP LINE
-  DISP_TIDAL_VOL      = 0,
-  DISP_TIDAL_VOL_LEN    = 3,
-  DISP_PEAK_FLOW      = 4,
-  DISP_PEAK_FLOW_LEN    = 4,
-  DISP_RESP_RATE      = 9,
-  DISP_RESP_RATE_LEN    = 2,
-  DISP_PERCENT_O2     = 12,
-  DISP_PERCENT_LEN      = 3,
-  DISP_BATTERY        = 15,
-  DISP_BATTERY_LEN      = 1,
+  DISP_TIDAL_VOL          = 0,
+  DISP_TIDAL_VOL_LEN        = 3,
+  DISP_PEAK_FLOW          = 4,
+  DISP_PEAK_FLOW_LEN        = 4,
+  DISP_RESP_RATE          = 9,
+  DISP_RESP_RATE_LEN        = 2,
+  DISP_PERCENT_O2         = 12,
+  DISP_PERCENT_LEN          = 3,
+  DISP_BATTERY            = 15,
+  DISP_BATTERY_LEN          = 1,
   // BOTTOM LINE
-  DISP_PRESSURE_NEG   = 16,
-  DISP_PRESSURE_NEG_LEN = 2,
-  DISP_PRESSURE_POS   = 18,
-  DISP_PRESSURE_POS_LEN = 14,
+  DISP_PRESSURE           = 16,
+  DISP_PRESSURE_LEN         = 2,
+  DISP_PRESSURE_GAUGE     = 18,
+  DISP_PRESSURE_GAUGE_LEN = 14,
 
-  DISP_LEN            = 32
+  DISP_LEN                = 32
 };
 
-#define PRESSURE_BAR_MMH2O_MAX      (450)
-#define PRESSURE_BAR_MMH2O_MIN      (-67)
-#define PRESSURE_BAR_SUB_INCREMENTS (3) // line left, line centre, line right
-#define PRESSURE_BAR_POS_INCREMENTS (DISP_PRESSURE_POS_LEN * PRESSURE_BAR_SUB_INCREMENTS)
-#define PRESSURE_BAR_NEG_INCREMENTS (DISP_PRESSURE_NEG_LEN * PRESSURE_BAR_SUB_INCREMENTS)
-#define PRESSURE_BAR_MMH2O_INC      (PRESSURE_BAR_MMH2O_MAX / PRESSURE_BAR_POS_INCREMENTS)
+#define PRESSURE_BAR_MMH2O_MAX      (450u)
+#define PRESSURE_BAR_SUB_INCREMENTS (3u) // line left, line centre, line right
+#define PRESSURE_BAR_INCREMENTS     (DISP_PRESSURE_GAUGE_LEN * PRESSURE_BAR_SUB_INCREMENTS)
+#define PRESSURE_BAR_MMH2O_INC      (PRESSURE_BAR_MMH2O_MAX / PRESSURE_BAR_INCREMENTS)
 
 /**
  * These are the character addresses in the display for the custom characters.
@@ -76,9 +74,11 @@ enum custom_char
  */
 enum display_char
 {
+  DISPLAY_CHAR_PEAK_PRESSURE_0, // Single vertical line to right
   DISPLAY_CHAR_PEAK_PRESSURE_1, // Single vertical line to left
   DISPLAY_CHAR_PEAK_PRESSURE_2, // Single vertical line in centre
   DISPLAY_CHAR_PEAK_PRESSURE_3, // Single vertical line to right
+  DISPLAY_CHAR_PRESSURE_0,      // INVALID
   DISPLAY_CHAR_PRESSURE_1,      // Single vertical line to left
   DISPLAY_CHAR_PRESSURE_2,      // Half-width block to left
   DISPLAY_CHAR_PRESSURE_3,      // Full block
@@ -103,17 +103,15 @@ static void make_custom_char(enum display_char char_to_create)
 {
   switch (char_to_create)
   {
+    case DISPLAY_CHAR_PEAK_PRESSURE_0:
+      char_to_create = DISPLAY_CHAR_PEAK_PRESSURE_3;
+      /* fall-through */
     case DISPLAY_CHAR_PEAK_PRESSURE_1:
     case DISPLAY_CHAR_PEAK_PRESSURE_2:
     case DISPLAY_CHAR_PEAK_PRESSURE_3:
     {
-      uint32_t shifts = (char_to_create - DISPLAY_CHAR_PEAK_PRESSURE_1) * 2u;
-      uint64_t return_char = PRESSURE_BAR_EDGE;
-
-      while (shifts > 0)
-      {
-        return_char |= (PRESSURE_BAR_EDGE >> shifts);
-      }
+      uint32_t shifts = (char_to_create - DISPLAY_CHAR_PEAK_PRESSURE_0 - 1u) * 2u;
+      uint64_t return_char = (PRESSURE_BAR_EDGE >> shifts);
 
       if (s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK] != return_char)
       {
@@ -123,17 +121,17 @@ static void make_custom_char(enum display_char char_to_create)
       break;
     }
 
-
     case DISPLAY_CHAR_PRESSURE_1:
     case DISPLAY_CHAR_PRESSURE_2:
     case DISPLAY_CHAR_PRESSURE_3:
     {
-      uint32_t shifts = (char_to_create - DISPLAY_CHAR_PRESSURE_1) * 2u;
+      uint32_t shifts = (char_to_create - DISPLAY_CHAR_PRESSURE_0) * 2u;
       uint64_t return_char = PRESSURE_BAR_EDGE;
 
       while (shifts > 0)
       {
-        return_char |= (PRESSURE_BAR_EDGE >> shifts);
+        return_char |= (PRESSURE_BAR_EDGE >> 2u);
+        shifts--;
       }
 
       if (s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_EDGE] != return_char)
@@ -157,7 +155,9 @@ static void make_custom_char(enum display_char char_to_create)
 
       while (shifts > 0)
       {
-        return_char |= (shift_char << 8u);
+        shift_char <<= 8u;
+        return_char |= shift_char;
+        shifts--;
       }
 
       if (s_custom_chars[CUSTOM_CHAR_BATTERY_INDICATOR] != return_char)
@@ -172,11 +172,14 @@ static void make_custom_char(enum display_char char_to_create)
 
 void fpga_display_format_tidal_volume(uint16_t tidal_volume_ml)
 {
+  // Format display resolution and units: ml
   static uint16_t last_val = 0u;
 
   if (tidal_volume_ml != last_val)
   {
-    char digits[DISP_TIDAL_VOL_LEN] = {'1', 'k', '+'};
+    last_val = tidal_volume_ml;
+
+    char digits[DISP_TIDAL_VOL_LEN] = {'>', '1', 'k'};
 
     if (tidal_volume_ml <= 999u)
     {
@@ -199,37 +202,30 @@ void fpga_display_format_tidal_volume(uint16_t tidal_volume_ml)
 
 void fpga_display_format_peak_flow(uint16_t peak_flow_ml_per_sec)
 {
+  // Format display resolution and units: 0.1 l/min
   static uint16_t last_val = 0u;
 
   if (peak_flow_ml_per_sec != last_val)
   {
-    uint32_t litres_per_600s = peak_flow_ml_per_sec * 600u / 1000u;
-    char digits[DISP_PEAK_FLOW_LEN] = {0u};
+    last_val = peak_flow_ml_per_sec;
 
-    if (litres_per_600s >= 1000u)
-    {
-      // Integer display only - round up
-      litres_per_600s = litres_per_600s + 5u;
-    }
+    // Convert to decilitres per minute (i.e. display value without the decimal point)
+    uint16_t dl_per_min = peak_flow_ml_per_sec * 60u / 100u;
+    char digits[DISP_PEAK_FLOW_LEN] = {'>', '1', '0', '0'};
 
-    uint16_t remainder = litres_per_600s;
-    digits[0] = remainder / 100u;
-    remainder -= (digits[0] * 100u);
-    digits[1] = remainder / 10u;
-    digits[2] = remainder - (digits[1] * 10u);
+    if (dl_per_min < 1000u)
+    {
+      uint16_t remainder = dl_per_min;
+      digits[0] = remainder / 100u;
+      remainder -= (digits[0] * 100u);
+      digits[1] = remainder / 10u;
+      digits[2] = remainder - (digits[1] * 10u);
 
-    for (size_t i = 0; i < (DISP_PEAK_FLOW_LEN - 1u); i++)
-    {
-      digits[i] += '0';
-    }
+      for (size_t i = 0; i < (DISP_PEAK_FLOW_LEN - 1u); i++)
+      {
+        digits[i] += '0';
+      }
 
-    if (litres_per_600s >= 1000u)
-    {
-      // Just append a decimal point
-      digits[3] = '.';
-    }
-    else
-    {
       // 'Divide' by 10 by inserting a decimal point before the final digit
       digits[3] = digits[2];
       digits[2] = '.';
@@ -242,13 +238,16 @@ void fpga_display_format_peak_flow(uint16_t peak_flow_ml_per_sec)
 
 void fpga_display_format_respiration_rate(uint8_t breaths_per_min)
 {
+  // Format display resolution and units: 1 breaths per minute
   static uint8_t last_val = 0u;
 
   if (breaths_per_min != last_val)
   {
+    last_val = breaths_per_min;
+
     char digits[DISP_RESP_RATE_LEN] = {'?', '?'};
 
-    if (breaths_per_min <= 99u)
+    if (breaths_per_min < 100u)
     {
       digits[0] = breaths_per_min / 10u;
       digits[1] = breaths_per_min - (digits[0] * 10u);
@@ -264,36 +263,26 @@ void fpga_display_format_respiration_rate(uint8_t breaths_per_min)
   }
 }
 
-void fpga_display_format_percent_o2(uint8_t oxygen_ppthou)
+void fpga_display_format_percent_o2(uint8_t oxygen_percent)
 {
   static uint8_t last_val = 0u;
 
-  if (oxygen_ppthou != last_val)
+  if (oxygen_percent != last_val)
   {
-    char digits[DISP_PERCENT_LEN];
+    last_val = oxygen_percent;
 
-    if (oxygen_ppthou >= 100u)
+    char digits[DISP_PERCENT_LEN] = {'1', '0', '0'};
+
+    if (oxygen_percent < 100u)
     {
-      // Integer display only - round up
-      uint32_t percent_val = (oxygen_ppthou + 5u) / 10u;
+      digits[0] = 0;
+      digits[1] = oxygen_percent / 10u;
+      digits[2] = oxygen_percent - (digits[0] * 10u);
 
-      // int1 is now the value in percent
-      digits[0] = percent_val / 10u;
-      digits[1] = percent_val - (int1 * 10u);
-
-      digits[0] += '0';
-      digits[1] += '0';
-      digits[2] = '.'
-    }
-    else
-    {
-      // Decimal display
-      digits[0] = oxygen_ppthou / 10u;
-      digits[2] = oxygen_ppthou - (int1 * 10u);
-
-      digits[0] += '0';
-      digits[1] = '.';
-      digits[2] += '0';
+      for (size_t i = 0; i < DISP_PERCENT_LEN; i++)
+      {
+        digits[i] += '0';
+      }
     }
 
     strncpy(&s_display[DISP_PERCENT_O2], digits, DISP_PERCENT_LEN);
@@ -332,40 +321,63 @@ void fpga_display_format_battery_gauge(uint8_t charge_percent)
   s_display[DISP_BATTERY] = (char)CUSTOM_CHAR_BATTERY_INDICATOR;
 }
 
-void fpga_display_format_pressure_bar(int16_t pressure_mmH2O, uint16_t peak_pressure_mmH2O)
+void fpga_display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pressure_mmH2O)
 {
-  static int16_t last_pressure = 0;
+  static uint16_t last_pressure = 0;
   static uint16_t last_peak = 0u;
 
+  // Format pressure value
+  if (pressure_mmH2O != last_pressure)
+  {
+    char digits[DISP_PRESSURE_LEN] = {'?', '?'};
+
+    if (pressure_mmH2O < 100u)
+    {
+      digits[0] = pressure_mmH2O / 10u;
+      digits[1] = pressure_mmH2O - (digits[0] * 10u);
+
+      for (size_t i = 0; i < DISP_RESP_RATE_LEN; i++)
+      {
+        digits[i] += '0';
+      }
+    }
+
+    strncpy(&s_display[DISP_PRESSURE], digits, DISP_PRESSURE_LEN);
+  }
+
+  // TODO: The peak value won't change very often, so this function could be speed optimised
+  // by copying the cached bar into memory and editing it instead of recreating the bar
+  // every time (GitHub issue #30)
+  // if (peak_pressure_mmH2O != last_peak)
+  // {
+
+  // }
+
+  // Format pressure bar
   if ((pressure_mmH2O != last_pressure) || (peak_pressure_mmH2O != last_peak))
   {
-    size_t index;
-    char pressure_bar[DISP_PRESSURE_NEG_LEN + DISP_PRESSURE_POS_LEN];
+    char pressure_bar[DISP_PRESSURE_GAUGE_LEN];
 
-    // Start with a gauge
+    // Start with an empty gauge
     memset(pressure_bar, ' ', sizeof(pressure_bar));
 
     // Calculate the incremental positions of the peak and instantaneous pressures
-    int8_t peak_increments = peak_pressure_mmH2O / PRESSURE_BAR_MMH2O_INC;
-    if (peak_increments > PRESSURE_BAR_POS_INCREMENTS)
+    uint16_t peak_increments = peak_pressure_mmH2O / PRESSURE_BAR_MMH2O_INC;
+    if (peak_increments > PRESSURE_BAR_INCREMENTS)
     {
-      peak_increments = PRESSURE_BAR_POS_INCREMENTS;
+      peak_increments = PRESSURE_BAR_INCREMENTS;
     }
 
-    int8_t pressure_increments = pressure_mmH2O / PRESSURE_BAR_MMH2O_INC;
-    if (pressure_increments > PRESSURE_BAR_POS_INCREMENTS)
+    uint16_t pressure_increments = pressure_mmH2O / PRESSURE_BAR_MMH2O_INC;
+    if (pressure_increments > PRESSURE_BAR_INCREMENTS)
     {
-      pressure_increments = PRESSURE_BAR_POS_INCREMENTS;
-    }
-    else if (pressure_increments < -PRESSURE_BAR_NEG_INCREMENTS)
-    {
-      pressure_increments = -PRESSURE_BAR_NEG_INCREMENTS;
+      pressure_increments = PRESSURE_BAR_INCREMENTS;
     }
 
     // Build the display block by block
-    if (pressure_increments >= 0)
+    size_t index = 0u;
+    if (pressure_increments >= 0u)
     {
-      index = 2u;
       while (pressure_increments >= PRESSURE_BAR_SUB_INCREMENTS)
       {
         pressure_bar[index] = (char)FULL_BLOCK;
@@ -374,71 +386,53 @@ void fpga_display_format_pressure_bar(int16_t pressure_mmH2O, uint16_t peak_pres
         index++;
       }
 
-      if (pressure_increments > 0)
+      if (pressure_increments > 0u)
       {
         // Cap off the gauge with a partial block
         pressure_bar[index] = (char)CUSTOM_CHAR_PRESSURE_BAR_EDGE;
       }
     }
-    else
+
+    // Add peak pressure mark if still required
+    bool chars_overlap = false;
+    if (peak_increments > 0u)
     {
-      index = 1u;
-      while (pressure_increments <= -PRESSURE_BAR_SUB_INCREMENTS)
+      if (peak_increments <= PRESSURE_BAR_SUB_INCREMENTS)
       {
-        pressure_bar[index] = (char)FULL_BLOCK;
-        pressure_increments += PRESSURE_BAR_SUB_INCREMENTS;
-        index--;
+        chars_overlap = true;
       }
-
-      if (pressure_increments < 0)
+      else
       {
-        // Cap off the gauge with a partial block
-        pressure_bar[index] = (char)CUSTOM_CHAR_PRESSURE_BAR_EDGE;
-      }
+        while (peak_increments > PRESSURE_BAR_SUB_INCREMENTS)
+        {
+          peak_increments -= PRESSURE_BAR_SUB_INCREMENTS;
+          index++;
+        }
 
-      // Peak pressure mark is always positive, so reset index to the zero position
-      index = 2u;
+        // Cap off the gauge with the peak line
+        pressure_bar[index] = (char)CUSTOM_CHAR_PRESSURE_BAR_PEAK;
+      }
     }
 
     // Make the appropriate characters based on the remainders
-    make_custom_char(DISPLAY_CHAR_PEAK_PRESSURE_1 + peak_increments);
-    if (pressure_increments >= 0)
+    make_custom_char(DISPLAY_CHAR_PEAK_PRESSURE_0 + peak_increments);
+    if (pressure_increments > 0u)
     {
-      make_custom_char(DISPLAY_CHAR_PRESSURE_1 + pressure_increments);
+      make_custom_char(DISPLAY_CHAR_PRESSURE_0 + pressure_increments);
 
-      if (peak_increments < PRESSURE_BAR_SUB_INCREMENTS)
+      if (chars_overlap)
       {
         // Characters overlap, so we need to OR them and store in the instantaneous character
         // position (because the peak character doesn't change as much)
         s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_EDGE] |=
           s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK];
-
-        peak_increments = 0;
       }
     }
-    else
-    {
-      make_custom_char(DISPLAY_CHAR_PRESSURE_1 - pressure_increments);
 
-      // Invert
-      s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_EDGE] = ~s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_EDGE];
-    }
+    last_pressure = pressure_mmH2O;
+    last_peak = peak_pressure_mmH2O;
 
-    // Add peak pressure mark if still required
-    if (peak_increments > 0)
-    {
-      while (peak_increments >= PRESSURE_BAR_SUB_INCREMENTS)
-      {
-        peak_increments -= PRESSURE_BAR_SUB_INCREMENTS;
-        index++;
-      }
-
-      // Cap off the gauge with the peak line
-      pressure_bar[index] = (char)CUSTOM_CHAR_PRESSURE_BAR_PEAK;
-    }
-
-    strncpy(
-      &s_display[DISP_PRESSURE_NEG], pressure_bar, (DISP_PRESSURE_NEG_LEN + DISP_PRESSURE_POS_LEN));
+    strncpy(&s_display[DISP_PRESSURE_GAUGE], pressure_bar, DISP_PRESSURE_GAUGE_LEN);
     s_display_changed = true;
   }
 }
