@@ -112,29 +112,4 @@ inline void fpga_heartbeat_calculate(
   message_to_format->heartbeat = ~received_heartbeat + 1u;
 }
 
-/**
- * Display formatting functions.  These will update the cached version of the display
- */
-void fpga_display_format_tidal_volume(uint16_t tidal_volume_ml);
-void fpga_display_format_peak_flow(uint16_t peak_flow_ml_per_sec);
-void fpga_display_format_respiration_rate(uint8_t breaths_per_min);
-void fpga_display_format_percent_o2(uint8_t oxygen_ppthou);
-void fpga_display_format_battery_gauge(uint8_t charge_percent);
-void fpga_display_format_pressure_bar(int16_t pressure_mmH2O, uint16_t peak_pressure_mmH2O);
-
-/**
- * Check if the cached display has been changed (to avoid needing to call display_get)
- *
- * @return true Cached version of display has been updated
- * @return false Cached version of display is unchanged
- */
-bool fpga_display_has_changed(void);
-
-/**
- * Format a message with a copy of the cached display (including custom characters)
- *
- * @param message_mcu_to_fpga_t* Pointer to the message
- */
-void fpga_display_get(message_mcu_to_fpga_t* const message_to_format);
-
 #endif /* FPGA_API_H */

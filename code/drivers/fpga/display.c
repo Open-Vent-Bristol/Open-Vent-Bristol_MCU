@@ -1,105 +1,19 @@
-#include "fpga_api.h"
+#include "display.h"
+#include "private/display_priv.h"
+#include "misc/util.h"
 #include <string.h>
+#include <stdint.h>
 
-#define BATTERY_INDICATOR_OUTLINE \
-  (uint64_t)( 0b01110 << 56u | \
-              0b11111 << 48u | \
-              0b10001 << 40u | \
-              0b10001 << 32u | \
-              0b10001 << 24u | \
-              0b10001 << 16u | \
-              0b10001 << 8u  | \
-              0b11111 )
-
-#define BATTERY_INDICATOR_EDGE (0b01110)
-
-/**
- * This just creates a single vertical line down the left side.  To adjust the position,
- * right shift up to 4.  To create a solid block, OR the result in a loop
- */
-#define PRESSURE_BAR_EDGE \
-  (uint64_t)( 0b10000 << 56u | \
-              0b10000 << 48u | \
-              0b10000 << 40u | \
-              0b10000 << 32u | \
-              0b10000 << 24u | \
-              0b10000 << 16u | \
-              0b10000 << 8u  | \
-              0b10000 )
-
-#define FULL_BLOCK (219u)
-
-enum display_index
-{
-  // TOP LINE
-  DISP_TIDAL_VOL          = 0,
-  DISP_TIDAL_VOL_LEN        = 3,
-  DISP_PEAK_FLOW          = 4,
-  DISP_PEAK_FLOW_LEN        = 4,
-  DISP_RESP_RATE          = 9,
-  DISP_RESP_RATE_LEN        = 2,
-  DISP_PERCENT_O2         = 12,
-  DISP_PERCENT_LEN          = 3,
-  DISP_BATTERY            = 15,
-  DISP_BATTERY_LEN          = 1,
-  // BOTTOM LINE
-  DISP_PRESSURE           = 16,
-  DISP_PRESSURE_LEN         = 2,
-  DISP_PRESSURE_GAUGE     = 18,
-  DISP_PRESSURE_GAUGE_LEN = 14,
-
-  DISP_LEN                = 32
-};
-
-#define PRESSURE_BAR_MMH2O_MAX      (450u)
-#define PRESSURE_BAR_SUB_INCREMENTS (3u) // line left, line centre, line right
-#define PRESSURE_BAR_INCREMENTS     (DISP_PRESSURE_GAUGE_LEN * PRESSURE_BAR_SUB_INCREMENTS)
-#define PRESSURE_BAR_MMH2O_INC      (PRESSURE_BAR_MMH2O_MAX / PRESSURE_BAR_INCREMENTS)
-
-/**
- * These are the character addresses in the display for the custom characters.
- * Use these as the ascii code, e.g. (char)CUSTOM_CHAR_PRESSURE_BAR_EDGE.
- */
-enum custom_char
-{
-  CUSTOM_CHAR_BATTERY_INDICATOR = 0,
-  CUSTOM_CHAR_PRESSURE_BAR_EDGE = 1,
-  CUSTOM_CHAR_PRESSURE_BAR_PEAK = 2,
-  CUSTOM_CHAR_COUNT
-};
-
-/**
- * Createable custom character definitions
- *
- */
-enum display_char
-{
-  DISPLAY_CHAR_PEAK_PRESSURE_0, // Single vertical line to right
-  DISPLAY_CHAR_PEAK_PRESSURE_1, // Single vertical line to left
-  DISPLAY_CHAR_PEAK_PRESSURE_2, // Single vertical line in centre
-  DISPLAY_CHAR_PEAK_PRESSURE_3, // Single vertical line to right
-  DISPLAY_CHAR_PRESSURE_0,      // INVALID
-  DISPLAY_CHAR_PRESSURE_1,      // Single vertical line to left
-  DISPLAY_CHAR_PRESSURE_2,      // Half-width block to left
-  DISPLAY_CHAR_PRESSURE_3,      // Full block
-  DISPLAY_CHAR_BATTERY_0,       // Empty battery outline
-  DISPLAY_CHAR_BATTERY_20,      // Partly filled battery outline
-  DISPLAY_CHAR_BATTERY_40,      // Partly filled battery outline
-  DISPLAY_CHAR_BATTERY_60,      // Partly filled battery outline
-  DISPLAY_CHAR_BATTERY_80,      // Partly filled battery outline
-  DISPLAY_CHAR_BATTERY_100      // Full battery outline
-};
-
-uint64_t s_custom_chars[CUSTOM_CHAR_COUNT] = {0u};
-char s_display[DISP_LEN] = {0u};
-bool s_display_changed = false;
+TESTABLE uint64_t s_custom_chars[CUSTOM_CHAR_COUNT] = {0u};
+TESTABLE char s_display[DISP_LEN] = {0u};
+TESTABLE bool s_display_changed = false;
 
 /**
  * Replace a cached custom_char
  *
  * @param char_to_create enum display_char
  */
-static void make_custom_char(enum display_char char_to_create)
+TESTABLE void make_custom_char(enum display_char char_to_create)
 {
   switch (char_to_create)
   {
@@ -121,16 +35,19 @@ static void make_custom_char(enum display_char char_to_create)
       break;
     }
 
+    case DISPLAY_CHAR_PRESSURE_0:
+      break;
+
     case DISPLAY_CHAR_PRESSURE_1:
     case DISPLAY_CHAR_PRESSURE_2:
     case DISPLAY_CHAR_PRESSURE_3:
     {
-      uint32_t shifts = (char_to_create - DISPLAY_CHAR_PRESSURE_0) * 2u;
+      uint32_t shifts = (char_to_create - DISPLAY_CHAR_PRESSURE_1) * 2u;
       uint64_t return_char = PRESSURE_BAR_EDGE;
 
       while (shifts > 0)
       {
-        return_char |= (PRESSURE_BAR_EDGE >> 2u);
+        return_char |= (PRESSURE_BAR_EDGE >> shifts);
         shifts--;
       }
 
@@ -170,7 +87,7 @@ static void make_custom_char(enum display_char char_to_create)
   }
 }
 
-void fpga_display_format_tidal_volume(uint16_t tidal_volume_ml)
+void display_format_tidal_volume(uint16_t tidal_volume_ml)
 {
   // Format display resolution and units: ml
   static uint16_t last_val = 0u;
@@ -200,7 +117,7 @@ void fpga_display_format_tidal_volume(uint16_t tidal_volume_ml)
   }
 }
 
-void fpga_display_format_peak_flow(uint16_t peak_flow_ml_per_sec)
+void display_format_peak_flow(uint16_t peak_flow_ml_per_sec)
 {
   // Format display resolution and units: 0.1 l/min
   static uint16_t last_val = 0u;
@@ -236,7 +153,7 @@ void fpga_display_format_peak_flow(uint16_t peak_flow_ml_per_sec)
   }
 }
 
-void fpga_display_format_respiration_rate(uint8_t breaths_per_min)
+void display_format_respiration_rate(uint8_t breaths_per_min)
 {
   // Format display resolution and units: 1 breaths per minute
   static uint8_t last_val = 0u;
@@ -263,7 +180,7 @@ void fpga_display_format_respiration_rate(uint8_t breaths_per_min)
   }
 }
 
-void fpga_display_format_percent_o2(uint8_t oxygen_percent)
+void display_format_percent_o2(uint8_t oxygen_percent)
 {
   static uint8_t last_val = 0u;
 
@@ -290,7 +207,7 @@ void fpga_display_format_percent_o2(uint8_t oxygen_percent)
   }
 }
 
-void fpga_display_format_battery_gauge(uint8_t charge_percent)
+void display_format_battery_gauge(uint8_t charge_percent)
 {
   if (charge_percent > 80u)
   {
@@ -321,7 +238,7 @@ void fpga_display_format_battery_gauge(uint8_t charge_percent)
   s_display[DISP_BATTERY] = (char)CUSTOM_CHAR_BATTERY_INDICATOR;
 }
 
-void fpga_display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pressure_mmH2O)
+void display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pressure_mmH2O)
 {
   static uint16_t last_pressure = 0;
   static uint16_t last_peak = 0u;
@@ -378,7 +295,8 @@ void fpga_display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pre
     size_t index = 0u;
     if (pressure_increments >= 0u)
     {
-      while (pressure_increments >= PRESSURE_BAR_SUB_INCREMENTS)
+      while ((pressure_increments >= PRESSURE_BAR_SUB_INCREMENTS) &&
+        (index < PRESSURE_BAR_INCREMENTS))
       {
         pressure_bar[index] = (char)FULL_BLOCK;
         pressure_increments -= PRESSURE_BAR_SUB_INCREMENTS;
@@ -403,7 +321,8 @@ void fpga_display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pre
       }
       else
       {
-        while (peak_increments > PRESSURE_BAR_SUB_INCREMENTS)
+        while ((peak_increments > PRESSURE_BAR_SUB_INCREMENTS) &&
+          (index < PRESSURE_BAR_INCREMENTS))
         {
           peak_increments -= PRESSURE_BAR_SUB_INCREMENTS;
           index++;
@@ -437,12 +356,12 @@ void fpga_display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pre
   }
 }
 
-bool fpga_display_has_changed(void)
+bool display_has_changed(void)
 {
   return s_display_changed;
 }
 
-void fpga_display_get(message_mcu_to_fpga_t* const message_to_format)
+void display_get(message_mcu_to_fpga_t* const message_to_format)
 {
   if (!message_to_format)
   {
