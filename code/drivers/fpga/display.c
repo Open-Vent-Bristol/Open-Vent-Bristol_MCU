@@ -117,22 +117,20 @@ void display_format_tidal_volume(uint16_t tidal_volume_ml)
   }
 }
 
-void display_format_peak_flow(uint16_t peak_flow_ml_per_sec)
+void display_format_peak_flow(uint16_t peak_flow_dl_per_min)
 {
   // Format display resolution and units: 0.1 l/min
   static uint16_t last_val = 0u;
 
-  if (peak_flow_ml_per_sec != last_val)
+  if (peak_flow_dl_per_min != last_val)
   {
-    last_val = peak_flow_ml_per_sec;
+    last_val = peak_flow_dl_per_min;
 
-    // Convert to decilitres per minute (i.e. display value without the decimal point)
-    uint16_t dl_per_min = peak_flow_ml_per_sec * 60u / 100u;
     char digits[DISP_PEAK_FLOW_LEN] = {'>', '1', '0', '0'};
 
-    if (dl_per_min < 1000u)
+    if (peak_flow_dl_per_min < 1000u)
     {
-      uint16_t remainder = dl_per_min;
+      uint16_t remainder = peak_flow_dl_per_min;
       digits[0] = remainder / 100u;
       remainder -= (digits[0] * 100u);
       digits[1] = remainder / 10u;
@@ -162,7 +160,7 @@ void display_format_respiration_rate(uint8_t breaths_per_min)
   {
     last_val = breaths_per_min;
 
-    char digits[DISP_RESP_RATE_LEN] = {'?', '?'};
+    char digits[DISP_RESP_RATE_LEN] = {'-', '-'};
 
     if (breaths_per_min < 100u)
     {
@@ -238,20 +236,20 @@ void display_format_battery_gauge(uint8_t charge_percent)
   s_display[DISP_BATTERY] = (char)CUSTOM_CHAR_BATTERY_INDICATOR;
 }
 
-void display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pressure_mmH2O)
+void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure_cmH2O)
 {
   static uint16_t last_pressure = 0;
   static uint16_t last_peak = 0u;
 
   // Format pressure value
-  if (pressure_mmH2O != last_pressure)
+  if (pressure_cmH2O != last_pressure)
   {
-    char digits[DISP_PRESSURE_LEN] = {'?', '?'};
+    char digits[DISP_PRESSURE_LEN] = {'-', '-'};
 
-    if (pressure_mmH2O < 100u)
+    if (pressure_cmH2O < 100u)
     {
-      digits[0] = pressure_mmH2O / 10u;
-      digits[1] = pressure_mmH2O - (digits[0] * 10u);
+      digits[0] = pressure_cmH2O / 10u;
+      digits[1] = pressure_cmH2O - (digits[0] * 10u);
 
       for (size_t i = 0; i < DISP_RESP_RATE_LEN; i++)
       {
@@ -271,7 +269,7 @@ void display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pressure
   // }
 
   // Format pressure bar
-  if ((pressure_mmH2O != last_pressure) || (peak_pressure_mmH2O != last_peak))
+  if ((pressure_cmH2O != last_pressure) || (peak_pressure_cmH2O != last_peak))
   {
     char pressure_bar[DISP_PRESSURE_GAUGE_LEN];
 
@@ -279,13 +277,13 @@ void display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pressure
     memset(pressure_bar, ' ', sizeof(pressure_bar));
 
     // Calculate the incremental positions of the peak and instantaneous pressures
-    uint16_t peak_increments = peak_pressure_mmH2O / PRESSURE_BAR_MMH2O_INC;
+    uint16_t peak_increments = peak_pressure_cmH2O * 10u / PRESSURE_BAR_MMH2O_INC;
     if (peak_increments > PRESSURE_BAR_INCREMENTS)
     {
       peak_increments = PRESSURE_BAR_INCREMENTS;
     }
 
-    uint16_t pressure_increments = pressure_mmH2O / PRESSURE_BAR_MMH2O_INC;
+    uint16_t pressure_increments = pressure_cmH2O * 10u / PRESSURE_BAR_MMH2O_INC;
     if (pressure_increments > PRESSURE_BAR_INCREMENTS)
     {
       pressure_increments = PRESSURE_BAR_INCREMENTS;
@@ -348,8 +346,8 @@ void display_format_pressure_bar(uint16_t pressure_mmH2O, uint16_t peak_pressure
       }
     }
 
-    last_pressure = pressure_mmH2O;
-    last_peak = peak_pressure_mmH2O;
+    last_pressure = pressure_cmH2O;
+    last_peak = peak_pressure_cmH2O;
 
     strncpy(&s_display[DISP_PRESSURE_GAUGE], pressure_bar, DISP_PRESSURE_GAUGE_LEN);
     s_display_changed = true;

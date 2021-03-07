@@ -185,16 +185,16 @@ TEST(display_tests, format_tidal_volume_text_no_change)
 
 TEST(display_tests, format_peak_flow_text)
 {
-  // Argument is in ml/s and output is in l/min.  9.6 l/min == 160 ml/s
+  // Argument is in dl/min and output is in l/min.  9.6 l/min == 96 dl/min
   char expected1[DISP_PEAK_FLOW_LEN] = {'0', '9', '.', '6'};
-  display_format_peak_flow(160u);
+  display_format_peak_flow(96u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected1, &s_display[DISP_PEAK_FLOW],
     DISP_PEAK_FLOW_LEN);
   TEST_ASSERT_TRUE(display_has_changed());
 
-  // Argument is in ml/s and output is in l/min.  34.2 l/min == 570 ml/s
+  // Argument is in dl/min and output is in l/min.  34.2 l/min == 342 dl/min
   char expected2[DISP_PEAK_FLOW_LEN] = {'3', '4', '.', '2'};
-  display_format_peak_flow(570u);
+  display_format_peak_flow(342u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected2, &s_display[DISP_PEAK_FLOW],
     DISP_PEAK_FLOW_LEN);
 }
@@ -237,7 +237,7 @@ TEST(display_tests, format_respiration_rate_text)
 
 TEST(display_tests, format_respiration_rate_out_of_bounds)
 {
-  char resp_rate_expected[DISP_RESP_RATE_LEN] = {'?', '?'};
+  char resp_rate_expected[DISP_RESP_RATE_LEN] = {'-', '-'};
   display_format_respiration_rate(UINT8_MAX);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(resp_rate_expected, &s_display[DISP_RESP_RATE], DISP_RESP_RATE_LEN);
   TEST_ASSERT_TRUE(display_has_changed());
@@ -306,7 +306,7 @@ TEST(display_tests, format_pressure_text)
 
 TEST(display_tests, format_pressure_text_out_of_bounds)
 {
-  char pressure_expected[DISP_PRESSURE_LEN] = {'?', '?'};
+  char pressure_expected[DISP_PRESSURE_LEN] = {'-', '-'};
   display_format_pressure_bar(100u, 0u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(pressure_expected, &s_display[DISP_PRESSURE], DISP_PRESSURE_LEN);
   TEST_ASSERT_TRUE(display_has_changed());
@@ -335,15 +335,15 @@ TEST(display_tests, format_pressure_bar_rising)
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 
   expected[0] = FULL_BLOCK;
-  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 3u), 0u);
+  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 3u) / 10u, 0u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 
   expected[1] = FULL_BLOCK;
-  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 6u), 0u);
+  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 6u) / 10u, 0u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 
   expected[2] = FULL_BLOCK;
-  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 9u), 0u);
+  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 9u) / 10u, 0u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 }
 
@@ -356,15 +356,15 @@ TEST(display_tests, format_pressure_bar_falling)
     CUSTOM_CHAR_PRESSURE_BAR_PEAK
   };
 
-  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 9u), PRESSURE_BAR_MMH2O_MAX);
+  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 9u) / 10u, PRESSURE_BAR_MMH2O_MAX);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 
   expected[2] = ' ';
-  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 6u), PRESSURE_BAR_MMH2O_MAX);
+  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 6u) / 10u, PRESSURE_BAR_MMH2O_MAX);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 
   expected[1] = ' ';
-  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 3u), PRESSURE_BAR_MMH2O_MAX);
+  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 3u) / 10u, PRESSURE_BAR_MMH2O_MAX);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 
   expected[0] = ' ';
@@ -385,7 +385,8 @@ TEST(display_tests, format_pressure_bar_edge_chars)
   make_custom_char(DISPLAY_CHAR_PRESSURE_1);
   make_custom_char(DISPLAY_CHAR_PEAK_PRESSURE_2);
 
-  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 4u), (PRESSURE_BAR_MMH2O_INC * 8u));
+  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 4u) / 10u,
+    (PRESSURE_BAR_MMH2O_INC * 8u) / 10u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 
   // Check the characters have *not* been combined
@@ -405,7 +406,8 @@ TEST(display_tests, format_pressure_bar_overlapping_edge_chars)
   make_custom_char(DISPLAY_CHAR_PRESSURE_1);
   make_custom_char(DISPLAY_CHAR_PEAK_PRESSURE_2);
 
-  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 7u), (PRESSURE_BAR_MMH2O_INC * 8u));
+  display_format_pressure_bar((PRESSURE_BAR_MMH2O_INC * 7u) / 10u,
+    (PRESSURE_BAR_MMH2O_INC * 8u) / 10u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 
   // Check the characters have been combined

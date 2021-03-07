@@ -10,13 +10,13 @@ typedef uint16_t mcu_event_mask_t;
 typedef struct
 {
   fpga_event_mask_t event_mask;
-  uint16_t measured_flow_rate;    // ml per second
-  uint16_t measured_pressure;     // mmH2O
-  uint16_t plateau_pressure;      // target pressure set by user, mmH2O
+  uint16_t measured_flow_rate;    // decilitres per minute
+  uint16_t measured_pressure;     // cmH2O
+  uint16_t plateau_pressure;      // target pressure set by user, cmH2O
   uint16_t breath_rate;           // target breaths per minute
-  uint16_t inhale_period_cs;      // target length of expiration in centiseconds
+  uint16_t inhale_period_ds;      // target length of expiration in tenths of seconds
   uint16_t percent_oxygen;
-  uint16_t tidal_volume;          // ml
+  uint16_t tidal_volume;          // millilitres
   uint16_t padding_bytes;         // reserved bytes (note: value affects CRC calculation result)
   uint16_t heartbeat;
   uint32_t crc32;
@@ -82,21 +82,9 @@ enum mcu_event_bits
   // MCU_EVENT_RESERVED_10             = (1u << 10u),
   // MCU_EVENT_RESERVED_11             = (1u << 11u),
   // MCU_EVENT_RESERVED_12             = (1u << 12u),
-  MCU_EVENT_BATTERY_STATE_0         = (1u << 13u),
-  MCU_EVENT_BATTERY_STATE_1         = (1u << 14u),
-  MCU_EVENT_BATTERY_STATE_MASK      = (MCU_EVENT_BATTERY_STATE_1 | MCU_EVENT_BATTERY_STATE_0),
+  // MCU_EVENT_RESERVED_13             = (1u << 13u),
+  // MCU_EVENT_RESERVED_14             = (1u << 14u),
   // MCU_EVENT_RESERVED_15             = (1u << 15u)
-};
-
-/**
- * Bits 13-14 of enum mcu_event_bits
- */
-enum battery_status
-{
-  BATTERY_STATUS_MAINS        = 0u,                                                       // The battery is charging (or charged)
-  BATTERY_STATUS_DISCHARGING  = MCU_EVENT_BATTERY_STATE_0,                                // The battery is discharging
-  BATTERY_STATUS_LOW          = MCU_EVENT_BATTERY_STATE_1,                                // The battery requires charging urgently
-  BATTERY_STATUS_CRITICAL     = (MCU_EVENT_BATTERY_STATE_1 | MCU_EVENT_BATTERY_STATE_0),  // Battery power will be imminently withdrawn
 };
 
 /**
