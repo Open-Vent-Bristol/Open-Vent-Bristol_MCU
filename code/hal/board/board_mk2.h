@@ -2,6 +2,9 @@
 #ifndef BOARD_MK2_H
 #define BOARD_MK2_H
 
+#define GLOBAL_INTERRUPTS_DISABLE()
+#define GLOBAL_INTERRUPTS_ENABLE()
+
 #define CPU_CLOCK_HZ        ((uint32_t)16000000u)
 // TODO - using NUCLEO 476RG board at the moment which has no HSE oscillator
 #define HSI_VALUE           CPU_CLOCK_HZ
