@@ -29,28 +29,31 @@ void uart_ftp_get_command(ftp_command_t* command)
 
     switch(new_char)
     {
-      case READ_ALERT_INTERLOCK:
-      case READ_ALERT_PRESSURE:
-      case READ_ALERT_FLOW:
-      case READ_ALERT_VBATT:
-      case READ_ALERT_MOTOR_A:
-      case READ_ALERT_MOTOR_B:
-      case READ_SWITCH_1:
-      case READ_SWITCH_2:
-      case READ_SWITCH_3:
-      case READ_SWITCH_4:
-      case READ_ANALOGUE_FLOW:
-      case READ_ANALOGUE_PRESSURE:
-      case READ_ANALOGUE_VBATT:
-      case READ_ANALOGUE_MOTOR:
-      case READ_ANALOGUE_TEMP:
-      case READ_ANALOGUE_SOUNDER:
-      case READ_ANALOGUE_OXYGEN:
-      case READ_ANALOGUE_SPARE:
+      case READ_FPGA_READY:
+      case READ_MOTOR_FAULT_A:
+      case READ_MOTOR_FAULT_B:
+      case READ_PGOOD:
+      case READ_PRESSURE_ALERT:
+      case READ_PB_SEL:
+      case READ_PB_MUTE:
+      case READ_PB_MINUS:
+      case READ_PB_PLUS:
+      case READ_SW_BACKUP:
+      case READ_SW_END:
+      case READ_SW_HOME:
+      case READ_ANALOG_VBATT:
+      case READ_ANALOG_MOTOR_CURR:
+      case READ_ANALOG_ALARM_CURR:
+      case READ_ANALOG_SPARE:
       case MOTOR_STOP:
-      case RUN_MOTOR_IN:
-      case RUN_MOTOR_OUT:
+      case MOTOR_RUN_IN:
+      case MOTOR_RUN_OUT:
       case PRINT_SPI:
+      case BUZZER_CONTROL:
+      case BATT_LED_CONTROL:
+      case CE_CONTROL:
+      case LDO_EN_CONTROL:
+      case PWR_UP_CONTROL:
         s_command.instruction = new_char;
         break;
 
@@ -70,7 +73,7 @@ void uart_ftp_get_command(ftp_command_t* command)
           s_command.arg *= 10u;
           s_command.arg += (new_char - '0');
 
-          if (s_command.arg > 1023u)
+          if (s_command.arg > 255u)
           {
             uart_write(string_error_large, sizeof(string_error_large));
             s_command.instruction = NONE;

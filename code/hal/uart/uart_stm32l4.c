@@ -1,5 +1,5 @@
 #include "uart/uart.h"
-#include "uart/uart_priv.h"
+#include "uart/priv/uart_priv.h"
 #include "board/board.h"
 
 void uart_configure(void)

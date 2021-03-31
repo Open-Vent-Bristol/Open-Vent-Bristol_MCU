@@ -1,5 +1,5 @@
 #include "uart/uart.h"
-#include "uart/uart_priv.h"
+#include "uart/priv/uart_priv.h"
 #include "board/board.h"
 #include <stddef.h>
 #include <string.h>
