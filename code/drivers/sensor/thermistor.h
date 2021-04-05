@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef THERMISTOR_H
 #define THERMISTOR_H
 

@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef DISPATCHER_MOCK_H
 #define DISPATCHER_MOCK_H
 

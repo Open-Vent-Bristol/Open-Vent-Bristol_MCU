@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "timer.h"
 #include "private/timer_priv.h"
 #include "dispatcher.h"

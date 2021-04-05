@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #pragma once
 
 #define BATTERY_INDICATOR_OUTLINE \

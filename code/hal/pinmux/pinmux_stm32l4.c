@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "pinmux.h"
 #include "pinmux_stm32l4.h"
 #include "stm32l4xx_ll_bus.h"

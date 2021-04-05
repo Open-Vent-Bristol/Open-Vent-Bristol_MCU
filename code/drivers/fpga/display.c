@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "display.h"
 #include "private/display_priv.h"
 #include "misc/util.h"

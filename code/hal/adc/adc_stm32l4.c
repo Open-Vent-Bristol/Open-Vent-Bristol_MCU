@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "adc/adc.h"
 #include "board/board.h"
 #include <stddef.h>
