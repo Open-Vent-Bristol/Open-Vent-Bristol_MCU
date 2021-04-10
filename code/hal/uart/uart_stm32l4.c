@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "uart/uart.h"
 #include "uart/priv/uart_priv.h"
 #include "board/board.h"

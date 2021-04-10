@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 // This file should not be included directly.  Include board/board.h instead and define a board ID,
 // e.g. -DBOARD_V3
 #ifndef BOARD_V3_H

@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef FTP_TYPES_H
 #define FTP_TYPES_H
 

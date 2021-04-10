@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef PINMUX_STM32L4_H
 #define PINMUX_STM32L4_H
 

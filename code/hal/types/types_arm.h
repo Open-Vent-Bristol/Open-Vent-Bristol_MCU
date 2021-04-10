@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef TYPES_ARM_H
 #define TYPES_ARM_H
 

@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #pragma once
 
 #include "fpga/fpga_api.h"

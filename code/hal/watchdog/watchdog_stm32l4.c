@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "watchdog.h"
 #include "stm32l4/stm32l4xx_ll_iwdg.h"
 

@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "unity.h"
 #include "unity_fixture.h"
 #include "scheduler/dispatcher.h"

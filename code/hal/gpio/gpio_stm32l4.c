@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "gpio/gpio.h"
 #include "board/board.h"
 #include <stdint.h>

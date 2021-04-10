@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 // Do not include this file except in pinmux_stm32l4.c, as it contains an array definition
 #include "pinmux/pinmux.h"
 #include "pinmux/pinmux_stm32l4.h"
