@@ -6,6 +6,8 @@ set(UNITY_SRC
   ../frameworks/Unity/extras/memory/src/unity_memory.c
 )
 
+set(CODE ../../code)
+
 add_definitions(
     -DDEBUG
     -DUTEST_MODE
@@ -17,7 +19,7 @@ include_directories(
   ../frameworks/Unity/extras/fixture/src
   ../frameworks/Unity/extras/memory/src
   ../mocks
-  ../../code/application
-  ../../code/drivers
-  ../../code/hal
+  ${CODE}/application
+  ${CODE}/drivers
+  ${CODE}/hal
 )
