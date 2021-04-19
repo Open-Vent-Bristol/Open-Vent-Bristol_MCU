@@ -3,14 +3,14 @@
 #pragma once
 
 #define BATTERY_INDICATOR_OUTLINE \
-  (uint64_t)( 0b01110UL << 56u | \
-              0b11111UL << 48u | \
-              0b10001UL << 40u | \
-              0b10001UL << 32u | \
-              0b10001UL << 24u | \
-              0b10001UL << 16u | \
-              0b10001UL << 8u  | \
-              0b11111UL )
+  (uint64_t)( 0b01110ULL << 56u | \
+              0b11111ULL << 48u | \
+              0b10001ULL << 40u | \
+              0b10001ULL << 32u | \
+              0b10001ULL << 24u | \
+              0b10001ULL << 16u | \
+              0b10001ULL << 8u  | \
+              0b11111ULL )
 
 #define BATTERY_INDICATOR_EDGE (0b01110)
 
@@ -19,14 +19,14 @@
  * right shift up to 4.  To create a solid block, OR the result in a loop
  */
 #define PRESSURE_BAR_EDGE \
-  (uint64_t)( 0b10000UL << 56u | \
-              0b10000UL << 48u | \
-              0b10000UL << 40u | \
-              0b10000UL << 32u | \
-              0b10000UL << 24u | \
-              0b10000UL << 16u | \
-              0b10000UL << 8u  | \
-              0b10000UL )
+  (uint64_t)( 0b10000ULL << 56u | \
+              0b10000ULL << 48u | \
+              0b10000ULL << 40u | \
+              0b10000ULL << 32u | \
+              0b10000ULL << 24u | \
+              0b10000ULL << 16u | \
+              0b10000ULL << 8u  | \
+              0b10000ULL )
 
 #define FULL_BLOCK (219u)
 

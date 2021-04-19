@@ -27,9 +27,7 @@ void spi_init(void)
 {
   // Configure SPI
   LL_SPI_Init(SPI, &stm32l4_spi);
-  LL_SPI_ENABLE(SPI);
-  spi.available = true;
-
+  LL_SPI_Enable(SPI);
 }
 
 
