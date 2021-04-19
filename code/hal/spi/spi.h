@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Alex Luisi>
+
 #ifndef SPI_H
 #define SPI_H
 
