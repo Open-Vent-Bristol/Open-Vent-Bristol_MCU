@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef BOARD_UNITTEST_H
 #define BOARD_UNITTEST_H
 

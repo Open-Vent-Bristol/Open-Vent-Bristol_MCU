@@ -1,15 +1,14 @@
+// Copyright 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "board/board.h"
 #include "clock/clock.h"
 #include "gpio/gpio.h"
-#include "spi/spi.h"
 #include "uart/uart.h"
 #include "adc/adc.h"
 #include "ftp_types.h"
-#include "gpio/multiplexer.h"
 
 void process_command(ftp_command_t* command);
 extern void uart_ftp_get_command(ftp_command_t* command);
-extern void spi_ftp_run(void);
 
 static const char string_error_not_implemented[] = " - not implemented";
 static const char string_high[] = "HIGH";
@@ -36,12 +35,6 @@ int main(void)
   gpio_init();
   uart_init();
   adc_init();
-  spi_init();
-  spi_setup_transaction(&LATCH_PORT, LATCH_PIN);
-
-  SCHEDULER_START();
-
-  sei();
 
   uart_write(string_welcome, sizeof(string_welcome));
   uart_write(string_newline, sizeof(string_newline));
@@ -54,7 +47,7 @@ int main(void)
     {
       // Make the spare GPIO high for the duration of processing - this enables the scheduler
       // frequency to be checked on a scope
-      gpio_set_pin(&GPIO_SPARE_PORT, GPIO_SPARE_PIN);
+      // gpio_set_pin(ADC_PORT, ADC_SPARE_PIN); - TODO
 
       uart_ftp_get_command(&ftp_command);
       if (ftp_command.instruction != NONE)
@@ -63,7 +56,7 @@ int main(void)
       }
 
       // Clear the spare GPIO - for checking frequency
-      gpio_clear_pin(&GPIO_SPARE_PORT, GPIO_SPARE_PIN);
+      // gpio_clear_pin(ADC_PORT, ADC_SPARE_PIN); - TODO
 
       // Set timer so there's a delay before processing again
       g_timer_ms = 20u;
@@ -98,61 +91,76 @@ void process_command(ftp_command_t* command)
       adc_reading = adc_read_blocking(ADC_TEMP);
       break;
 
+    case READ_ANALOGUE_SOUNDER:
+      adc_reading = adc_read_blocking(ADC_SOUNDER);
+      break;
+
+    case READ_ANALOGUE_OXYGEN:
+      adc_reading = adc_read_blocking(ADC_OXYGEN);
+      break;
+
+    case READ_ANALOGUE_SPARE:
+      adc_reading = adc_read_blocking(ADC_SPARE);
+      break;
+
     case READ_ALERT_INTERLOCK:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_CASE_INTERLOCK);
+      uart_write(string_error_not_implemented, sizeof(string_error_not_implemented));
+      break;
+
+    case READ_ALERT_MOTOR_A:
+      digital_reading = gpio_read_pin(ALERT_PORT, ALERT_MOTOR_A_N_PIN);
+      break;
+
+    case READ_ALERT_MOTOR_B:
+      digital_reading = gpio_read_pin(ALERT_PORT, ALERT_MOTOR_B_N_PIN);
       break;
 
     case READ_ALERT_PRESSURE:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_PRESSURE_ALERT);
-      break;
-
-    case READ_ALERT_FLOW:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_FLOW_ALERT);
+      digital_reading = gpio_read_pin(ALERT_PORT, ALERT_PRESS_N_PIN);
       break;
 
     case READ_ALERT_VBATT:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_VBATT_ALERT);
+      digital_reading = gpio_read_pin(ALERT_PORT, ALERT_VBATT_N_PIN);
       break;
 
     case READ_SWITCH_1:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_1);
+      digital_reading = gpio_read_pin(SWITCH_PORT, SWITCH_1_PIN);
       break;
 
     case READ_SWITCH_2:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_2);
+      digital_reading = gpio_read_pin(SWITCH_PORT, SWITCH_2_PIN);
       break;
 
     case READ_SWITCH_3:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_3);
+      digital_reading = gpio_read_pin(SWITCH_PORT, SWITCH_3_PIN);
       break;
 
     case READ_SWITCH_4:
-      digital_reading = multiplexer_digital_read_channel(MUX_SELECT_MEMBRANE_SW_4);
+      digital_reading = gpio_read_pin(SWITCH_PORT, SWITCH_4_PIN);
       break;
 
     case RUN_MOTOR_IN:
-      gpio_set_pin(&MOTOR_IN_A_PORT, MOTOR_IN_A_PIN);
-      gpio_clear_pin(&MOTOR_IN_B_PORT, MOTOR_IN_B_PIN);
+      gpio_set_pin(MOTOR_IN_PORT, MOTOR_IN_A_PIN);
+      gpio_clear_pin(MOTOR_IN_PORT, MOTOR_IN_B_PIN);
       MOTOR_PWM(command->arg);
       MOTOR_PWM_START();
       break;
 
     case RUN_MOTOR_OUT:
-      gpio_clear_pin(&MOTOR_IN_A_PORT, MOTOR_IN_A_PIN);
-      gpio_set_pin(&MOTOR_IN_B_PORT, MOTOR_IN_B_PIN);
+      gpio_clear_pin(MOTOR_IN_PORT, MOTOR_IN_A_PIN);
+      gpio_set_pin(MOTOR_IN_PORT, MOTOR_IN_B_PIN);
       MOTOR_PWM(command->arg);
       MOTOR_PWM_START();
       break;
 
     case MOTOR_STOP:
+      gpio_clear_pin(MOTOR_IN_PORT, MOTOR_IN_A_PIN);
+      gpio_clear_pin(MOTOR_IN_PORT, MOTOR_IN_B_PIN);
       MOTOR_PWM_STOP();
       break;
 
+    case READ_ALERT_FLOW:
     case PRINT_SPI:
-      spi_ftp_run();
-      uart_write("- check scope", 13u);
-      break;
-
     case NONE:
       uart_write(string_error_not_implemented, sizeof(string_error_not_implemented));
       break;

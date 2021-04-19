@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef GPIO_H
 #define GPIO_H
 
@@ -7,12 +9,6 @@
 extern "C"
 {
 #endif
-
-/**
- * @brief Setup the GPIO ports (direction, mode, etc) as required by board
- *
- */
-void gpio_init(void);
 
 /**
  * @brief Set a pin mask on the GPIO port

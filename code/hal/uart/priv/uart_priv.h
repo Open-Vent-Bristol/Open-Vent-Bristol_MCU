@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef UART_PRIV_H
 #define UART_PRIV_H
 

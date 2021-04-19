@@ -1,7 +1,7 @@
 {
     "configurations": [
         {
-            "name": "NUCLEO-L476RG",
+            "name": "v3",
             "includePath": [
                 "${workspaceFolder}/code/application",
                 "${workspaceFolder}/code/drivers",
@@ -17,60 +17,14 @@
             ],
             "defines": [
                 "STM32L476xx",
-                "BOARD_MK2",
+                "BOARD_V3",
                 "USE_FULL_LL_DRIVER"
             ],
             "compilerPath": "/Users/donaldr/include/bin/arm-none-eabi-gcc",
-            "cStandard": "c99",
+            "cStandard": "c11",
             "cppStandard": "c++14",
-            "intelliSenseMode": "gcc-x86"
+            "intelliSenseMode": "gcc-arm"
         },
-        {
-            "name": "STM32L412C8",
-            "includePath": [
-                "${workspaceFolder}/code/application",
-                "${workspaceFolder}/code/drivers",
-                "${workspaceFolder}/code/hal",
-                "${workspaceFolder}/code/hal/stm32l4",
-                "${workspaceFolder}/code/hal/stm32l4/CMSIS/Device/ST/STM32L4xx/Include",
-                "${workspaceFolder}/code/hal/stm32l4/CMSIS/Core/Include",
-                "${workspaceFolder}/unittests/frameworks/fff",
-                "${workspaceFolder}/unittests/frameworks/Unity/src",
-                "${workspaceFolder}/unittests/frameworks/Unity/extras/fixture/src",
-                "${workspaceFolder}/unittests/frameworks/Unity/extras/memory/src",
-                "${workspaceFolder}/unittests/mocks"
-            ],
-            "defines": [
-                "STM32L412xx",
-                "BOARD_MK2",
-                "USE_FULL_LL_DRIVER"
-            ],
-            "compilerPath": "/Users/donaldr/include/bin/arm-none-eabi-gcc",
-            "cStandard": "c99",
-            "cppStandard": "c++14",
-            "intelliSenseMode": "gcc-x86"
-        },
-        {
-            "name": "ATmega328P",
-            "includePath": [
-                "${workspaceFolder}/code/application",
-                "${workspaceFolder}/code/drivers",
-                "${workspaceFolder}/code/hal",
-                "${workspaceFolder}/unittests/frameworks/fff",
-                "${workspaceFolder}/unittests/frameworks/Unity/src",
-                "${workspaceFolder}/unittests/frameworks/Unity/extras/fixture/src",
-                "${workspaceFolder}/unittests/frameworks/Unity/extras/memory/src",
-                "${workspaceFolder}/unittests/mocks"
-            ],
-            "defines": [
-                "__AVR_ATmega328P__",
-                "BOARD_MK1"
-            ],
-            "compilerPath": "/usr/local/bin/avr-gcc",
-            "cStandard": "c99",
-            "cppStandard": "c++98",
-            "intelliSenseMode": "gcc-x86"
-        }
     ],
     "version": 4
 }

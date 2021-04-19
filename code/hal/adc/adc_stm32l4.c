@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "adc/adc.h"
 #include "board/board.h"
 #include <stddef.h>
@@ -137,35 +139,13 @@ static ADC_peripheral_t assign_peripheral(ADC_channel_t channel)
 {
   ADC_peripheral_t peripheral = ADC_PERIPH_NONE;
 
-  switch (channel)
+  if (s_adc_handles[ADC_PERIPH_2].available)
   {
-    case ADC_PRESSURE:
-    case ADC_OXYGEN:
-      // These channels are ADC1 only
-      if (s_adc_handles[ADC_PERIPH_1].available)
-      {
-        peripheral = ADC_PERIPH_1;
-      }
-      break;
-
-    case ADC_SOUNDER:
-    case ADC_MOTOR_CURRENT:
-    case ADC_VBATT:
-    case ADC_FLOW:
-    case ADC_TEMP:
-    case ADC_SPARE:
-    case ADC_FLOW_GAIN:
-      // Since these channels can be used with either ADC, try ADC2 first
-      // so as to not block the pressure and oxygen sensors
-      if (s_adc_handles[ADC_PERIPH_2].available)
-      {
-        peripheral = ADC_PERIPH_2;
-      }
-      else if (s_adc_handles[ADC_PERIPH_1].available)
-      {
-        peripheral = ADC_PERIPH_1;
-      }
-      break;
+    peripheral = ADC_PERIPH_2;
+  }
+  else if (s_adc_handles[ADC_PERIPH_1].available)
+  {
+    peripheral = ADC_PERIPH_1;
   }
 
   if (peripheral != ADC_PERIPH_NONE)

@@ -3,6 +3,9 @@ set(CMAKE_SYSTEM_PROCESSOR ARM)
 
 set(TOOLCHAIN_PREFIX arm-none-eabi-)
 
+set(CMAKE_C_COMPILER_WORKS 1)
+set(CMAKE_CXX_COMPILER_WORKS 1)
+
 set(COMMON_FLAGS "-mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -fno-builtin -Werror -Wall -ffunction-sections -fdata-sections -fomit-frame-pointer -mabi=aapcs")
 
 set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}gcc CACHE INTERNAL "C Compiler")

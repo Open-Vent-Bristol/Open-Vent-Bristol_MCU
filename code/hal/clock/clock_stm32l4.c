@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "clock/clock.h"
 #include "board/board.h"
 
@@ -23,7 +25,7 @@ void clock_init(void)
 
   // SysTick config for scheduler
   // IMPORTANT: the AHBPrescaler setting above must be accounted for if non-zero
-  SysTick_Config((CPU_CLOCK_HZ / SCHEDULER_HZ) - 1u);
+  SysTick_Config((CPU_CLOCK_HZ / SYSTICK_HZ) - 1u);
 
   motor_pwm_init();
 }
