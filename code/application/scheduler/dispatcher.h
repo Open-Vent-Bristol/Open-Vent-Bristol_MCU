@@ -3,7 +3,7 @@
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
 
-#include "system_event.h"
+#include "state/system_event.h"
 #include <stddef.h>
 
 /**

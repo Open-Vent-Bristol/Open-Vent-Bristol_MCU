@@ -11,6 +11,6 @@ typedef enum
   ERR_IO        = 1,
   ERR_BUSY      = 2,
   ERR_NOT_IMPL  = 3,
-} Error_t;
+} error_t;
 
 #endif /* ERROR_H */

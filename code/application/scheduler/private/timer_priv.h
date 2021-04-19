@@ -3,7 +3,7 @@
 #ifndef TIMER_PRIV_H
 #define TIMER_PRIV_H
 
-#include "scheduler/system_event.h"
+#include "state/system_event.h"
 
 /**
  * @brief Increment all attached timers and allow them to expire
