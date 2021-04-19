@@ -1,9 +1,34 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #ifndef EVENT_H
 #define EVENT_H
 
-/**
- * Note: maximum event number must be (1u << 31u) or lower
- */
+#include <stdint.h>
+
+#define NO_EVENT (enum system_event)0
+
+typedef void (*system_event_callback)(int32_t);
+
+enum system_event
+{
+  EV_FPGA_READY,
+  EV_UI,
+  EV_OP_MODE_CHANGE,
+  EV_MOTOR_DISABLED,
+  EV_TIDAL_VOLUME_EXCEEDED,
+  EV_VBATT_CRITICAL,
+  EV_DO_SOUND_ALARM,
+  EV_DO_UPDATE_DISPLAY,
+  EV_DO_LOG,
+
+  /* SYSTEM TEST */
+  EV_UART_EV_INJECT,
+
+  /* Define above this line only - limit 32 events */
+  EV_NUMBER_EVENTS
+};
+
+/*
 typedef enum
 {
   // Ventilation events
@@ -33,6 +58,7 @@ typedef enum
   EVENT_CONSOLE_ENTER         = (1u << 29u),
   EVENT_CONSOLE_ACTIVITY      = (1u << 30u),
   EVENT_CONSOLE_EXIT          = (1u << 31u)
-} event_t;
+} event_t
+*/
 
 #endif /* EVENT_H */
