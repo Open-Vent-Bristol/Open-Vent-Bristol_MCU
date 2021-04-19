@@ -22,7 +22,7 @@ target_sources(OpenVent_hal
     # src/stm32l4xx_ll_rng.c
     # src/stm32l4xx_ll_rtc.c
     # src/stm32l4xx_ll_sdmmc.c
-    # src/stm32l4xx_ll_spi.c
+    src/stm32l4xx_ll_spi.c
     # src/stm32l4xx_ll_swpmi.c
     src/stm32l4xx_ll_tim.c
     src/stm32l4xx_ll_usart.c

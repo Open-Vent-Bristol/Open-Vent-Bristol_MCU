@@ -20,25 +20,6 @@ extern "C" {
 void spi_init(void);
 
 /**
- * @brief Check that the SPI device is ready to start a new transaction
- *
- * @return true       SPI device is available
- * @return false      SPI device is unavailable
- */
-bool spi_available(void);
-
-/**
- * @brief Prepare to start a new transaction.
- * If the SPI device is busy, the transaction will not be started
- *
- * @param chip_select_port  GPIO port of the chip select pin
- * @param chip_select_pin   Chip select pin number (not left shifted)
- * @return true             SPI device is available
- * @return false            SPI device is unavailable
- */
-bool spi_setup_transaction(gpio_register_t chip_select_port, register_size_t chip_select_pin);
-
-/**
  * @brief Start a command only SPI transaction.
  * If the SPI device is busy, the transaction will not be started
  *
