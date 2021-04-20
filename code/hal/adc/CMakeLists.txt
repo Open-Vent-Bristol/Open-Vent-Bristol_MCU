@@ -1,4 +1,4 @@
 target_sources(OpenVent_hal
-  PUBLIC
+  PRIVATE
     adc_${MCU_TARGET}.c
 )

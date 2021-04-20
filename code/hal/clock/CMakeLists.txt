@@ -1,4 +1,4 @@
 target_sources(OpenVent_hal
-  PUBLIC
+  PRIVATE
     clock_${MCU_TARGET}.c
 )
