@@ -1,5 +1,5 @@
 target_sources(OpenVent_hal
-  PUBLIC
+  PRIVATE
     # CMSIS/Device/ST/STM32L4xx/Source/Templates/gcc/startup_stm32l412xx.s
     CMSIS/Device/ST/STM32L4xx/Source/Templates/gcc/startup_stm32l476xx.s
     CMSIS/Device/ST/STM32L4xx/Source/Templates/system_stm32l4xx.c

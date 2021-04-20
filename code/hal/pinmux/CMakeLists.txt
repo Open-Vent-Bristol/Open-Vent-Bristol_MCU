@@ -1,4 +1,4 @@
 target_sources(OpenVent_hal
-  PUBLIC
+  PRIVATE
     pinmux_${MCU_TARGET}.c
 )
