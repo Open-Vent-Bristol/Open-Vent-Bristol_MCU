@@ -3,30 +3,40 @@
 #pragma once
 
 #define BATTERY_INDICATOR_OUTLINE \
-  (uint64_t)( 0b01110UL << 56u | \
-              0b11111UL << 48u | \
-              0b10001UL << 40u | \
-              0b10001UL << 32u | \
-              0b10001UL << 24u | \
-              0b10001UL << 16u | \
-              0b10001UL << 8u  | \
-              0b11111UL )
+  (uint64_t)( 0b01110ul << 56ul | \
+              0b11111ul << 48ul | \
+              0b10001ul << 40ul | \
+              0b10001ul << 32ul | \
+              0b10001ul << 24ul | \
+              0b10001ul << 16ul | \
+              0b10001ul << 8ul  | \
+              0b11111ul )
 
 #define BATTERY_INDICATOR_EDGE (0b01110)
+
+#define BATTERY_INDICATOR_FAULT \
+  (uint64_t)( 0b01110ul << 56ul | \
+              0b11111ul << 48ul | \
+              0b10110ul << 40ul | \
+              0b11000ul << 32ul | \
+              0b00011ul << 24ul | \
+              0b01101ul << 16ul | \
+              0b10001ul << 8ul  | \
+              0b11111ul )
 
 /**
  * This just creates a single vertical line down the left side.  To adjust the position,
  * right shift up to 4.  To create a solid block, OR the result in a loop
  */
 #define PRESSURE_BAR_EDGE \
-  (uint64_t)( 0b10000UL << 56u | \
-              0b10000UL << 48u | \
-              0b10000UL << 40u | \
-              0b10000UL << 32u | \
-              0b10000UL << 24u | \
-              0b10000UL << 16u | \
-              0b10000UL << 8u  | \
-              0b10000UL )
+  (uint64_t)( 0b10000ul << 56ul | \
+              0b10000ul << 48ul | \
+              0b10000ul << 40ul | \
+              0b10000ul << 32ul | \
+              0b10000ul << 24ul | \
+              0b10000ul << 16ul | \
+              0b10000ul << 8ul  | \
+              0b10000ul )
 
 #define FULL_BLOCK (219u)
 
@@ -48,6 +58,8 @@ enum display_index
   DISP_PRESSURE_LEN         = 2,
   DISP_PRESSURE_GAUGE     = 18,
   DISP_PRESSURE_GAUGE_LEN = 14,
+  DISP_PROGRESS_BAR       = DISP_PRESSURE,
+  DISP_PROGRESS_BAR_LEN     = DISP_PRESSURE_LEN + DISP_PRESSURE_GAUGE_LEN,
 
   DISP_LEN                = 32
 };
@@ -88,5 +100,6 @@ enum display_char
   DISPLAY_CHAR_BATTERY_40,      // Partly filled battery outline
   DISPLAY_CHAR_BATTERY_60,      // Partly filled battery outline
   DISPLAY_CHAR_BATTERY_80,      // Partly filled battery outline
-  DISPLAY_CHAR_BATTERY_100      // Full battery outline
+  DISPLAY_CHAR_BATTERY_100,     // Full battery outline
+  DISPLAY_CHAR_BATTERY_FAULT,   // Broken battery outline
 };

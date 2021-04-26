@@ -15,6 +15,7 @@ TEST_GROUP_RUNNER(display_tests)
   RUN_TEST_CASE(display_tests, make_custom_char_pressure_bar_edge);
   RUN_TEST_CASE(display_tests, make_custom_char_battery_empty);
   RUN_TEST_CASE(display_tests, make_custom_char_battery);
+  RUN_TEST_CASE(display_tests, make_custom_char_battery_fault);
 
   RUN_TEST_CASE(display_tests, format_tidal_volume_text);
   RUN_TEST_CASE(display_tests, format_tidal_volume_out_of_bounds);
@@ -44,6 +45,19 @@ TEST_GROUP_RUNNER(display_tests)
 
   RUN_TEST_CASE(display_tests, format_battery_gauge_char);
   RUN_TEST_CASE(display_tests, format_battery_gauge_char_no_change);
+
+  RUN_TEST_CASE(display_tests, format_battery_fault_char);
+  RUN_TEST_CASE(display_tests, format_battery_fault_char_no_change);
+
+  RUN_TEST_CASE(display_tests, format_progress_bar_steps);
+  RUN_TEST_CASE(display_tests, format_progress_bar_out_of_bounds);
+
+  RUN_TEST_CASE(display_tests, string_null_pointer);
+  RUN_TEST_CASE(display_tests, string_terminates_at_length_32);
+  RUN_TEST_CASE(display_tests, string_null_terminated_first_line);
+  RUN_TEST_CASE(display_tests, string_opening_new_line_second_line_only);
+  RUN_TEST_CASE(display_tests, string_ignores_new_line_at_index_16);
+  RUN_TEST_CASE(display_tests, string_treats_new_line_on_second_line_as_termination);
 }
 
 static void RunAllTests(void)
