@@ -3,7 +3,9 @@
 #ifndef TYPES_H
 #define TYPES_H
 
-#ifdef BOARD_V3
+#if defined(UTEST_MODE)
+#include "types_unittest.h"
+#elif defined(BOARD_V3)
 #include "types/types_arm.h"
 #endif
 

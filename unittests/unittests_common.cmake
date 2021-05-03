@@ -14,6 +14,7 @@ add_definitions(
 )
 
 include_directories(
+  ../frameworks
   ../frameworks/fff
   ../frameworks/Unity/src
   ../frameworks/Unity/extras/fixture/src

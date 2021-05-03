@@ -36,7 +36,7 @@ TEST(timer_tests, tick_all_processes_all_timers)
   timer_t timer0 =
   {
     .remaining_ticks = 2,
-    .unique_id = TIMER_0
+    .unique_id = TIMER_ACTUATOR_SERVICE
   };
 
   timer_t timer1 =
@@ -69,12 +69,12 @@ TEST(timer_tests, tick_all_processes_all_timers)
     .unique_id = TIMER_5
   };
 
-  s_timers[TIMER_0] = &timer0;
-  s_timers[TIMER_1] = &timer1;
-  s_timers[TIMER_2] = &timer2;
-  s_timers[TIMER_3] = &timer3;
-  s_timers[TIMER_4] = &timer4;
-  s_timers[TIMER_5] = &timer5;
+  s_timers[TIMER_ACTUATOR_SERVICE - TIMER_START_INDEX] = &timer0;
+  s_timers[TIMER_1 - TIMER_START_INDEX] = &timer1;
+  s_timers[TIMER_2 - TIMER_START_INDEX] = &timer2;
+  s_timers[TIMER_3 - TIMER_START_INDEX] = &timer3;
+  s_timers[TIMER_4 - TIMER_START_INDEX] = &timer4;
+  s_timers[TIMER_5 - TIMER_START_INDEX] = &timer5;
 
   timer_tick_all();
 
@@ -91,10 +91,31 @@ TEST(timer_tests, attach_pointer)
   test_timer.unique_id = TIMER_1;
 
   timer_attach(&test_timer);
-  TEST_ASSERT_NOT_NULL(s_timers[TIMER_1]);
+  TEST_ASSERT_NOT_NULL(s_timers[TIMER_1 - TIMER_START_INDEX]);
 
   timer_attach(NULL);
-  TEST_ASSERT_EQUAL_PTR(&test_timer, s_timers[TIMER_1]);
+  TEST_ASSERT_EQUAL_PTR(&test_timer, s_timers[TIMER_1 - TIMER_START_INDEX]);
+}
+
+TEST(timer_tests, attach_only_valid_index)
+{
+  test_timer.unique_id = 0u;
+
+  timer_attach(&test_timer);
+
+  for (size_t i = 0u; i < TIMER_COUNT; i++)
+  {
+    TEST_ASSERT_NULL(s_timers[i]);
+  }
+
+  test_timer.unique_id = UINT32_MAX;
+
+  timer_attach(&test_timer);
+
+  for (size_t i = 0u; i < TIMER_COUNT; i++)
+  {
+    TEST_ASSERT_NULL(s_timers[i]);
+  }
 }
 
 TEST(timer_tests, attach_zero_ticks_does_not_signal_events)
@@ -150,6 +171,21 @@ TEST(timer_tests, reset_negative_ticks_does_not_signal_events)
   timer_reset(&test_timer);
   timer_tick_all();
   TEST_ASSERT_EQUAL(0, dispatcher_signal_event_mask_fake.call_count);
+}
+
+TEST(timer_tests, stop_null_pointer)
+{
+  // Just check for no segfault
+  timer_stop(NULL);
+  TEST_ASSERT_EQUAL_INT(0, 0);
+}
+
+TEST(timer_tests, stop_sets_remaining_ticks)
+{
+  test_timer.initial_ticks = 100;
+
+  timer_stop(&test_timer);
+  TEST_ASSERT_EQUAL_INT(-1, test_timer.remaining_ticks);
 }
 
 TEST(timer_tests, expired_timer_sets_all_events)
