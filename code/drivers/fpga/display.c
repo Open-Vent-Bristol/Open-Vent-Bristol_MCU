@@ -116,7 +116,7 @@ void display_format_tidal_volume(uint16_t tidal_volume_ml)
       digits[1] = remainder / 10u;
       digits[2] = remainder - (digits[1] * 10u);
 
-      for (size_t i = 0; i < DISP_TIDAL_VOL_LEN; i++)
+      for (size_t i = 0u; i < DISP_TIDAL_VOL_LEN; i++)
       {
         digits[i] += '0';
       }
@@ -146,7 +146,7 @@ void display_format_peak_flow(uint16_t peak_flow_dl_per_min)
       digits[1] = remainder / 10u;
       digits[2] = remainder - (digits[1] * 10u);
 
-      for (size_t i = 0; i < (DISP_PEAK_FLOW_LEN - 1u); i++)
+      for (size_t i = 0u; i < (DISP_PEAK_FLOW_LEN - 1u); i++)
       {
         digits[i] += '0';
       }
@@ -177,7 +177,7 @@ void display_format_respiration_rate(uint8_t breaths_per_min)
       digits[0] = breaths_per_min / 10u;
       digits[1] = breaths_per_min - (digits[0] * 10u);
 
-      for (size_t i = 0; i < DISP_RESP_RATE_LEN; i++)
+      for (size_t i = 0u; i < DISP_RESP_RATE_LEN; i++)
       {
         digits[i] += '0';
       }
@@ -200,11 +200,11 @@ void display_format_percent_o2(uint8_t oxygen_percent)
 
     if (oxygen_percent < 100u)
     {
-      digits[0] = 0;
+      digits[0] = 0u;
       digits[1] = oxygen_percent / 10u;
       digits[2] = oxygen_percent - (digits[0] * 10u);
 
-      for (size_t i = 0; i < DISP_PERCENT_LEN; i++)
+      for (size_t i = 0u; i < DISP_PERCENT_LEN; i++)
       {
         digits[i] += '0';
       }
@@ -256,7 +256,7 @@ void display_format_battery_fault(void)
 
 void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure_cmH2O)
 {
-  static uint16_t last_pressure = 0;
+  static uint16_t last_pressure = 0u;
   static uint16_t last_peak = 0u;
 
   // Format pressure value
@@ -269,7 +269,7 @@ void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure
       digits[0] = pressure_cmH2O / 10u;
       digits[1] = pressure_cmH2O - (digits[0] * 10u);
 
-      for (size_t i = 0; i < DISP_RESP_RATE_LEN; i++)
+      for (size_t i = 0u; i < DISP_RESP_RATE_LEN; i++)
       {
         digits[i] += '0';
       }
@@ -374,7 +374,7 @@ void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure
 
 void display_format_progress_bar(uint8_t progress_percent)
 {
-  static uint8_t last_percent = 0;
+  static uint8_t last_percent = 0u;
 
   if (last_percent != progress_percent)
   {
@@ -414,7 +414,7 @@ void display_string(const char* const string_to_display)
 
     // First line
     size_t i = 0u;
-    for (; i < (sizeof(buffer) / 2u); i++)
+    for (; i < (DISP_LEN / 2u); i++)
     {
       if (string_to_display[i] == '\0')
       {
@@ -442,12 +442,12 @@ void display_string(const char* const string_to_display)
         offset += 1u;
       }
 
-      for (i = 0u; i < (sizeof(buffer) / 2u); i++)
+      for (i = 0u; i < (DISP_LEN / 2u); i++)
       {
         if (string_to_display[i + offset] == '\0') break;
         if (string_to_display[i + offset] == '\n') break;
 
-        buffer[(sizeof(buffer) / 2u) + i] = string_to_display[i + offset];
+        buffer[(DISP_LEN / 2u) + i] = string_to_display[i + offset];
       }
     }
 
