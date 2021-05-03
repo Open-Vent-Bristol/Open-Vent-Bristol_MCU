@@ -24,13 +24,13 @@ void pid_update(pid_data_t* const pid, uint32_t time_elapsed, int16_t measuremen
       output = output + 0.5;
     }
 
-    if (output > (float)INT16_MAX)
+    if (output > (float)pid->output_max)
     {
-      output = INT16_MAX;
+      output = pid->output_max;
     }
-    else if (output < (float)INT16_MIN)
+    else if (output < (float)pid->output_min)
     {
-      output = INT16_MIN;
+      output = pid->output_min;
     }
 
     pid->output = (int16_t)output;

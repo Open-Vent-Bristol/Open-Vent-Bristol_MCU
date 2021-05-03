@@ -16,6 +16,8 @@ TEST(pid_tests, elapsed_time_zero)
 {
   pid_data_t pid =
   {
+    .output_max = INT16_MAX,
+    .output_min = INT16_MIN,
     .output = 1,
     .kp = 1,
     .ki = 1,
@@ -32,6 +34,8 @@ TEST(pid_tests, p_output_only)
 {
   pid_data_t pid =
   {
+    .output_max = INT16_MAX,
+    .output_min = INT16_MIN,
     .set_point = 2000,
     .kp = 1,
     .ki = 0,
@@ -60,6 +64,8 @@ TEST(pid_tests, i_output_only)
 {
   pid_data_t pid =
   {
+    .output_max = INT16_MAX,
+    .output_min = INT16_MIN,
     .set_point = 2000,
     .kp = 0,
     .ki = 1,
@@ -93,6 +99,8 @@ TEST(pid_tests, d_output_only)
 {
   pid_data_t pid =
   {
+    .output_max = INT16_MAX,
+    .output_min = INT16_MIN,
     .set_point = 2000,
     .kp = 0,
     .ki = 0,
@@ -125,6 +133,8 @@ TEST(pid_tests, pid_output)
 {
   pid_data_t pid =
   {
+    .output_max = INT16_MAX,
+    .output_min = INT16_MIN,
     .set_point = 2000,
     .kp = 11,
     .ki = 19,
@@ -145,6 +155,8 @@ TEST(pid_tests, input_cannot_overflow_16bit)
 {
   pid_data_t pid =
   {
+    .output_max = INT16_MAX,
+    .output_min = INT16_MIN,
     .set_point = INT16_MAX,
     .kp = 1,
     .ki = 0,
@@ -166,6 +178,8 @@ TEST(pid_tests, output_cannot_overflow_16bit)
 {
   pid_data_t pid =
   {
+    .output_max = INT16_MAX,
+    .output_min = INT16_MIN,
     .set_point = INT16_MAX,
     .kp = 2,
     .ki = 0,
@@ -181,4 +195,27 @@ TEST(pid_tests, output_cannot_overflow_16bit)
 
   pid_update(&pid, 1, 0);
   TEST_ASSERT_EQUAL(INT16_MIN, pid.output);
+}
+
+TEST(pid_tests, output_cannot_overflow_8bit)
+{
+  pid_data_t pid =
+  {
+    .output_max = 255,
+    .output_min = 0,
+    .set_point = INT16_MAX,
+    .kp = 2,
+    .ki = 0,
+    .kd = 0,
+  };
+
+  pid_update(&pid, 1, 0);
+  TEST_ASSERT_EQUAL(255, pid.output);
+
+  pid.integral = 0;
+  pid.previous_error = 0;
+  pid.set_point = INT16_MIN;
+
+  pid_update(&pid, 1, 0);
+ TEST_ASSERT_EQUAL(0, pid.output);
 }

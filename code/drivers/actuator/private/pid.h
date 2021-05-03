@@ -7,6 +7,8 @@
 
 typedef struct
 {
+  const int16_t output_max;
+  const int16_t output_min;
   int16_t output;
   int16_t set_point;
   int32_t previous_error;
