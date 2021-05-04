@@ -2,7 +2,7 @@
 
 #include "pid.h"
 
-void pid_update(pid_data_t* const pid, uint32_t time_elapsed, int16_t measurement)
+int16_t pid_update(pid_data_t* const pid, uint32_t time_elapsed, int16_t measurement)
 {
   if (time_elapsed != 0u)
   {
@@ -35,4 +35,6 @@ void pid_update(pid_data_t* const pid, uint32_t time_elapsed, int16_t measuremen
 
     pid->output = (int16_t)output;
   }
+
+  return pid->output;
 }

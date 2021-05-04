@@ -151,6 +151,23 @@ TEST(pid_tests, pid_output)
   TEST_ASSERT_EQUAL_INT(-1111 - 19190 - 293, pid.output);
 }
 
+TEST(pid_tests, returns_output)
+{
+  pid_data_t pid =
+  {
+    .output_max = INT16_MAX,
+    .output_min = INT16_MIN,
+    .set_point = 100,
+    .kp = 1,
+    .ki = 0,
+    .kd = 0,
+  };
+
+  int16_t output = pid_update(&pid, 10u, 80);
+  TEST_ASSERT_EQUAL_INT(20, pid.output);
+  TEST_ASSERT_EQUAL_INT(20, output);
+}
+
 TEST(pid_tests, input_cannot_overflow_16bit)
 {
   pid_data_t pid =

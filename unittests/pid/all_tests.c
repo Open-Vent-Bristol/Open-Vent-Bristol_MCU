@@ -11,6 +11,7 @@ TEST_GROUP_RUNNER(pid_tests)
   RUN_TEST_CASE(pid_tests, i_output_only);
   RUN_TEST_CASE(pid_tests, d_output_only);
   RUN_TEST_CASE(pid_tests, pid_output);
+  RUN_TEST_CASE(pid_tests, returns_output);
 
   RUN_TEST_CASE(pid_tests, input_cannot_overflow_16bit);
   RUN_TEST_CASE(pid_tests, output_cannot_overflow_16bit);

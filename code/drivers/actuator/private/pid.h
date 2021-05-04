@@ -23,7 +23,8 @@ typedef struct
  *
  * @param pid
  * @param measurement
+ * @return int16_t  New output
  */
-void pid_update(pid_data_t* const pid, uint32_t time_elapsed, int16_t measurement);
+int16_t pid_update(pid_data_t* const pid, uint32_t time_elapsed, int16_t measurement);
 
 #endif /* PID_H */
