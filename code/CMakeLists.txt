@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.13)
 project(OpenVent_firmware
     VERSION 1.0
     DESCRIPTION "OpenVent Firmware"
-    LANGUAGES ASM C CXX
+    LANGUAGES ASM C
 )
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -27,7 +27,7 @@ add_definitions(
   -D${BOARD_CONFIG}
 )
 
-# add_executable(OpenVent_firmware.elf)
+add_executable(OpenVent_firmware.elf)
 add_executable(OpenVent_ftp.elf)
 add_executable(OpenVent_minimal.elf)
 
@@ -50,11 +50,11 @@ add_subdirectory(drivers)
 add_subdirectory(hal)
 add_subdirectory(functional_test)
 
-# target_link_libraries(OpenVent_firmware.elf
-#   OpenVent_application
-#   OpenVent_drivers
-#   OpenVent_hal
-# )
+target_link_libraries(OpenVent_firmware.elf
+  OpenVent_application
+  OpenVent_drivers
+  OpenVent_hal
+)
 
 target_link_libraries(OpenVent_ftp.elf
   OpenVent_hal

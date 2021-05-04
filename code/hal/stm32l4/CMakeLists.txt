@@ -1,5 +1,5 @@
 target_sources(OpenVent_hal
-  PUBLIC
+  PRIVATE
     # CMSIS/Device/ST/STM32L4xx/Source/Templates/gcc/startup_stm32l412xx.s
     CMSIS/Device/ST/STM32L4xx/Source/Templates/gcc/startup_stm32l476xx.s
     CMSIS/Device/ST/STM32L4xx/Source/Templates/system_stm32l4xx.c
@@ -22,7 +22,7 @@ target_sources(OpenVent_hal
     # src/stm32l4xx_ll_rng.c
     # src/stm32l4xx_ll_rtc.c
     # src/stm32l4xx_ll_sdmmc.c
-    # src/stm32l4xx_ll_spi.c
+    src/stm32l4xx_ll_spi.c
     # src/stm32l4xx_ll_swpmi.c
     src/stm32l4xx_ll_tim.c
     src/stm32l4xx_ll_usart.c

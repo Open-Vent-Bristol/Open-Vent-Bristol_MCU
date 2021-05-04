@@ -1,5 +1,5 @@
 target_sources(OpenVent_hal
-  PUBLIC
+  PRIVATE
     uart.c
     uart_${MCU_TARGET}.c
 )

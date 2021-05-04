@@ -3,7 +3,7 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include "scheduler/system_event.h"
+#include "state/system_event.h"
 #include <stdint.h>
 
 enum timer_id

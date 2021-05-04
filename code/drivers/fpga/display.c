@@ -86,6 +86,14 @@ TESTABLE void make_custom_char(enum display_char char_to_create)
       }
       break;
     }
+
+    case DISPLAY_CHAR_BATTERY_FAULT:
+      if (s_custom_chars[CUSTOM_CHAR_BATTERY_INDICATOR] != BATTERY_INDICATOR_FAULT)
+      {
+        s_display_changed = true;
+        s_custom_chars[CUSTOM_CHAR_BATTERY_INDICATOR] = BATTERY_INDICATOR_FAULT;
+      }
+      break;
   }
 }
 
@@ -108,7 +116,7 @@ void display_format_tidal_volume(uint16_t tidal_volume_ml)
       digits[1] = remainder / 10u;
       digits[2] = remainder - (digits[1] * 10u);
 
-      for (size_t i = 0; i < DISP_TIDAL_VOL_LEN; i++)
+      for (size_t i = 0u; i < DISP_TIDAL_VOL_LEN; i++)
       {
         digits[i] += '0';
       }
@@ -138,7 +146,7 @@ void display_format_peak_flow(uint16_t peak_flow_dl_per_min)
       digits[1] = remainder / 10u;
       digits[2] = remainder - (digits[1] * 10u);
 
-      for (size_t i = 0; i < (DISP_PEAK_FLOW_LEN - 1u); i++)
+      for (size_t i = 0u; i < (DISP_PEAK_FLOW_LEN - 1u); i++)
       {
         digits[i] += '0';
       }
@@ -169,7 +177,7 @@ void display_format_respiration_rate(uint8_t breaths_per_min)
       digits[0] = breaths_per_min / 10u;
       digits[1] = breaths_per_min - (digits[0] * 10u);
 
-      for (size_t i = 0; i < DISP_RESP_RATE_LEN; i++)
+      for (size_t i = 0u; i < DISP_RESP_RATE_LEN; i++)
       {
         digits[i] += '0';
       }
@@ -192,11 +200,11 @@ void display_format_percent_o2(uint8_t oxygen_percent)
 
     if (oxygen_percent < 100u)
     {
-      digits[0] = 0;
+      digits[0] = 0u;
       digits[1] = oxygen_percent / 10u;
       digits[2] = oxygen_percent - (digits[0] * 10u);
 
-      for (size_t i = 0; i < DISP_PERCENT_LEN; i++)
+      for (size_t i = 0u; i < DISP_PERCENT_LEN; i++)
       {
         digits[i] += '0';
       }
@@ -238,9 +246,17 @@ void display_format_battery_gauge(uint8_t charge_percent)
   s_display[DISP_BATTERY] = (char)CUSTOM_CHAR_BATTERY_INDICATOR;
 }
 
+void display_format_battery_fault(void)
+{
+  make_custom_char(DISPLAY_CHAR_BATTERY_FAULT);
+
+  // Ensure the indicator shows on the display if overwritten
+  s_display[DISP_BATTERY] = (char)CUSTOM_CHAR_BATTERY_INDICATOR;
+}
+
 void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure_cmH2O)
 {
-  static uint16_t last_pressure = 0;
+  static uint16_t last_pressure = 0u;
   static uint16_t last_peak = 0u;
 
   // Format pressure value
@@ -253,7 +269,7 @@ void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure
       digits[0] = pressure_cmH2O / 10u;
       digits[1] = pressure_cmH2O - (digits[0] * 10u);
 
-      for (size_t i = 0; i < DISP_RESP_RATE_LEN; i++)
+      for (size_t i = 0u; i < DISP_RESP_RATE_LEN; i++)
       {
         digits[i] += '0';
       }
@@ -352,6 +368,104 @@ void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure
     last_peak = peak_pressure_cmH2O;
 
     strncpy(&s_display[DISP_PRESSURE_GAUGE], pressure_bar, DISP_PRESSURE_GAUGE_LEN);
+    s_display_changed = true;
+  }
+}
+
+void display_format_progress_bar(uint8_t progress_percent)
+{
+  static uint8_t last_percent = 0u;
+
+  if (last_percent != progress_percent)
+  {
+    uint32_t increments = 16u;
+
+    if (progress_percent <= 100u)
+    {
+      increments = progress_percent * DISP_PROGRESS_BAR_LEN / 100u;
+    }
+
+    // Start with an empty bar then copy full blocks into it
+    char progress_bar[DISP_PROGRESS_BAR_LEN];
+    memset(progress_bar, ' ', sizeof(progress_bar));
+    memset(progress_bar, FULL_BLOCK, increments);
+
+    last_percent = progress_percent;
+
+    strncpy(&s_display[DISP_PROGRESS_BAR], progress_bar, DISP_PROGRESS_BAR_LEN);
+    s_display_changed = true;
+  }
+}
+
+void display_string(const char* const string_to_display)
+{
+  enum which_lines
+  {
+    BOTH,
+    FIRST_ONLY,
+    SECOND_ONLY
+  };
+
+  if (string_to_display != NULL)
+  {
+    enum which_lines copy_lines = BOTH;
+    char buffer[DISP_LEN];
+    memset(buffer, ' ', sizeof(buffer));
+
+    // First line
+    size_t i = 0u;
+    for (; i < (DISP_LEN / 2u); i++)
+    {
+      if (string_to_display[i] == '\0')
+      {
+        copy_lines = FIRST_ONLY;
+        break;
+      }
+
+      if (string_to_display[i] == '\n') break;
+
+      buffer[i] = string_to_display[i];
+    }
+
+    if ((i < sizeof(buffer)) && (string_to_display[i] != '\0'))
+    {
+      // Second line
+      if (i == 0u)
+      {
+        copy_lines = SECOND_ONLY;
+      }
+
+      size_t offset = i;
+
+      if (string_to_display[i] == '\n')
+      {
+        offset += 1u;
+      }
+
+      for (i = 0u; i < (DISP_LEN / 2u); i++)
+      {
+        if (string_to_display[i + offset] == '\0') break;
+        if (string_to_display[i + offset] == '\n') break;
+
+        buffer[(DISP_LEN / 2u) + i] = string_to_display[i + offset];
+      }
+    }
+
+    switch (copy_lines)
+    {
+    case BOTH:
+      memcpy(&s_display[0], &buffer[0], DISP_LEN);
+      break;
+
+    case FIRST_ONLY:
+      memcpy(&s_display[0], &buffer[0], DISP_LEN / 2u);
+      break;
+
+    case SECOND_ONLY:
+      memcpy(&s_display[DISP_LEN / 2u], &buffer[DISP_LEN / 2u], DISP_LEN / 2u);
+      break;
+    }
+
     s_display_changed = true;
   }
 }
