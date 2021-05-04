@@ -151,6 +151,19 @@ TEST(display_tests, make_custom_char_battery)
     s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK]);
 }
 
+TEST(display_tests, make_custom_char_battery_fault)
+{
+  make_custom_char(DISPLAY_CHAR_BATTERY_FAULT);
+  TEST_ASSERT_EQUAL_UINT64(BATTERY_INDICATOR_FAULT,
+    s_custom_chars[CUSTOM_CHAR_BATTERY_INDICATOR]);
+
+  // Check others characters are unmodified
+  TEST_ASSERT_EQUAL_UINT64(0u,
+    s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_EDGE]);
+  TEST_ASSERT_EQUAL_UINT64(0u,
+    s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK]);
+}
+
 TEST(display_tests, format_tidal_volume_text)
 {
   char expected1[DISP_TIDAL_VOL_LEN] = {'0', '0', '9'};
@@ -483,4 +496,141 @@ TEST(display_tests, format_battery_gauge_char_no_change)
 
   // Ensure the battery character is inserted into the cached display
   TEST_ASSERT_EQUAL_CHAR(CUSTOM_CHAR_BATTERY_INDICATOR, s_display[DISP_BATTERY]);
+}
+
+TEST(display_tests, format_battery_fault_char)
+{
+  display_format_battery_fault();
+  TEST_ASSERT_EQUAL_UINT64(BATTERY_INDICATOR_FAULT, s_custom_chars[CUSTOM_CHAR_BATTERY_INDICATOR]);
+
+  // Ensure the battery character is inserted into the cached display
+  TEST_ASSERT_EQUAL_CHAR(CUSTOM_CHAR_BATTERY_INDICATOR, s_display[DISP_BATTERY]);
+}
+
+TEST(display_tests, format_battery_fault_char_no_change)
+{
+  message_mcu_to_fpga_t message;
+
+  display_format_battery_fault();
+  TEST_ASSERT_TRUE(display_has_changed());
+
+  display_get(&message);
+  TEST_ASSERT_FALSE(display_has_changed());
+
+  display_format_battery_fault();
+  TEST_ASSERT_FALSE(display_has_changed());
+
+  // Ensure the battery character is inserted into the cached display
+  TEST_ASSERT_EQUAL_CHAR(CUSTOM_CHAR_BATTERY_INDICATOR, s_display[DISP_BATTERY]);
+}
+
+TEST(display_tests, format_progress_bar_steps)
+{
+  const uint8_t vals[] =
+  {
+    0u,
+    ((1u * 100u) / 16u) + 1u,
+    ((2u * 100u) / 16u) + 1u,
+    ((3u * 100u) / 16u) + 1u,
+    ((4u * 100u) / 16u) + 1u,
+    ((5u * 100u) / 16u) + 1u,
+    ((6u * 100u) / 16u) + 1u,
+    ((7u * 100u) / 16u) + 1u,
+    ((8u * 100u) / 16u) + 1u,
+    ((9u * 100u) / 16u) + 1u,
+    ((10u * 100u) / 16u) + 1u,
+    ((11u * 100u) / 16u) + 1u,
+    ((12u * 100u) / 16u) + 1u,
+    ((13u * 100u) / 16u) + 1u,
+    ((14u * 100u) / 16u) + 1u,
+    ((15u * 100u) / 16u) + 1u,
+    100u
+  };
+
+  char expected[DISP_PROGRESS_BAR_LEN];
+
+  for (size_t i = 0u; i < sizeof(vals); i++)
+  {
+    memset(expected, ' ', sizeof(expected));
+    memset(expected, FULL_BLOCK, i);
+    display_format_progress_bar(vals[i]);
+    TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PROGRESS_BAR], DISP_PROGRESS_BAR_LEN);
+  }
+}
+
+TEST(display_tests, format_progress_bar_out_of_bounds)
+{
+  char expected[DISP_PROGRESS_BAR_LEN] =
+  {
+    FULL_BLOCK, FULL_BLOCK, FULL_BLOCK, FULL_BLOCK,
+    FULL_BLOCK, FULL_BLOCK, FULL_BLOCK, FULL_BLOCK,
+    FULL_BLOCK, FULL_BLOCK, FULL_BLOCK, FULL_BLOCK,
+    FULL_BLOCK, FULL_BLOCK, FULL_BLOCK, FULL_BLOCK
+  };
+
+  display_format_progress_bar(UINT8_MAX);
+  TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PROGRESS_BAR], DISP_PROGRESS_BAR_LEN);
+}
+
+TEST(display_tests, string_null_pointer)
+{
+  display_string(NULL);
+  TEST_ASSERT_FALSE(s_display_changed);
+}
+
+TEST(display_tests, string_terminates_at_length_32)
+{
+  const char* test_string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+  const char* expected = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef";
+
+  display_string(test_string);
+  // Will segfault if this test fails!
+  TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
+  TEST_ASSERT_TRUE(s_display_changed);
+}
+
+TEST(display_tests, string_null_terminated_first_line)
+{
+  const char setup_string[DISP_LEN / 2u] = "abcdefghijklmnop";
+  const char* test_string = "ABCDEFGH\0I";
+  const char* expected = "ABCDEFGH        abcdefghijklmnop";
+
+  memcpy(&s_display[DISP_LEN / 2u], setup_string, sizeof(setup_string));
+
+  display_string(test_string);
+  TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
+  TEST_ASSERT_TRUE(s_display_changed);
+}
+
+TEST(display_tests, string_opening_new_line_second_line_only)
+{
+  const char setup_string[DISP_LEN / 2u] = "abcdefghijklmnop";
+  const char* test_string = "\nABCDEF";
+  const char* expected = "abcdefghijklmnopABCDEF          ";
+
+  memcpy(s_display, setup_string, sizeof(setup_string));
+
+  display_string(test_string);
+  TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
+  TEST_ASSERT_TRUE(s_display_changed);
+}
+
+TEST(display_tests, string_ignores_new_line_at_index_16)
+{
+  const char* test_string = "ABCDEFGHIJKLMNOP\nQRSTUVWXYZabcdef";
+  const char* expected = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef";
+
+  display_string(test_string);
+  TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
+  TEST_ASSERT_TRUE(s_display_changed);
+}
+
+TEST(display_tests, string_treats_new_line_on_second_line_as_termination)
+{
+  const char* test_string = "ABCDEFGHIJKLMNOPQ\nRSTUVWXYZabcdef";
+  const char* expected = "ABCDEFGHIJKLMNOPQ               ";
+
+  display_string(test_string);
+  TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
+  TEST_ASSERT_TRUE(s_display_changed);
 }

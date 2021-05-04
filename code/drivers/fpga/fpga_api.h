@@ -9,37 +9,43 @@
 typedef uint16_t fpga_event_mask_t;
 typedef uint16_t mcu_event_mask_t;
 
+/**
+ * @brief Description of messages received by the MCU from the FPGA
+ */
 typedef struct
 {
-  fpga_event_mask_t event_mask;
-  uint16_t measured_flow_rate;    // decilitres per minute
-  uint16_t measured_pressure;     // cmH2O
-  uint16_t plateau_pressure;      // target pressure set by user, cmH2O
-  uint16_t breath_rate;           // target breaths per minute
-  uint16_t inhale_period_ds;      // target length of expiration in tenths of seconds
-  uint16_t percent_oxygen;
-  uint16_t tidal_volume;          // millilitres
-  uint16_t padding_bytes;         // reserved bytes (note: value affects CRC calculation result)
-  uint16_t heartbeat;
-  uint32_t crc32;
+  fpga_event_mask_t event_mask;       // See enum fpga_event_bits
+  uint16_t measured_flow_rate;        // decilitres per minute
+  uint16_t measured_pressure;         // cmH2O
+  uint16_t setting_drive_pressure;    // target pressure set by user, cmH2O
+  uint16_t setting_breath_rate;       // target breaths per minute
+  uint16_t setting_inhale_period_ds;  // target length of expiration in tenths of seconds
+  uint16_t measured_percent_oxygen;
+  uint16_t calculated_tidal_volume;   // millilitres
+  uint16_t padding_bytes;             // reserved bytes (note: value affects CRC calculation result)
+  uint16_t heartbeat;                 // this must 2s complemented and sent back in the reply
+  uint32_t crc32;                     // CRC-32 ETHERNET to verify message integrity
 } message_fpga_to_mcu_t;
 
+/**
+ * @brief Description of messages sent by the MCU to the FPGA
+ */
 typedef struct
 {
-  char display_lines[32];
-  uint64_t battery_indicator;
-  uint64_t pressure_bar_edge;
-  uint64_t pressure_bar_peak;
-  mcu_event_mask_t event_mask;
-  uint16_t heartbeat;
-  uint32_t crc32;
+  char display_lines[32];       // Characters for display on measured value display. Not null terminated.
+  uint64_t battery_indicator;   // Character representation of battery display (see display.c)
+  uint64_t pressure_bar_edge;   // Character representation of pressure bar end (see display.c)
+  uint64_t pressure_bar_peak;   // Character representation of pressure bar peak marker (see display.c)
+  mcu_event_mask_t event_mask;  // See enum mcu_event_bits
+  uint16_t heartbeat;           // 2s complement of the last heartbeat value received from the fpga
+  uint32_t crc32;               // CRC-32 ETHERNET to verify message integrity
 } message_mcu_to_fpga_t;
 
 enum fpga_event_bits
 {
-  FPGA_EVENT_MODE_0                 = (1u << 0u),
-  FPGA_EVENT_MODE_1                 = (1u << 1u),
-  FPGA_EVENT_MODE_2                 = (1u << 2u),
+  FPGA_EVENT_MODE_0                 = (1u << 0u),    // See enum fpga_operating_mode
+  FPGA_EVENT_MODE_1                 = (1u << 1u),    // See enum fpga_operating_mode
+  FPGA_EVENT_MODE_2                 = (1u << 2u),    // See enum fpga_operating_mode
   FPGA_EVENT_MODE_MASK              = (FPGA_EVENT_MODE_2 | FPGA_EVENT_MODE_1 | FPGA_EVENT_MODE_0),
   FPGA_EVENT_MOTOR_DISABLED         = (1u << 3u),    // The FPGA has disabled the motor
   FPGA_EVENT_TIDAL_VOLUME_EXCEEDED  = (1u << 4u),    // The tidal volume limit is exceeded
