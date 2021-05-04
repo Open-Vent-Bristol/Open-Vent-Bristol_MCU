@@ -3,40 +3,40 @@
 #pragma once
 
 #define BATTERY_INDICATOR_OUTLINE \
-  (uint64_t)( 0b01110ul << 56ul | \
-              0b11111ul << 48ul | \
-              0b10001ul << 40ul | \
-              0b10001ul << 32ul | \
-              0b10001ul << 24ul | \
-              0b10001ul << 16ul | \
-              0b10001ul << 8ul  | \
-              0b11111ul )
+  (uint64_t)( 0b01110ull << 56u | \
+              0b11111ull << 48u | \
+              0b10001ull << 40u | \
+              0b10001ull << 32u | \
+              0b10001ull << 24u | \
+              0b10001ull << 16u | \
+              0b10001ull << 8u  | \
+              0b11111ull )
 
 #define BATTERY_INDICATOR_EDGE (0b01110)
 
 #define BATTERY_INDICATOR_FAULT \
-  (uint64_t)( 0b01110ul << 56ul | \
-              0b11111ul << 48ul | \
-              0b10110ul << 40ul | \
-              0b11000ul << 32ul | \
-              0b00011ul << 24ul | \
-              0b01101ul << 16ul | \
-              0b10001ul << 8ul  | \
-              0b11111ul )
+  (uint64_t)( 0b01110ull << 56u | \
+              0b11111ull << 48u | \
+              0b10110ull << 40u | \
+              0b11000ull << 32u | \
+              0b00011ull << 24u | \
+              0b01101ull << 16u | \
+              0b10001ull << 8u  | \
+              0b11111ull )
 
 /**
  * This just creates a single vertical line down the left side.  To adjust the position,
  * right shift up to 4.  To create a solid block, OR the result in a loop
  */
 #define PRESSURE_BAR_EDGE \
-  (uint64_t)( 0b10000ul << 56ul | \
-              0b10000ul << 48ul | \
-              0b10000ul << 40ul | \
-              0b10000ul << 32ul | \
-              0b10000ul << 24ul | \
-              0b10000ul << 16ul | \
-              0b10000ul << 8ul  | \
-              0b10000ul )
+  (uint64_t)( 0b10000ull << 56u | \
+              0b10000ull << 48u | \
+              0b10000ull << 40u | \
+              0b10000ull << 32u | \
+              0b10000ull << 24u | \
+              0b10000ull << 16u | \
+              0b10000ull << 8u  | \
+              0b10000ull )
 
 #define FULL_BLOCK (219u)
 

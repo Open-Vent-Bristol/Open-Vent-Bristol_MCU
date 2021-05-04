@@ -2,5 +2,5 @@
 
 mkdir -p build/unittests
 pushd build/unittests
-cmake ../../unittests && make && ctest -v
+cmake ../../unittests && make && ctest -V
 popd

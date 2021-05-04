@@ -10,4 +10,5 @@ enable_testing()
 
 add_subdirectory(dispatcher)
 add_subdirectory(display)
+add_subdirectory(state_machine)
 add_subdirectory(timer)

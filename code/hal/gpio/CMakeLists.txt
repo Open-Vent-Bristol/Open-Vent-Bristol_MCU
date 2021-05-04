@@ -1,4 +1,4 @@
 target_sources(OpenVent_hal
-  PUBLIC
+  PRIVATE
     gpio_${MCU_TARGET}.c
 )
