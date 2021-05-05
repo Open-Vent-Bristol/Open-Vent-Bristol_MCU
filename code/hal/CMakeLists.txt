@@ -6,6 +6,7 @@ endif()
 
 add_subdirectory(adc)
 add_subdirectory(clock)
+add_subdirectory(crc)
 add_subdirectory(gpio)
 add_subdirectory(pinmux)
 add_subdirectory(spi)
