@@ -1,6 +1,5 @@
 target_sources(OpenVent_hal
   PRIVATE
-    # CMSIS/Device/ST/STM32L4xx/Source/Templates/gcc/startup_stm32l412xx.s
     CMSIS/Device/ST/STM32L4xx/Source/Templates/gcc/startup_stm32l476xx.s
     CMSIS/Device/ST/STM32L4xx/Source/Templates/system_stm32l4xx.c
     src/stm32l4xx_ll_adc.c
@@ -10,14 +9,14 @@ target_sources(OpenVent_hal
     # src/stm32l4xx_ll_dac.c
     # src/stm32l4xx_ll_dma.c
     # src/stm32l4xx_ll_dma2d.c
-    src/stm32l4xx_ll_exti.c
+    # src/stm32l4xx_ll_exti.c
     # src/stm32l4xx_ll_fmc.c
-    src/stm32l4xx_ll_gpio.c
+    # src/stm32l4xx_ll_gpio.c
     # src/stm32l4xx_ll_i2c.c
     # src/stm32l4xx_ll_lptim.c
     # src/stm32l4xx_ll_lpuart.c
     # src/stm32l4xx_ll_opamp.c
-    src/stm32l4xx_ll_pwr.c
+    # src/stm32l4xx_ll_pwr.c
     src/stm32l4xx_ll_rcc.c
     # src/stm32l4xx_ll_rng.c
     # src/stm32l4xx_ll_rtc.c
@@ -27,5 +26,5 @@ target_sources(OpenVent_hal
     src/stm32l4xx_ll_tim.c
     src/stm32l4xx_ll_usart.c
     # src/stm32l4xx_ll_usb.c
-    src/stm32l4xx_ll_utils.c
+    # src/stm32l4xx_ll_utils.c
 )
