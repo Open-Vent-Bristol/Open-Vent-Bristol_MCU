@@ -10,9 +10,9 @@
 
 DEFINE_FFF_GLOBALS;
 
-FAKE_VOID_FUNC(dispatcher_signal_event_mask, enum system_event, int32_t);
+FAKE_VOID_FUNC(dispatcher_signal_event_mask, system_event_mask_t, int32_t);
 
-FAKE_VOID_FUNC(dispatcher_bind, enum system_event, system_event_callback);
+FAKE_VOID_FUNC(dispatcher_bind, system_event_mask_t, system_event_callback);
 
 FAKE_VOID_FUNC(dispatcher_bind_all, const system_event_callback*, size_t);
 

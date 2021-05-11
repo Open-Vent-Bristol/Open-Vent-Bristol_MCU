@@ -11,11 +11,11 @@ TESTABLE system_event_callback s_bindings[EV_NUMBER_EVENTS] = {NULL};
 // This holds the most recent argument for each signalled event
 TESTABLE int32_t s_signalled_args[EV_NUMBER_EVENTS] = {0};
 
-TESTABLE enum system_event s_unhandled_events = 0u;
+TESTABLE system_event_mask_t s_unhandled_events = 0u;
 
 TESTABLE uint32_t s_dispatch_errors = 0u;
 
-static void default_handler(enum system_event event, int32_t arg)
+static void default_handler(system_event_mask_t event, int32_t arg)
 {
   s_dispatch_errors++;
 
@@ -24,7 +24,7 @@ static void default_handler(enum system_event event, int32_t arg)
   //   event_to_string(event), arg, s_dispatch_errors);
 }
 
-void dispatcher_signal_event_mask(enum system_event event_mask, int32_t arg)
+void dispatcher_signal_event_mask(system_event_mask_t event_mask, int32_t arg)
 {
   GLOBAL_INTERRUPTS_DISABLE();
 
@@ -93,7 +93,7 @@ void dispatcher_service(void)
   }
 }
 
-void dispatcher_bind(enum system_event event_mask, system_event_callback callback_fn)
+void dispatcher_bind(system_event_mask_t event_mask, system_event_callback callback_fn)
 {
   GLOBAL_INTERRUPTS_DISABLE();
 

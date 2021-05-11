@@ -19,7 +19,7 @@ void ventilation_init(void);
 
 void ventilation_set_mode(ventilation_mode_t mode);
 
-void ventilation_run(enum system_event* const event_mask);
+void ventilation_run(system_event_mask_t* const event_mask);
 
 #ifdef __cplusplus
 } /* extern "C" */

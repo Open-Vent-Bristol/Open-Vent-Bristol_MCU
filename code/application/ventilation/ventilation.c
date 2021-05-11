@@ -19,13 +19,13 @@ void ventilation_set_mode(ventilation_mode_t mode)
   // s_next_mode = mode;
 }
 
-void ventilation_run(enum system_event* const event_mask)
+void ventilation_run(system_event_mask_t* const event_mask)
 {
 
 }
 
 void ventilation_stop(void)
 {
-  // enum system_event stop_event = EVENT_STOP;
+  // system_event_mask_t stop_event = EVENT_STOP;
   // state_machine_run(&stop_event);
 }

@@ -5,9 +5,11 @@
 
 #include <stdint.h>
 
-#define NO_EVENT (enum system_event)0
+#define NO_EVENT (system_event_mask_t)0
 
 typedef void (*system_event_callback)(int32_t);
+
+typedef uint32_t system_event_mask_t;
 
 enum system_event
 {

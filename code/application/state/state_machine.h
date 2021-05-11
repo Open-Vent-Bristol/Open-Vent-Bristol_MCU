@@ -20,7 +20,7 @@
  */
 typedef struct state_machine_t state_machine_t;
 
-typedef void (*state_member_fn)(enum system_event* const);
+typedef void (*state_member_fn)(system_event_mask_t* const);
 
 /**
  * A state machine is comprised of a series of states (state_definition_t) that each have functions
@@ -55,7 +55,7 @@ typedef struct
 {
   const int32_t old_state;
   const int32_t new_state;
-  const enum system_event event_mask;
+  const system_event_mask_t event_mask;
 } state_transition_t;
 
 /**
@@ -101,6 +101,6 @@ void state_machine_set_transition_list(state_machine_t* state_machine,
  *                      object.
  * @param event_mask    Event bits.  Bits that cause a transition will NOT be cleared automatically.
  */
-void state_machine_run(state_machine_t* const state_machine, enum system_event* const event_mask);
+void state_machine_run(state_machine_t* const state_machine, system_event_mask_t* const event_mask);
 
 #endif /* STATE_MACHINE_H */
