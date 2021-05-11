@@ -102,7 +102,7 @@ enum mcu_event_bits
  * @param message_to_format Pointer to the message that will be set to the FPGA
  * @param received_heartbeat Heartbeat extracted from the last message received from the FPGA
  */
-inline void fpga_heartbeat_calculate(
+static inline void fpga_heartbeat_calculate(
   message_mcu_to_fpga_t* const message_to_format, uint16_t received_heartbeat)
 {
   message_to_format->heartbeat = ~received_heartbeat + 1u;
