@@ -9,6 +9,7 @@ TEST_GROUP_RUNNER(timer_tests)
   RUN_TEST_CASE(timer_tests, tick_all_processes_all_timers);
 
   RUN_TEST_CASE(timer_tests, attach_pointer);
+  RUN_TEST_CASE(timer_tests, attach_only_valid_index);
   RUN_TEST_CASE(timer_tests, attach_zero_ticks_does_not_signal_events);
   RUN_TEST_CASE(timer_tests, attach_negative_ticks_does_not_signal_events);
 
@@ -16,6 +17,9 @@ TEST_GROUP_RUNNER(timer_tests)
   RUN_TEST_CASE(timer_tests, reset_sets_remaining_ticks);
   RUN_TEST_CASE(timer_tests, reset_zero_ticks_does_not_signal_events);
   RUN_TEST_CASE(timer_tests, reset_negative_ticks_does_not_signal_events);
+
+  RUN_TEST_CASE(timer_tests, stop_null_pointer);
+  RUN_TEST_CASE(timer_tests, stop_sets_remaining_ticks);
 
   RUN_TEST_CASE(timer_tests, expired_timer_sets_all_events);
   RUN_TEST_CASE(timer_tests, expired_timer_sends_unique_id_arg);

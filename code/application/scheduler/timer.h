@@ -6,9 +6,11 @@
 #include "state/system_event.h"
 #include <stdint.h>
 
+#define TIMER_START_INDEX (0x40000000)
+
 enum timer_id
 {
-  TIMER_0,
+  TIMER_ACTUATOR_SERVICE = TIMER_START_INDEX,
   TIMER_1,
   TIMER_2,
   TIMER_3,
@@ -16,7 +18,7 @@ enum timer_id
   TIMER_5,
 
   // Define timer IDs above this line
-  TIMER_COUNT
+  TIMER_END_INDEX
 };
 
 typedef enum
@@ -48,5 +50,12 @@ void timer_attach(timer_t* timer);
  * @param timer   Pointer to object of type timer_t
  */
 void timer_reset(timer_t* timer);
+
+/**
+ * Stop one timer, cancelling remaining ticks.  Use timer_reset to start again
+ *
+ * @param timer   Pointer to object of type timer_t
+ */
+void timer_stop(timer_t* timer);
 
 #endif /* TIMER_H */

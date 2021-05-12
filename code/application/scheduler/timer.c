@@ -12,9 +12,11 @@ void timer_attach(timer_t* timer)
 {
   if (timer)
   {
-    if (timer->unique_id < TIMER_COUNT)
+    size_t offset = timer->unique_id - TIMER_START_INDEX;
+
+    if (offset < TIMER_COUNT)
     {
-      s_timers[timer->unique_id] = timer;
+      s_timers[offset] = timer;
     }
   }
 }
@@ -24,6 +26,14 @@ void timer_reset(timer_t* timer)
   if (timer)
   {
     timer->remaining_ticks = timer->initial_ticks;
+  }
+}
+
+void timer_stop(timer_t* timer)
+{
+  if (timer)
+  {
+    timer->remaining_ticks = -1;
   }
 }
 

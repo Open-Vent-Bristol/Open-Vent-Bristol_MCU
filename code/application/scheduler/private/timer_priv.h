@@ -5,6 +5,8 @@
 
 #include "state/system_event.h"
 
+#define TIMER_COUNT (TIMER_END_INDEX - TIMER_START_INDEX)
+
 /**
  * @brief Increment all attached timers and allow them to expire
  */
