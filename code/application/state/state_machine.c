@@ -63,7 +63,7 @@ void state_machine_init(state_machine_t** state_machine_ptr, int8_t initial_stat
 
       if (on_entry != NULL)
       {
-        enum system_event no_event = NO_EVENT;
+        system_event_mask_t no_event = NO_EVENT;
         on_entry(&no_event);
       }
     }
@@ -104,7 +104,7 @@ void state_machine_set_transition_list(state_machine_t* state_machine,
   }
 }
 
-void state_machine_run(state_machine_t* const state_machine, enum system_event* const event_mask)
+void state_machine_run(state_machine_t* const state_machine, system_event_mask_t* const event_mask)
 {
   if (state_machine_valid(state_machine) && (event_mask != NULL))
   {

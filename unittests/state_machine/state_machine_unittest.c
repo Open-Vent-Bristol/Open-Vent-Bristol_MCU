@@ -13,8 +13,8 @@ extern state_machine_t s_machines[STATE_MACHINE_COUNT_MAX];
 
 extern bool state_machine_valid(const state_machine_t* const state_machine);
 
-static enum system_event test_event_val;
-static void test_store_event_val(enum system_event* const event_mask)
+static system_event_mask_t test_event_val;
+static void test_store_event_val(system_event_mask_t* const event_mask)
 {
   test_event_val = *event_mask;
 }
@@ -365,7 +365,7 @@ TEST(state_machine_run_test, run_does_nothing_with_bad_args)
   state_machine_run(run_machine, NULL);
   TEST_ASSERT_EQUAL(UINT32_MAX, test_event_val);
 
-  enum system_event trans_2_to_4 = 2;
+  system_event_mask_t trans_2_to_4 = 2;
 
   state_machine_run(NULL, &trans_2_to_4);
   TEST_ASSERT_EQUAL(0, test_state_member_2_entry_fake.call_count);
@@ -378,7 +378,7 @@ TEST(state_machine_run_test, run_does_not_transition_with_NO_EVENT)
   // Check state has not been modified
   TEST_ASSERT_EQUAL(2, run_machine->current_state);
 
-  enum system_event no_event = NO_EVENT;
+  system_event_mask_t no_event = NO_EVENT;
 
   state_machine_run(run_machine, &no_event);
   TEST_ASSERT_EQUAL(0, test_state_member_2_exit_fake.call_count);
@@ -389,7 +389,7 @@ TEST(state_machine_run_test, run_does_not_transition_with_unmatched_event)
   // Check state has not been modified
   TEST_ASSERT_EQUAL(2, run_machine->current_state);
 
-  enum system_event trans_3_to_2 = 4;
+  system_event_mask_t trans_3_to_2 = 4;
 
   state_machine_run(run_machine, &trans_3_to_2);
   TEST_ASSERT_EQUAL(0, test_state_member_2_exit_fake.call_count);
@@ -402,7 +402,7 @@ TEST(state_machine_run_test, run_calls_state_on_run_function_with_no_transition)
 
   test_state_member_2_run_fake.custom_fake = test_store_event_val;
 
-  enum system_event no_event = NO_EVENT;
+  system_event_mask_t no_event = NO_EVENT;
 
   state_machine_run(run_machine, &no_event);
   TEST_ASSERT_EQUAL(1, test_state_member_2_run_fake.call_count);
@@ -417,7 +417,7 @@ TEST(state_machine_run_test, run_calls_old_state_on_exit_function_on_transition)
 
   test_state_member_2_exit_fake.custom_fake = test_store_event_val;
 
-  enum system_event trans_2_to_4 = 2;
+  system_event_mask_t trans_2_to_4 = 2;
 
   state_machine_run(run_machine, &trans_2_to_4);
   TEST_ASSERT_EQUAL(0, test_state_member_2_run_fake.call_count);
@@ -432,7 +432,7 @@ TEST(state_machine_run_test, run_calls_new_state_on_entry_function_on_transition
 
   test_state_member_4_entry_fake.custom_fake = test_store_event_val;
 
-  enum system_event trans_2_to_4 = 2;
+  system_event_mask_t trans_2_to_4 = 2;
 
   state_machine_run(run_machine, &trans_2_to_4);
   TEST_ASSERT_EQUAL(0, test_state_member_2_run_fake.call_count);
@@ -448,7 +448,7 @@ TEST(state_machine_run_test, run_does_not_clear_event_bits_on_transition)
 
   test_state_member_4_entry_fake.custom_fake = test_store_event_val;
 
-  enum system_event trans_2_to_4 = 2;
+  system_event_mask_t trans_2_to_4 = 2;
 
   state_machine_run(run_machine, &trans_2_to_4);
   TEST_ASSERT_EQUAL(0, test_state_member_2_run_fake.call_count);
@@ -461,10 +461,10 @@ TEST(state_machine_run_test, run_prioritises_low_bits_for_transitions)
   // TODO - SEGFAULT
   run_machine->current_state = 4;
 
-  enum system_event trans_4_to_3 = 8;
-  enum system_event trans_4_to_5 = 16;
+  system_event_mask_t trans_4_to_3 = 8;
+  system_event_mask_t trans_4_to_5 = 16;
 
-  enum system_event trans = trans_4_to_3 | trans_4_to_5;
+  system_event_mask_t trans = trans_4_to_3 | trans_4_to_5;
 
   state_machine_run(run_machine, &trans);
   TEST_ASSERT_EQUAL(0, test_state_member_4_run_fake.call_count);

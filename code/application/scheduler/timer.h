@@ -32,7 +32,7 @@ typedef struct
   timer_type_t type;
   int32_t initial_ticks;
   int32_t remaining_ticks;
-  enum system_event events_signalled;  // A mask of one or more events
+  system_event_mask_t events_signalled;  // A mask of one or more events
   enum timer_id unique_id;  // The id is also the argument when the above event is signalled
 } timer_t;
 

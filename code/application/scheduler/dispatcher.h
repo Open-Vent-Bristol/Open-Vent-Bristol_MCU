@@ -13,7 +13,7 @@
  * @param event_mask    Mask of one or more system events
  * @param arg           An argument to pass to the event callbacks
  */
-void dispatcher_signal_event_mask(enum system_event event_mask, int32_t arg);
+void dispatcher_signal_event_mask(system_event_mask_t event_mask, int32_t arg);
 
 /**
  * @brief Call the functions associated with the unhandled events.
@@ -26,7 +26,7 @@ void dispatcher_service(void);
  * @param event_mask    Mask of one or more system events
  * @param callback_fn
  */
-void dispatcher_bind(enum system_event event, system_event_callback callback_fn);
+void dispatcher_bind(system_event_mask_t event, system_event_callback callback_fn);
 
 /**
  * @brief Write an array of bindings over the internal dispatcher bindings.

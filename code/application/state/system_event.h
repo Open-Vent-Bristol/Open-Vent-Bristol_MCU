@@ -5,9 +5,11 @@
 
 #include <stdint.h>
 
-#define NO_EVENT (enum system_event)0
+#define NO_EVENT (system_event_mask_t)0
 
 typedef void (*system_event_callback)(int32_t);
+
+typedef uint32_t system_event_mask_t;
 
 enum system_event
 {
@@ -21,6 +23,8 @@ enum system_event
   EV_DO_UPDATE_DISPLAY,
   EV_DO_LOG,
   EV_ACTUATOR_SERVICE,
+  EV_SET_POINT_UPDATE,
+  EV_FLOW_RATE_UPDATE,
   EV_PRESSURE_UPDATE,
 
   /* SYSTEM TEST */

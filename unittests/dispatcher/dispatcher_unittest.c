@@ -20,7 +20,7 @@ void test_function_caller(int32_t arg)
 
 extern system_event_callback s_bindings[EV_NUMBER_EVENTS];
 extern int32_t s_signalled_args[EV_NUMBER_EVENTS];
-extern enum system_event s_unhandled_events;
+extern system_event_mask_t s_unhandled_events;
 extern uint32_t s_dispatch_errors;
 
 TEST_GROUP(dispatcher_tests);

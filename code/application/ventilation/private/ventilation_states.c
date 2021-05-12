@@ -68,137 +68,137 @@ const state_transition_list_t s_psv_transitions =
 };
 
 
-static void VENTILATION_STATE_HOMING_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_HOMING_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_HOMING_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_HOMING_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_HOMING_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_HOMING_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_IDLE_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_IDLE_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_IDLE_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_IDLE_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_IDLE_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_IDLE_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_INHALE_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_INHALE_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_INHALE_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_INHALE_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_INHALE_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_INHALE_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_INHALE_PAUSE_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_INHALE_PAUSE_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_INHALE_PAUSE_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_INHALE_PAUSE_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_INHALE_PAUSE_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_INHALE_PAUSE_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_EXHALE_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_EXHALE_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_EXHALE_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_EXHALE_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_EXHALE_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_EXHALE_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_EXHALE_PAUSE_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_EXHALE_PAUSE_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_EXHALE_PAUSE_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_EXHALE_PAUSE_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_EXHALE_PAUSE_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_EXHALE_PAUSE_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_FAULT_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_FAULT_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_FAULT_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_FAULT_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_FAULT_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_FAULT_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_MAINTENANCE_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_MAINTENANCE_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_MAINTENANCE_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_MAINTENANCE_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_MAINTENANCE_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_MAINTENANCE_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_UNRECOVERABLE_on_entry(enum system_event* const event_mask)
+static void VENTILATION_STATE_UNRECOVERABLE_on_entry(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_UNRECOVERABLE_on_run(enum system_event* const event_mask)
+static void VENTILATION_STATE_UNRECOVERABLE_on_run(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
 
-static void VENTILATION_STATE_UNRECOVERABLE_on_exit(enum system_event* const event_mask)
+static void VENTILATION_STATE_UNRECOVERABLE_on_exit(system_event_mask_t* const event_mask)
 {
   (void)event_mask;
 }
