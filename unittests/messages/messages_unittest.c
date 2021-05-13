@@ -2,19 +2,25 @@
 
 #include "unity.h"
 #include "unity_fixture.h"
+#include "fpga/private/fpga_priv.h"
 #include "fpga/messages.h"
+#include "alarm_mock.h"
 #include "crc_mock.h"
 #include "dispatcher_mock.h"
 #include "display_mock.h"
 #include "sensor_mock.h"
 #include "spi_mock.h"
 #include "test_macros.h"
+#include "timer_mock.h"
 #include <string.h>
 
 extern enum fpga_operating_mode s_current_fpga_op_mode;
 extern uint32_t s_invalid_crc_count;
 extern uint16_t s_previous_received_heartbeat;
 extern message_mcu_to_fpga_t s_tx_message;
+extern timer_t s_fpga_watchdog_timer;
+
+extern void message_fpga_watchdog_expiry(int32_t arg);
 
 static uint32_t crc_calculate_12345678(const void *const data, size_t byte_length)
 {
@@ -33,15 +39,52 @@ TEST_SETUP(messages_tests)
   s_previous_received_heartbeat = 0;
   memset(&s_tx_message, 0, sizeof(s_tx_message));
 
+  ALARM_MOCKS(RESET_FAKE);
   CRC_MOCKS(RESET_FAKE);
   DISPATCHER_MOCKS(RESET_FAKE);
   DISPLAY_MOCKS(RESET_FAKE);
   SENSOR_MOCKS(RESET_FAKE);
   SPI_MOCKS(RESET_FAKE);
+  TIMER_MOCKS(RESET_FAKE);
 }
 
 TEST_TEAR_DOWN(messages_tests)
 {}
+
+TEST(messages_tests, fpga_watchdog_expiry_sets_system_failure_alarm)
+{
+  message_fpga_watchdog_expiry(0);
+  TEST_ASSERT_EQUAL_INT(1u, alarm_mode_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(ALARM_SYSTEM_FAILURE, alarm_mode_fake.arg0_val);
+}
+
+TEST(messages_tests, init_binds_timer_event)
+{
+  message_init();
+  TEST_ASSERT_EQUAL_INT(1, dispatcher_bind_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(1u << EV_FPGA_WATCHDOG_EXPIRY, dispatcher_bind_fake.arg0_val);
+}
+
+TEST(messages_tests, init_attaches_timer)
+{
+  message_init();
+  TEST_ASSERT_EQUAL_INT(1, timer_attach_fake.call_count);
+  TEST_ASSERT_EQUAL_PTR(&s_fpga_watchdog_timer, timer_attach_fake.arg0_val);
+}
+
+TEST(messages_tests, watchdog_enable_resets_fpga_watchdog_timer)
+{
+  message_watchdog_enable();
+  TEST_ASSERT_EQUAL_INT(1, timer_reset_fake.call_count);
+  TEST_ASSERT_EQUAL_PTR(&s_fpga_watchdog_timer, timer_reset_fake.arg0_val);
+}
+
+TEST(messages_tests, watchdog_disable_stops_fpga_watchdog_timer)
+{
+  message_watchdog_disable();
+  TEST_ASSERT_EQUAL_INT(1, timer_stop_fake.call_count);
+  TEST_ASSERT_EQUAL_PTR(&s_fpga_watchdog_timer, timer_stop_fake.arg0_val);
+}
 
 TEST(messages_tests, process_fpga_to_mcu_aborts_for_invalid_crc)
 {
@@ -57,6 +100,30 @@ TEST(messages_tests, process_fpga_to_mcu_aborts_for_invalid_crc)
 
   count = message_process_fpga_to_mcu(&test_message);
   TEST_ASSERT_EQUAL_INT(2u, count);
+  TEST_ASSERT_EQUAL_INT(2u, s_invalid_crc_count);
+}
+
+TEST(messages_tests, process_fpga_to_mcu_several_invalid_crc_sets_system_failure_alarm)
+{
+  crc_calculate_fake.custom_fake = crc_calculate_12345678;
+
+  message_fpga_to_mcu_t test_message =
+  {
+    .crc32 = 0x56781234,
+  };
+
+  uint32_t count = 0u;
+
+  for (size_t i = 0u; i < FPGA_ALLOWED_INVALID_MESSAGES; i++)
+  {
+    count = message_process_fpga_to_mcu(&test_message);
+  }
+
+  TEST_ASSERT_EQUAL_INT(5u, count);
+  TEST_ASSERT_EQUAL_INT(5u, s_invalid_crc_count);
+
+  TEST_ASSERT_EQUAL_INT(1u, alarm_mode_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(ALARM_SYSTEM_FAILURE, alarm_mode_fake.arg0_val);
 }
 
 TEST(messages_tests, process_fpga_to_mcu_resets_invalid_crc_count)
@@ -75,6 +142,17 @@ TEST(messages_tests, process_fpga_to_mcu_resets_invalid_crc_count)
 
   count = message_process_fpga_to_mcu(&test_message);
   TEST_ASSERT_EQUAL_INT(0u, count);
+  TEST_ASSERT_EQUAL_INT(0u, s_invalid_crc_count);
+}
+
+TEST(messages_tests, process_fpga_to_mcu_resets_fpga_watchdog_timer)
+{
+  message_fpga_to_mcu_t test_message = {0};
+
+  message_process_fpga_to_mcu(&test_message);
+  TEST_ASSERT_EQUAL_INT(0u, s_invalid_crc_count);
+  TEST_ASSERT_EQUAL_INT(1, timer_reset_fake.call_count);
+  TEST_ASSERT_EQUAL_PTR(&s_fpga_watchdog_timer, timer_reset_fake.arg0_val);
 }
 
 TEST(messages_tests, process_fpga_to_mcu_stores_heartbeat)

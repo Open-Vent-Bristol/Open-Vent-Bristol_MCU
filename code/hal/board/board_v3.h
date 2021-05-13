@@ -8,8 +8,6 @@
 #define GLOBAL_INTERRUPTS_DISABLE()
 #define GLOBAL_INTERRUPTS_ENABLE()
 
-#define FPGA_UPDATE_INTERVAL_MS (5u)
-
 #define CPU_CLOCK_HZ        ((uint32_t)16000000u)
 // TODO - using NUCLEO 476RG board at the moment which has no HSE oscillator
 #define HSI_VALUE           CPU_CLOCK_HZ
