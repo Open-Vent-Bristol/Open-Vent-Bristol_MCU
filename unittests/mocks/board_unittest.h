@@ -19,5 +19,7 @@ void MOTOR_PWM(int32_t);
 #define MOTOR_IN_B_PORT   'B'
 #define MOTOR_IN_B_PIN    'b'
 
+void BUZZ_PWM_START(void);
+void BUZZ_PWM_STOP(void);
 
 #endif /* BOARD_UNITTEST_H */

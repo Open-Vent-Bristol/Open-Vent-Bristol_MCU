@@ -9,6 +9,7 @@ project(OpenVent_unittest
 enable_testing()
 
 add_subdirectory(actuator)
+add_subdirectory(alarm)
 add_subdirectory(dispatcher)
 add_subdirectory(display)
 add_subdirectory(messages)

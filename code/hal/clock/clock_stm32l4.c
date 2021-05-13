@@ -4,6 +4,7 @@
 #include "board/board.h"
 
 static void motor_pwm_init(void);
+static void buzz_pwm_init(void);
 
 void clock_init(void)
 {
@@ -28,6 +29,7 @@ void clock_init(void)
   SysTick_Config((CPU_CLOCK_HZ / SYSTICK_HZ) - 1u);
 
   motor_pwm_init();
+  buzz_pwm_init();
 }
 
 static void motor_pwm_init(void)
@@ -72,4 +74,49 @@ static void motor_pwm_init(void)
   // Enable PWM output
   MOTOR_PWM_STOP();
   LL_TIM_CC_EnableChannel(TIM2, LL_TIM_CHANNEL_CH1);
+}
+
+// Set up a PWM output to produce a continuous 880Hz tone
+static void buzz_pwm_init(void)
+{
+  // Enable clock
+  LL_APB1_GRP1_EnableClock(LL_APB1_GRP1_PERIPH_TIM5);
+
+  // Reset TIM???? peripheral
+  LL_TIM_DeInit(TIM5);
+
+  LL_TIM_InitTypeDef tim_init_struct =
+  {
+    .Prescaler = BUZZ_PWM_PRESCALER,
+    .CounterMode = LL_TIM_COUNTERMODE_UP,
+    .Autoreload = BUZZ_PWM_TOP,
+    .ClockDivision = LL_TIM_CLOCKDIVISION_DIV1,
+    .RepetitionCounter = 0u
+  };
+
+  LL_TIM_Init(TIM5, &tim_init_struct);
+
+  // Enable continuous reload (i.e. not one-shot)
+  LL_TIM_EnableARRPreload(TIM5);
+
+  LL_TIM_OC_InitTypeDef oc_init_struct =
+  {
+    .OCMode = LL_TIM_OCMODE_PWM1,
+    .OCState = LL_TIM_OCSTATE_DISABLE,
+    .OCNState = LL_TIM_OCSTATE_DISABLE,
+    .CompareValue = (LL_TIM_GetAutoReload(TIM5) / 2),
+    .OCPolarity = LL_TIM_OCPOLARITY_HIGH,
+    .OCNPolarity = LL_TIM_OCPOLARITY_HIGH,
+    .OCIdleState = LL_TIM_OCIDLESTATE_LOW,
+    .OCNIdleState = LL_TIM_OCIDLESTATE_LOW
+  };
+
+  LL_TIM_OC_Init(TIM5, LL_TIM_CHANNEL_CH3, &oc_init_struct);
+
+  // Enable autoreload of the compare value (duty cycle)
+  LL_TIM_OC_EnablePreload(TIM5, LL_TIM_CHANNEL_CH3);
+
+  // Enable PWM output
+  BUZZ_PWM_STOP();
+  LL_TIM_CC_EnableChannel(TIM5, LL_TIM_CHANNEL_CH3);
 }

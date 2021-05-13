@@ -67,7 +67,7 @@ typedef enum
 // Buzzer PWM 880Hz, with PRESCALER == 1u and TOP == 255u
 #define BUZZ_PWM_FREQ_HZ    (880u)
 #define BUZZ_PWM_TOP        (2u)
-#define BUZZ_PWM_PRESCALER  (CPU_CLOCK_HZ / (BUZZ_FREQ_HZ / BUZZ_PWM_TOP))
+#define BUZZ_PWM_PRESCALER  (CPU_CLOCK_HZ / (BUZZ_PWM_FREQ_HZ / BUZZ_PWM_TOP))
 #define BUZZ_PWM(value)     LL_TIM_OC_SetCompareCH3(TIM5, value); LL_TIM_GenerateEvent_UPDATE(TIM5)
 #define BUZZ_PWM_START()    LL_TIM_EnableCounter(TIM5); LL_TIM_GenerateEvent_UPDATE(TIM5)
 #define BUZZ_PWM_STOP()     LL_TIM_DisableCounter(TIM5); LL_TIM_GenerateEvent_UPDATE(TIM5)
