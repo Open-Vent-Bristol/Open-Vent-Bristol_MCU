@@ -281,7 +281,7 @@ TEST(actuator_run_tests, run_doesnt_do_anything_in_pid_mode)
 
 TEST(actuator_run_tests, run_doesnt_overshoot_target_speed)
 {
-  const uint8_t max_change_per_run = ACCELERATION_CAP * FPGA_UPDATE_INTERVAL_MS;
+  const uint8_t max_change_per_run = ACCELERATION_CAP * UPDATE_INTERVAL_MS;
 
   // Test for target_speed is multiple
   actuator_constant_speed_push(3u * max_change_per_run);

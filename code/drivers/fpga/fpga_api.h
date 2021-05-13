@@ -6,6 +6,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#define FPGA_UPDATE_INTERVAL_MS (5u)
+
 typedef uint16_t fpga_event_mask_t;
 typedef uint16_t mcu_event_mask_t;
 

@@ -1,0 +1,10 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
+#ifndef FPGA_PRIV_H
+#define FPGA_PRIV_H
+
+#define FPGA_ALLOWED_MISSED_MESSAGES   (5u)
+#define FPGA_ALLOWED_INVALID_MESSAGES  (5u)
+#define FPGA_WATCHDOG_INTERVAL_MS      (FPGA_UPDATE_INTERVAL_MS * FPGA_ALLOWED_MISSED_MESSAGES)
+
+#endif /* FPGA_PRIV_H */

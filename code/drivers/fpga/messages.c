@@ -2,11 +2,14 @@
 
 #include "messages.h"
 #include "display.h"
+#include "private/fpga_priv.h"
+#include "alarm/alarm.h"
 #include "crc/crc.h"
 #include "scheduler/dispatcher.h"
 #include "sensor/sensor.h"
 #include "spi/spi.h"
 #include "state/system_event.h"
+#include "scheduler/timer.h"
 #include "misc/util.h"
 
 TESTABLE enum fpga_operating_mode s_current_fpga_op_mode = FPGA_MODE_STANDBY;
@@ -14,15 +17,59 @@ TESTABLE uint32_t s_invalid_crc_count;
 TESTABLE uint16_t s_previous_received_heartbeat;
 TESTABLE message_mcu_to_fpga_t s_tx_message;
 
+TESTABLE timer_t s_fpga_watchdog_timer =
+{
+  .type = TIMER_TYPE_ONE_SHOT,
+  .initial_ticks = FPGA_WATCHDOG_INTERVAL_MS,
+  .remaining_ticks = FPGA_WATCHDOG_INTERVAL_MS,
+  .events_signalled = EV_FPGA_WATCHDOG_EXPIRY,
+  .unique_id = TIMER_FPGA_WATCHDOG_EXPIRY
+};
+
+TESTABLE void message_fpga_watchdog_expiry(int32_t arg)
+{
+  // When the timer expires, the alarm will be set to the system failure mode.
+  // Direct call to prevent signal being overwritten in a message race condition.
+  alarm_mode(ALARM_SYSTEM_FAILURE);
+}
+
+void message_init(void)
+{
+  dispatcher_bind(1u << EV_FPGA_WATCHDOG_EXPIRY, message_fpga_watchdog_expiry);
+  timer_attach(&s_fpga_watchdog_timer);
+}
+
+void message_watchdog_enable(void)
+{
+  timer_reset(&s_fpga_watchdog_timer);
+}
+
+void message_watchdog_disable(void)
+{
+  timer_stop(&s_fpga_watchdog_timer);
+}
+
 uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const message)
 {
+  // Reset the watchdog timer
+  timer_reset(&s_fpga_watchdog_timer);
+
   // Check CRC-32
   uint32_t expected_crc32 = crc_calculate(&message, sizeof(message) - sizeof(message->crc32));
 
   if (message->crc32 != expected_crc32)
   {
-    return ++s_invalid_crc_count;
+    if (++s_invalid_crc_count >= FPGA_ALLOWED_INVALID_MESSAGES)
+    {
+      // Set alarm to the system failure mode.
+      // Direct call to prevent signal being overwritten in a message race condition.
+      alarm_mode(ALARM_SYSTEM_FAILURE);
+    }
+
+    return s_invalid_crc_count;
   }
+
+  s_invalid_crc_count = 0u;
 
   s_previous_received_heartbeat = message->heartbeat;
 
@@ -44,14 +91,14 @@ uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const message)
   //   dispatcher_signal_event_mask(1u << EV_MOTOR_DISABLED, 0);
   // }
 
-  // if (message->event_mask & FPGA_EVENT_ALARM_FAULT)
-  // {
-  //   dispatcher_signal_event_mask(1u << EV_DO_SOUND_ALARM, BUZZER_OVERRIDE_ON);
-  // }
-  // else
-  // {
-  //   dispatcher_signal_event_mask(1u << EV_DO_SOUND_ALARM, BUZZER_OVERRIDE_OFF);
-  // }
+  if (message->event_mask & FPGA_EVENT_ALARM_FAULT)
+  {
+    dispatcher_signal_event_mask(1u << EV_DO_SOUND_ALARM, ALARM_OVERRIDE_ON);
+  }
+  else
+  {
+    dispatcher_signal_event_mask(1u << EV_DO_SOUND_ALARM, ALARM_OVERRIDE_OFF);
+  }
 
   // Process settings
   if (s_current_fpga_op_mode == FPGA_MODE_PRESSURE_CONTROL)

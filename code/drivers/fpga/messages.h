@@ -7,6 +7,21 @@
 #include <stdint.h>
 
 /**
+ * @brief Initialise message processing (also starts FPGA failure watchdog)
+ */
+void message_init(void);
+
+/**
+ * @brief Start the FPGA failure watchdog
+ */
+void message_watchdog_enable(void);
+
+/**
+ * @brief Suspend the FPGA failure watchdog (for use during off mode or firmware update)
+ */
+void message_watchdog_disable(void);
+
+/**
  * @brief Unpack a message and send the contents to the required places via the dispatcher
  *
  * @param message     Received message

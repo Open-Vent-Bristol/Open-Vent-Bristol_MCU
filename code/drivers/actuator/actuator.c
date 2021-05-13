@@ -11,8 +11,6 @@
 #include "misc/util.h"
 #include <string.h>
 
-#define UPDATE_INTERVAL_MS  FPGA_UPDATE_INTERVAL_MS
-
 pid_data_t s_pid = {0};
 
 actuator_t s_actuator =

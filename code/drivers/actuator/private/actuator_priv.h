@@ -5,6 +5,8 @@
 
 #include <stdint.h>
 
+#define UPDATE_INTERVAL_MS  (5u)
+
 #define CONSTANT_SPEED_CAP  (63u)
 #define ACCELERATION_CAP    (2) // PWM duty change per millisecond
 
