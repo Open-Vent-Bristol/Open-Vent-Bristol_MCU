@@ -19,3 +19,5 @@
 #define XSTR(s) STR(s)
 
 #define ARRAY_LENGTH(a) (sizeof(a) / sizeof(a[0]))
+
+#define PERCENT_TO_UINT8(pc)     (pc * 255u / 100u)

@@ -113,13 +113,15 @@ uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const message)
 
   // Process sensor readings used by MCU
   dispatcher_signal_event_mask(1u << EV_FLOW_RATE_UPDATE, message->measured_flow_rate);
-  dispatcher_signal_event_mask(1u << EV_PRESSURE_UPDATE, message->measured_pressure);
+  dispatcher_signal_event_mask((1u << EV_PRESSURE_UPDATE) | (1u << EV_FAN_PRESSURE_UPDATE),
+                                message->measured_pressure);
 
   // Store measurements displayed or logged
   sensor_store_reading(SENSOR_TIDAL_VOLUME, message->calculated_tidal_volume);
   sensor_store_reading(SENSOR_FLOW_RATE, message->measured_flow_rate);
   sensor_store_reading(SENSOR_PERCENT_O2, message->measured_percent_oxygen);
   sensor_store_reading(SENSOR_PRESSURE, message->measured_pressure);
+  sensor_store_reading(SENSOR_TEMPERATURE, message->measured_temperature);
 
   return 0u;
 }

@@ -24,7 +24,7 @@ typedef struct
   uint16_t setting_inhale_period_ds;  // target length of expiration in tenths of seconds
   uint16_t measured_percent_oxygen;
   uint16_t calculated_tidal_volume;   // millilitres
-  uint16_t padding_bytes;             // reserved bytes (note: value affects CRC calculation result)
+  uint16_t measured_temperature;      // degrees Celsius
   uint16_t heartbeat;                 // this must 2s complemented and sent back in the reply
   uint32_t crc32;                     // CRC-32 ETHERNET to verify message integrity
 } message_fpga_to_mcu_t;

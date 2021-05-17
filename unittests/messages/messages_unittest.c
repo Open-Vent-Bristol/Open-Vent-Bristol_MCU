@@ -221,12 +221,14 @@ TEST(messages_tests, process_fpga_to_mcu_signals_control_variable_change)
   {
     .measured_pressure = 71,
     .measured_flow_rate = 47,
+    .measured_temperature = 29,
   };
 
   message_process_fpga_to_mcu(&test_message);
 
   TEST_ASSERT_VALUE_IN_ARRAY(
-    1u << EV_PRESSURE_UPDATE, dispatcher_signal_event_mask_fake.arg0_history);
+    ((1u << EV_PRESSURE_UPDATE) | (1u << EV_FAN_PRESSURE_UPDATE)),
+    dispatcher_signal_event_mask_fake.arg0_history);
   TEST_ASSERT_VALUE_IN_ARRAY(
     71, dispatcher_signal_event_mask_fake.arg1_history);
 
@@ -245,6 +247,7 @@ TEST(messages_tests, process_fpga_to_mcu_stores_sensor_readings)
   TEST_ASSERT_VALUE_IN_ARRAY(SENSOR_FLOW_RATE, sensor_store_reading_fake.arg0_history);
   TEST_ASSERT_VALUE_IN_ARRAY(SENSOR_PERCENT_O2, sensor_store_reading_fake.arg0_history);
   TEST_ASSERT_VALUE_IN_ARRAY(SENSOR_PRESSURE, sensor_store_reading_fake.arg0_history);
+  TEST_ASSERT_VALUE_IN_ARRAY(SENSOR_TEMPERATURE, sensor_store_reading_fake.arg0_history);
 }
 
 TEST(messages_tests, send_mcu_to_fpga_sets_event_mask)
