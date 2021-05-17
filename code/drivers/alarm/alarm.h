@@ -1,5 +1,7 @@
-#ifndef SOUNDER_H
-#define SOUNDER_H
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
+#ifndef ALARM_H
+#define ALARM_H
 
 #include <stdint.h>
 
@@ -24,7 +26,7 @@ void alarm_init(void);
 /**
  * @brief Sound the alarm
  *
- * @param mode    Mode as in enuim alarm_mode
+ * @param mode    Mode as in enum alarm_mode
  */
 void alarm_mode(int32_t mode);
 
@@ -32,4 +34,4 @@ void alarm_mode(int32_t mode);
 } /* extern "C" */
 #endif
 
-#endif /* SOUNDER_H */
+#endif /* ALARM_H */
