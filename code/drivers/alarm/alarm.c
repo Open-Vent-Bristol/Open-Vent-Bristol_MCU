@@ -1,3 +1,5 @@
+// Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
+
 #include "alarm/alarm.h"
 #include "board/board.h"
 #include "misc/util.h"
