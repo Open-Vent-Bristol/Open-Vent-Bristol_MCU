@@ -54,7 +54,7 @@ TEST(timer_tests, tick_all_processes_all_timers)
   timer_t timer3 =
   {
     .remaining_ticks = 4000,
-    .unique_id = TIMER_3
+    .unique_id = TIMER_FAN_SERVICE
   };
 
   timer_t timer4 =
@@ -72,7 +72,7 @@ TEST(timer_tests, tick_all_processes_all_timers)
   s_timers[TIMER_ACTUATOR_SERVICE - TIMER_START_INDEX] = &timer0;
   s_timers[TIMER_ALARM_SERVICE - TIMER_START_INDEX] = &timer1;
   s_timers[TIMER_FPGA_WATCHDOG_EXPIRY - TIMER_START_INDEX] = &timer2;
-  s_timers[TIMER_3 - TIMER_START_INDEX] = &timer3;
+  s_timers[TIMER_FAN_SERVICE - TIMER_START_INDEX] = &timer3;
   s_timers[TIMER_4 - TIMER_START_INDEX] = &timer4;
   s_timers[TIMER_5 - TIMER_START_INDEX] = &timer5;
 
