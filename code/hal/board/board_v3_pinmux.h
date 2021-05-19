@@ -7,7 +7,7 @@
 static const pinmux_cfg_t pins[] =
 {
   {
-    // PB_SEL - power on button - WKUP1
+    // PB_SEL_MCU - power on button - WKUP1
     .pin = (PINMUX_PA | 0),
     .flags = (PINMUX_MODE_INPUT | PINMUX_PULL_UP | PINMUX_INTERRUPT_FALLING | PINMUX_SPEED_LOW)
   },
@@ -17,7 +17,7 @@ static const pinmux_cfg_t pins[] =
     .flags = (PINMUX_MODE_ALTERNATE | PINMUX_ALT_FUNCTION_1 | PINMUX_OUT_MODE_PUSH_PULL | PINMUX_INITIAL_OUT_VAL_LOW | PINMUX_SPEED_LOW)
   },
   {
-    // BUZZ_PWM - TIM5 CHANNEL 3
+    // BUZZER_PWM - TIM5 CHANNEL 3
     .pin = (PINMUX_PA | 2),
     .flags = (PINMUX_MODE_ALTERNATE | PINMUX_ALT_FUNCTION_2 | PINMUX_OUT_MODE_PUSH_PULL | PINMUX_INITIAL_OUT_VAL_LOW | PINMUX_SPEED_LOW)
   },
@@ -74,7 +74,11 @@ static const pinmux_cfg_t pins[] =
   // PA13 - JTMS-SWDIO
   // PA14 - JTCK-SWDCLK
   // PA15 - JTDI-SWDIO
-  // PB0 - NC
+  {
+    // FAN_PWM - TIM3 CHANNEL 3
+    .pin = (PINMUX_PB | 0),
+    .flags = (PINMUX_MODE_ALTERNATE | PINMUX_ALT_FUNCTION_2 | PINMUX_OUT_MODE_PUSH_PULL | PINMUX_INITIAL_OUT_VAL_LOW | PINMUX_SPEED_LOW)
+  },
   {
     // FPGA_READY
     .pin = (PINMUX_PB | 1),
@@ -87,20 +91,12 @@ static const pinmux_cfg_t pins[] =
   // PB6 - NC
   // PB7 - NC
   {
-    // PB_MUTE
+    // VIN_FAIL_M
     .pin = (PINMUX_PB | 8),
     .flags = (PINMUX_MODE_INPUT | PINMUX_PULL_UP | PINMUX_SPEED_LOW)
   },
-  {
-    // PB_PLUS
-    .pin = (PINMUX_PB | 9),
-    .flags = (PINMUX_MODE_INPUT | PINMUX_PULL_UP | PINMUX_SPEED_LOW)
-  },
-  {
-    // PB_MINUS
-    .pin = (PINMUX_PB | 10),
-    .flags = (PINMUX_MODE_INPUT | PINMUX_PULL_UP | PINMUX_SPEED_LOW)
-  },
+  // PB9 - NC
+  // PB10 - NC
   // PB11 - NC
   {
     // MOTOR_IN_A
@@ -122,11 +118,7 @@ static const pinmux_cfg_t pins[] =
     .pin = (PINMUX_PB | 15),
     .flags = (PINMUX_MODE_INPUT | PINMUX_PULL_UP | PINMUX_SPEED_LOW)
   },
-  {
-    // SOUNDER_CURRENT - ADC123 CHANNEL 1
-    .pin = (PINMUX_PC | 0),
-    .flags = (PINMUX_MODE_ANALOG | PINMUX_SPEED_LOW)
-  },
+  // PC0 - NC
   {
     // MOTOR_CURRENT - ADC123 CHANNEL 2
     .pin = (PINMUX_PC | 1),
