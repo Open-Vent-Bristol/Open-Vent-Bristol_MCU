@@ -35,7 +35,6 @@
 
 typedef enum
 {
-  ADC_SOUNDER_CURR  = LL_ADC_CHANNEL_1, // ADC1, ADC2 or ADC3
   ADC_MOTOR_CURR    = LL_ADC_CHANNEL_2, // ADC1, ADC2 or ADC3
   ADC_VBATT_SCALED  = LL_ADC_CHANNEL_3, // ADC1, ADC2 or ADC3
   ADC_SPARE         = LL_ADC_CHANNEL_8, // ADC1 or ADC2
@@ -69,6 +68,13 @@ typedef enum
 #define BUZZ_PWM(value)     LL_TIM_OC_SetCompareCH3(TIM5, value); LL_TIM_GenerateEvent_UPDATE(TIM5)
 #define BUZZ_PWM_START()    LL_TIM_EnableCounter(TIM5); LL_TIM_GenerateEvent_UPDATE(TIM5)
 #define BUZZ_PWM_STOP()     LL_TIM_DisableCounter(TIM5); LL_TIM_GenerateEvent_UPDATE(TIM5)
+
+// Fan PWM 980Hz, when phase correct (centred), with PRESCALER == 16u and TOP == 255u
+#define FAN_PWM_PRESCALER   (16u)
+#define FAN_PWM_TOP         (255u)
+#define FAN_PWM(value)      LL_TIM_OC_SetCompareCH3(TIM3, value); LL_TIM_GenerateEvent_UPDATE(TIM3)
+#define FAN_PWM_START()     LL_TIM_EnableCounter(TIM3); LL_TIM_GenerateEvent_UPDATE(TIM3)
+#define FAN_PWM_STOP()      FAN_PWM(0u); LL_TIM_DisableCounter(TIM3); LL_TIM_GenerateEvent_UPDATE(TIM3)
 
 // GPIO inputs
 #define FPGA_READY_PORT     GPIOB

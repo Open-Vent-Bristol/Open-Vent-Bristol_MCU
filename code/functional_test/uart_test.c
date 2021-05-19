@@ -45,7 +45,6 @@ void uart_ftp_get_command(ftp_command_t* command)
       case READ_SW_HOME:
       case READ_ANALOG_VBATT:
       case READ_ANALOG_MOTOR_CURR:
-      case READ_ANALOG_ALARM_CURR:
       case READ_ANALOG_SPARE:
       case MOTOR_STOP:
       case MOTOR_RUN_IN:

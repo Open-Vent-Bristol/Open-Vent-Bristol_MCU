@@ -126,10 +126,6 @@ void process_command(ftp_command_t* command)
       adc_reading = adc_read_blocking(ADC_MOTOR_CURR);
       break;
 
-    case READ_ANALOG_ALARM_CURR:
-      adc_reading = adc_read_blocking(ADC_SOUNDER_CURR);
-      break;
-
     case READ_ANALOG_SPARE:
       adc_reading = adc_read_blocking(ADC_SPARE);
       break;
