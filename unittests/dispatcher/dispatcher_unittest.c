@@ -72,6 +72,31 @@ TEST(dispatcher_tests, signal_event_mask_disables_interrupts)
   TEST_ASSERT_EQUAL_INT(1, GLOBAL_INTERRUPTS_ENABLE_fake.call_count);
 }
 
+TEST(dispatcher_tests, clear_event_mask_clears_all_bits)
+{
+  // Set events 1, 2 and 31
+  dispatcher_signal_event_mask((1u << 1u) | (1u << 2u), 0);
+
+  // Clear event 31
+  dispatcher_clear_event_mask(1u << 31u);
+
+  TEST_ASSERT_EQUAL_INT((1u << 1u) | (1u << 2u), s_unhandled_events);
+
+  // Clear events 1 and 2
+  dispatcher_clear_event_mask((1u << 1u) | (1u << 2u));
+
+  TEST_ASSERT_EQUAL_INT(0u, s_unhandled_events);
+}
+
+TEST(dispatcher_tests, clear_event_mask_disables_interrupts)
+{
+  // Clear event 31
+  dispatcher_clear_event_mask(1u << 31u);
+
+  TEST_ASSERT_EQUAL_INT(1, GLOBAL_INTERRUPTS_DISABLE_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(1, GLOBAL_INTERRUPTS_ENABLE_fake.call_count);
+}
+
 TEST(dispatcher_tests, service_null_pointer_calls_default_handler)
 {
   // Set all valid event bits

@@ -45,10 +45,12 @@ TEST_GROUP_RUNNER(actuator_run_tests)
   RUN_TEST_CASE(actuator_run_tests, run_doesnt_do_anything_in_pid_mode);
   RUN_TEST_CASE(actuator_run_tests, run_doesnt_overshoot_target_speed);
   RUN_TEST_CASE(actuator_run_tests, run_sets_motor_speed);
+  RUN_TEST_CASE(actuator_run_tests, run_clears_event);
 
   RUN_TEST_CASE(actuator_run_tests, run_pid_doesnt_do_anything_in_constant_speed_mode);
   RUN_TEST_CASE(actuator_run_tests, run_pid_calls_pid_update);
   RUN_TEST_CASE(actuator_run_tests, run_pid_sets_motor_speed);
+  RUN_TEST_CASE(actuator_run_tests, run_pid_clears_event);
 }
 
 static void RunAllTests(void)

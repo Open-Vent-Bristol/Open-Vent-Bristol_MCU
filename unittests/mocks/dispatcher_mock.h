@@ -12,6 +12,8 @@ DEFINE_FFF_GLOBALS;
 
 FAKE_VOID_FUNC(dispatcher_signal_event_mask, system_event_mask_t, int32_t);
 
+FAKE_VOID_FUNC(dispatcher_clear_event_mask, system_event_mask_t);
+
 FAKE_VOID_FUNC(dispatcher_bind, system_event_mask_t, system_event_callback);
 
 FAKE_VOID_FUNC(dispatcher_bind_all, const system_event_callback*, size_t);
@@ -20,6 +22,7 @@ FAKE_VOID_FUNC(dispatcher_service);
 
 #define DISPATCHER_MOCKS(x) \
   x(dispatcher_signal_event_mask) \
+  x(dispatcher_clear_event_mask) \
   x(dispatcher_bind) \
   x(dispatcher_bind_all) \
   x(dispatcher_service)

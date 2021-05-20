@@ -48,6 +48,16 @@ void dispatcher_signal_event_mask(system_event_mask_t event_mask, int32_t arg)
   GLOBAL_INTERRUPTS_ENABLE();
 }
 
+void dispatcher_clear_event_mask(system_event_mask_t event_mask)
+{
+  GLOBAL_INTERRUPTS_DISABLE();
+
+  // Clear the events
+  s_unhandled_events &= ~event_mask;
+
+  GLOBAL_INTERRUPTS_ENABLE();
+}
+
 void dispatcher_service(void)
 {
   for (size_t i = 0u; i < EV_NUMBER_EVENTS; i++)

@@ -58,6 +58,8 @@ static uint8_t cap_constant_speed(uint8_t speed)
  */
 TESTABLE void actuator_run(int32_t arg)
 {
+  dispatcher_clear_event_mask(1u << EV_ACTUATOR_SERVICE);
+
   switch (s_actuator.mode)
   {
   case PUSHING:
@@ -99,6 +101,8 @@ TESTABLE void actuator_run(int32_t arg)
  */
 TESTABLE void actuator_run_pid(int32_t measured_value)
 {
+  dispatcher_clear_event_mask(1u << EV_PRESSURE_UPDATE);
+
   switch (s_actuator.mode)
   {
   case PUSHING_PID:
@@ -117,7 +121,7 @@ TESTABLE void actuator_run_pid(int32_t measured_value)
 
 void actuator_init(float kp, float ki, float kd)
 {
-  actuator_stop(0);
+  actuator_stop();
 
   // Reset the fault state
   s_actuator.mode = STOP;
@@ -139,10 +143,8 @@ void actuator_init(float kp, float ki, float kd)
   dispatcher_bind(EV_PRESSURE_UPDATE, actuator_run_pid);
 }
 
-void actuator_stop(int32_t arg)
+void actuator_stop(void)
 {
-  (void)arg;
-
   timer_stop(&s_timer);
 
   MOTOR_PWM_STOP();

@@ -60,6 +60,8 @@ TESTABLE void fan_service(int32_t arg)
 {
   (void)arg;
 
+  dispatcher_clear_event_mask(1u << EV_FAN_SERVICE);
+
   int32_t temperature_index = TEMPERATURE_TO_INDEX(sensor_get_reading(SENSOR_TEMPERATURE));
 
   if (temperature_index < 0)
@@ -92,6 +94,8 @@ TESTABLE void fan_service(int32_t arg)
 
 TESTABLE void fan_switch_lookup(int32_t set_pressure)
 {
+  dispatcher_clear_event_mask(1u << EV_FAN_PRESSURE_UPDATE);
+
   int32_t pressure_index = PRESSURE_TO_INDEX(set_pressure);
 
   if (pressure_index < 0)

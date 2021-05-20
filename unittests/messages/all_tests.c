@@ -6,6 +6,7 @@
 TEST_GROUP_RUNNER(messages_tests)
 {
   RUN_TEST_CASE(messages_tests, fpga_watchdog_expiry_sets_system_failure_alarm);
+  RUN_TEST_CASE(messages_tests, fpga_watchdog_expiry_clears_event);
 
   RUN_TEST_CASE(messages_tests, init_binds_timer_event);
   RUN_TEST_CASE(messages_tests, init_attaches_timer);

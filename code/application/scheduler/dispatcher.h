@@ -16,6 +16,14 @@
 void dispatcher_signal_event_mask(system_event_mask_t event_mask, int32_t arg);
 
 /**
+ * @brief Signal that one or more events have been handled, so the dispatcher does not call the
+ * event handler callback again
+ *
+ * @param event_mask    Mask of one or more system events
+ */
+void dispatcher_clear_event_mask(system_event_mask_t event_mask);
+
+/**
  * @brief Call the functions associated with the unhandled events.
  */
 void dispatcher_service(void);

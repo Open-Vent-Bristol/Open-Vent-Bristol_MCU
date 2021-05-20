@@ -10,7 +10,7 @@
 
 FAKE_VOID_FUNC(actuator_init, float, float, float);
 
-FAKE_VOID_FUNC(actuator_stop, int32_t);
+FAKE_VOID_FUNC(actuator_stop);
 
 FAKE_VOID_FUNC(actuator_constant_speed_home, uint8_t);
 
