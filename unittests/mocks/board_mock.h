@@ -28,6 +28,10 @@ FAKE_VOID_FUNC(FAN_PWM_STOP);
 
 FAKE_VOID_FUNC(FAN_PWM, uint8_t);
 
+FAKE_VALUE_FUNC(uint32_t, LL_EXTI_ClearFlag_0_31, uint32_t);
+
+FAKE_VALUE_FUNC(uint32_t, LL_EXTI_IsActiveFlag_0_31, uint32_t);
+
 #define BOARD_MOCKS(x) \
   x(GLOBAL_INTERRUPTS_DISABLE) \
   x(GLOBAL_INTERRUPTS_ENABLE) \
@@ -38,6 +42,8 @@ FAKE_VOID_FUNC(FAN_PWM, uint8_t);
   x(BUZZ_PWM_STOP) \
   x(FAN_PWM_START) \
   x(FAN_PWM_STOP) \
-  x(FAN_PWM)
+  x(FAN_PWM) \
+  x(LL_EXTI_ClearFlag_0_31) \
+  x(LL_EXTI_IsActiveFlag_0_31)
 
 #endif /* BOARD_MOCK_H */

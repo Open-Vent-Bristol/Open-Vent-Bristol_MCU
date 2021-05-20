@@ -1,7 +1,7 @@
 // Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
 
-#ifndef BOARD_MOCK_H
-#define BOARD_MOCK_H
+#ifndef ALARM_MOCK_H
+#define ALARM_MOCK_H
 
 #include "alarm/alarm.h"
 #include "fff.h"
@@ -16,4 +16,4 @@ FAKE_VOID_FUNC(alarm_mode, int32_t);
   x(alarm_init) \
   x(alarm_mode)
 
-#endif /* BOARD_MOCK_H */
+#endif /* ALARM_MOCK_H */
