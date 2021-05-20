@@ -93,7 +93,7 @@ TEST_TEAR_DOWN(actuator_mode_tests)
 
 TEST(actuator_mode_tests, stop_stops_motor)
 {
-  actuator_stop(0);
+  actuator_stop();
   TEST_ASSERT_EQUAL_INT(1u, MOTOR_PWM_STOP_fake.call_count);
   TEST_ASSERT_EQUAL_INT(2u, gpio_clear_pin_fake.call_count);
   TEST_ASSERT_VALUE_IN_ARRAY(MOTOR_IN_A_PORT, gpio_clear_pin_fake.arg0_history);
@@ -104,7 +104,7 @@ TEST(actuator_mode_tests, stop_stops_motor)
 
 TEST(actuator_mode_tests, stop_stops_service_timer)
 {
-  actuator_stop(0);
+  actuator_stop();
   TEST_ASSERT_EQUAL_INT(1u, timer_stop_fake.call_count);
   TEST_ASSERT_EQUAL_PTR(&s_timer, timer_stop_fake.arg0_val);
 }
@@ -112,7 +112,7 @@ TEST(actuator_mode_tests, stop_stops_service_timer)
 TEST(actuator_mode_tests, stop_doesnt_clear_fault)
 {
   s_actuator.mode = FAULT;
-  actuator_stop(0);
+  actuator_stop();
   TEST_ASSERT_EQUAL_INT(FAULT, s_actuator.mode);
 }
 
@@ -315,6 +315,13 @@ TEST(actuator_run_tests, run_sets_motor_speed)
   TEST_ASSERT_EQUAL_INT(2u, MOTOR_PWM_fake.call_count);
 }
 
+TEST(actuator_run_tests, run_clears_event)
+{
+  actuator_run(0);
+  TEST_ASSERT_EQUAL_INT(1u, dispatcher_clear_event_mask_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(1u << EV_ACTUATOR_SERVICE, dispatcher_clear_event_mask_fake.arg0_val);
+}
+
 TEST(actuator_run_tests, run_pid_doesnt_do_anything_in_constant_speed_mode)
 {
   actuator_constant_speed_home(255u);
@@ -342,4 +349,11 @@ TEST(actuator_run_tests, run_pid_sets_motor_speed)
   actuator_pid_control_push(10);
   actuator_run_pid(1);
   TEST_ASSERT_EQUAL_INT(1u, MOTOR_PWM_fake.call_count);
+}
+
+TEST(actuator_run_tests, run_pid_clears_event)
+{
+  actuator_run_pid(0);
+  TEST_ASSERT_EQUAL_INT(1u, dispatcher_clear_event_mask_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(1u << EV_PRESSURE_UPDATE, dispatcher_clear_event_mask_fake.arg0_val);
 }

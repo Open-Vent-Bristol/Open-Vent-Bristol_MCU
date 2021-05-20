@@ -25,6 +25,8 @@ TESTABLE void alarm_intermittance_cb(int32_t arg)
 
   (void)arg;
 
+  dispatcher_clear_event_mask(1u << EV_ALARM_SERVICE);
+
   if (s_current_mode == ALARM_OVERRIDE_ON)
   {
     alarm_is_on = !alarm_is_on;

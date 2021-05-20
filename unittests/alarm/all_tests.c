@@ -28,6 +28,7 @@ TEST_GROUP_RUNNER(alarm_run_tests)
 {
   RUN_TEST_CASE(alarm_run_tests, intermittance_cb_only_runs_in_OVERRIDE_ON_mode);
   RUN_TEST_CASE(alarm_run_tests, intermittance_cb_toggles_pwm);
+  RUN_TEST_CASE(alarm_run_tests, intermittance_cb_clears_event);
 }
 
 static void RunAllTests(void)

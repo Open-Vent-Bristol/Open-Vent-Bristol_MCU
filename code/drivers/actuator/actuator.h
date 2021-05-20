@@ -19,10 +19,8 @@ void actuator_init(float kp, float ki, float kd);
 
 /**
  * @brief Immediately bring the actuator to a stop, cancelling PID control if active
- *
- * @param arg         Not used
  */
-void actuator_stop(int32_t arg);
+void actuator_stop(void);
 
 /**
  * @brief Return the actuator to its home position

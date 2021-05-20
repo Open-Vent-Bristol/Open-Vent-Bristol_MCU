@@ -61,6 +61,7 @@ TEST_SETUP(fan_switch_lookup_tests)
   s_pressure_lookup_index = 0u;
   s_current_duty = 0u;
   BOARD_MOCKS(RESET_FAKE);
+  DISPATCHER_MOCKS(RESET_FAKE);
 }
 
 TEST_TEAR_DOWN(fan_switch_lookup_tests)
@@ -116,6 +117,13 @@ TEST(fan_switch_lookup_tests, sets_pwm_when_switch_lookup)
   TEST_ASSERT_EQUAL_INT(1, FAN_PWM_STOP_fake.call_count);
 }
 
+TEST(fan_switch_lookup_tests, clears_event)
+{
+  fan_switch_lookup(0);
+  TEST_ASSERT_EQUAL_INT(1u, dispatcher_clear_event_mask_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(1u << EV_FAN_PRESSURE_UPDATE, dispatcher_clear_event_mask_fake.arg0_val);
+}
+
 /* FAN SERVICE TESTS */
 
 TEST_GROUP(fan_service_tests);
@@ -125,6 +133,7 @@ TEST_SETUP(fan_service_tests)
   s_pressure_lookup_index = 0u;
   s_current_duty = 0u;
   BOARD_MOCKS(RESET_FAKE);
+  DISPATCHER_MOCKS(RESET_FAKE);
   SENSOR_MOCKS(RESET_FAKE);
   TIMER_MOCKS(RESET_FAKE);
 
@@ -283,4 +292,11 @@ TEST(fan_service_tests, sets_pwm_on_off)
   test_temperature = 0u;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(1, FAN_PWM_STOP_fake.call_count);
+}
+
+TEST(fan_service_tests, clears_event)
+{
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(1u, dispatcher_clear_event_mask_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(1u << EV_FAN_SERVICE, dispatcher_clear_event_mask_fake.arg0_val);
 }

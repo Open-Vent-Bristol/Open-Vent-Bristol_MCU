@@ -14,12 +14,14 @@ TEST_GROUP_RUNNER(fan_switch_lookup_tests)
   RUN_TEST_CASE(fan_switch_lookup_tests, beyond_limits);
   RUN_TEST_CASE(fan_switch_lookup_tests, within_limits);
   RUN_TEST_CASE(fan_switch_lookup_tests, sets_pwm_when_switch_lookup);
+  RUN_TEST_CASE(fan_switch_lookup_tests, clears_event);
 }
 
 TEST_GROUP_RUNNER(fan_service_tests)
 {
   RUN_TEST_CASE(fan_service_tests, duty_calculation);
   RUN_TEST_CASE(fan_service_tests, sets_pwm_on_off);
+  RUN_TEST_CASE(fan_service_tests, clears_event);
 }
 
 static void RunAllTests(void)

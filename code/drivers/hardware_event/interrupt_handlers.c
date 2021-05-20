@@ -89,7 +89,7 @@ void EXTI9_5_IRQHandler(void)
       (LL_EXTI_IsActiveFlag_0_31(1u << SW_HOME_PIN)) |
       (LL_EXTI_IsActiveFlag_0_31(1u << SW_END_PIN)))
   {
-    actuator_stop(0);
+    actuator_stop();
     LL_EXTI_ClearFlag_0_31((1u << SW_BACKUP_PIN) | (1u << SW_HOME_PIN) | (1u << SW_END_PIN));
     s_limit_switches_enabled = false;
     timer_reset(&s_limit_debounce_timer);

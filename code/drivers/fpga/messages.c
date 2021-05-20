@@ -28,6 +28,8 @@ TESTABLE timer_t s_fpga_watchdog_timer =
 
 TESTABLE void message_fpga_watchdog_expiry(int32_t arg)
 {
+  dispatcher_clear_event_mask(1u << EV_FPGA_WATCHDOG_EXPIRY);
+
   // When the timer expires, the alarm will be set to the system failure mode.
   // Direct call to prevent signal being overwritten in a message race condition.
   alarm_mode(ALARM_SYSTEM_FAILURE);

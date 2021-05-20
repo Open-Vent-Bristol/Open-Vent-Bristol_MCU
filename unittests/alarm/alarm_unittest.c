@@ -142,6 +142,7 @@ TEST_GROUP(alarm_run_tests);
 TEST_SETUP(alarm_run_tests)
 {
   BOARD_MOCKS(RESET_FAKE);
+  DISPATCHER_MOCKS(RESET_FAKE);
   TIMER_MOCKS(RESET_FAKE);
 }
 
@@ -183,4 +184,11 @@ TEST(alarm_run_tests, intermittance_cb_toggles_pwm)
 
   TEST_ASSERT_NOT_EQUAL_INT(0, BUZZ_PWM_START_fake.call_count);
   TEST_ASSERT_NOT_EQUAL_INT(0, BUZZ_PWM_STOP_fake.call_count);
+}
+
+TEST(alarm_run_tests, intermittance_cb_clears_event)
+{
+  alarm_intermittance_cb(0);
+  TEST_ASSERT_EQUAL_INT(1u, dispatcher_clear_event_mask_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(1u << EV_ALARM_SERVICE, dispatcher_clear_event_mask_fake.arg0_val);
 }

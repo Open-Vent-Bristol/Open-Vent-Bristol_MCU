@@ -58,6 +58,13 @@ TEST(messages_tests, fpga_watchdog_expiry_sets_system_failure_alarm)
   TEST_ASSERT_EQUAL_INT(ALARM_SYSTEM_FAILURE, alarm_mode_fake.arg0_val);
 }
 
+TEST(messages_tests, fpga_watchdog_expiry_clears_event)
+{
+  message_fpga_watchdog_expiry(0);
+  TEST_ASSERT_EQUAL_INT(1u, dispatcher_clear_event_mask_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(1u << EV_FPGA_WATCHDOG_EXPIRY, dispatcher_clear_event_mask_fake.arg0_val);
+}
+
 TEST(messages_tests, init_binds_timer_event)
 {
   message_init();
