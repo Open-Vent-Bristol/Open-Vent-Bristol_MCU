@@ -14,8 +14,8 @@ enum timer_id
   TIMER_ALARM_SERVICE,
   TIMER_FPGA_WATCHDOG_EXPIRY,
   TIMER_FAN_SERVICE,
-  TIMER_4,
-  TIMER_5,
+  TIMER_POWER_DEBOUNCE,
+  TIMER_LIMIT_DEBOUNCE,
 
   // Define timer IDs above this line
   TIMER_END_INDEX
@@ -57,5 +57,13 @@ void timer_reset(timer_t* timer);
  * @param timer   Pointer to object of type timer_t
  */
 void timer_stop(timer_t* timer);
+
+/**
+ * @brief Get the time elapsed since boot.
+ * @note Timer overflows approximately once per 50 days.
+ *
+ * @return uint32_t System uptime in milliseconds
+ */
+uint32_t timer_get_uptime(void);
 
 #endif /* TIMER_H */

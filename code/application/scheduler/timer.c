@@ -2,11 +2,13 @@
 
 #include "timer.h"
 #include "private/timer_priv.h"
+#include "board/board.h"
 #include "dispatcher.h"
 #include "misc/util.h"
 #include <stddef.h>
 
 TESTABLE timer_t* s_timers[TIMER_COUNT] = {NULL};
+static uint32_t s_timestamp;
 
 void timer_attach(timer_t* timer)
 {
@@ -63,4 +65,16 @@ void timer_tick_all(void)
       }
     }
   }
+}
+
+uint32_t timer_get_uptime(void)
+{
+  return s_timestamp;
+}
+
+// SysTick ISR interrupts at 1kHz
+SYSTICK_ISR()
+{
+  timer_tick_all();
+  s_timestamp++;
 }

@@ -60,21 +60,21 @@ TEST(timer_tests, tick_all_processes_all_timers)
   timer_t timer4 =
   {
     .remaining_ticks = 50000,
-    .unique_id = TIMER_4
+    .unique_id = TIMER_POWER_DEBOUNCE
   };
 
   timer_t timer5 =
   {
     .remaining_ticks = 600000,
-    .unique_id = TIMER_5
+    .unique_id = TIMER_LIMIT_DEBOUNCE
   };
 
   s_timers[TIMER_ACTUATOR_SERVICE - TIMER_START_INDEX] = &timer0;
   s_timers[TIMER_ALARM_SERVICE - TIMER_START_INDEX] = &timer1;
   s_timers[TIMER_FPGA_WATCHDOG_EXPIRY - TIMER_START_INDEX] = &timer2;
   s_timers[TIMER_FAN_SERVICE - TIMER_START_INDEX] = &timer3;
-  s_timers[TIMER_4 - TIMER_START_INDEX] = &timer4;
-  s_timers[TIMER_5 - TIMER_START_INDEX] = &timer5;
+  s_timers[TIMER_POWER_DEBOUNCE - TIMER_START_INDEX] = &timer4;
+  s_timers[TIMER_LIMIT_DEBOUNCE - TIMER_START_INDEX] = &timer5;
 
   timer_tick_all();
 
@@ -192,7 +192,7 @@ TEST(timer_tests, expired_timer_sets_all_events)
 {
   test_timer.events_signalled = 0xAAAAAAAA;
   test_timer.remaining_ticks = 1;
-  test_timer.unique_id = TIMER_5;
+  test_timer.unique_id = TIMER_LIMIT_DEBOUNCE;
 
   timer_attach(&test_timer);
   timer_tick_all();
@@ -204,19 +204,19 @@ TEST(timer_tests, expired_timer_sets_all_events)
 TEST(timer_tests, expired_timer_sends_unique_id_arg)
 {
   test_timer.remaining_ticks = 1;
-  test_timer.unique_id = TIMER_5;
+  test_timer.unique_id = TIMER_LIMIT_DEBOUNCE;
 
   timer_attach(&test_timer);
   timer_tick_all();
 
   TEST_ASSERT_EQUAL_INT(1, dispatcher_signal_event_mask_fake.call_count);
-  TEST_ASSERT_EQUAL_INT(TIMER_5, dispatcher_signal_event_mask_fake.arg1_val);
+  TEST_ASSERT_EQUAL_INT(TIMER_LIMIT_DEBOUNCE, dispatcher_signal_event_mask_fake.arg1_val);
 }
 
 TEST(timer_tests, expired_one_shot_timer_does_not_restart)
 {
   test_timer.remaining_ticks = 1;
-  test_timer.unique_id = TIMER_5;
+  test_timer.unique_id = TIMER_LIMIT_DEBOUNCE;
   test_timer.type = TIMER_TYPE_ONE_SHOT;
 
   timer_attach(&test_timer);
@@ -228,7 +228,7 @@ TEST(timer_tests, expired_one_shot_timer_does_not_restart)
 TEST(timer_tests, expired_one_shot_timer_does_not_overflow_back_to_int32_max)
 {
   test_timer.remaining_ticks = INT32_MIN;
-  test_timer.unique_id = TIMER_5;
+  test_timer.unique_id = TIMER_LIMIT_DEBOUNCE;
   test_timer.type = TIMER_TYPE_ONE_SHOT;
 
   timer_attach(&test_timer);
@@ -241,7 +241,7 @@ TEST(timer_tests, expired_continuous_timer_restarts_automatically)
 {
   test_timer.initial_ticks = 100;
   test_timer.remaining_ticks = 1;
-  test_timer.unique_id = TIMER_5;
+  test_timer.unique_id = TIMER_LIMIT_DEBOUNCE;
   test_timer.type = TIMER_TYPE_CONTINUOUS;
 
   timer_attach(&test_timer);
