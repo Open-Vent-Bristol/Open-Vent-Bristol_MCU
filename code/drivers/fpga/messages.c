@@ -17,6 +17,16 @@ TESTABLE uint32_t s_invalid_crc_count;
 TESTABLE uint16_t s_previous_received_heartbeat;
 TESTABLE message_mcu_to_fpga_t s_tx_message;
 
+TESTABLE void message_fetch_from_fpga(int32_t arg);
+
+/**
+ * @brief Assemble a message and send it to the FPGA
+ * @note The display should be formatted externally.
+ *
+ * @param arg   Unused
+ */
+TESTABLE void message_send_mcu_to_fpga(int32_t arg);
+
 TESTABLE timer_t s_fpga_watchdog_timer =
 {
   .type = TIMER_TYPE_ONE_SHOT,
@@ -37,6 +47,8 @@ TESTABLE void message_fpga_watchdog_expiry(int32_t arg)
 
 void message_init(void)
 {
+  dispatcher_bind(1u << EV_FPGA_READY, message_fetch_from_fpga);
+  dispatcher_bind(1u << EV_FPGA_SEND, message_send_mcu_to_fpga);
   dispatcher_bind(1u << EV_FPGA_WATCHDOG_EXPIRY, message_fpga_watchdog_expiry);
   timer_attach(&s_fpga_watchdog_timer);
 }
@@ -51,7 +63,24 @@ void message_watchdog_disable(void)
   timer_stop(&s_fpga_watchdog_timer);
 }
 
-uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const message)
+void message_set_event_bits(mcu_event_mask_t event_mask)
+{
+  s_tx_message.event_mask |= event_mask;
+}
+
+void message_clear_event_bits(mcu_event_mask_t event_mask)
+{
+  s_tx_message.event_mask &= ~event_mask;
+}
+
+/**
+ * @brief Unpack a message and send the contents to the required places via the dispatcher
+ *
+ * @param message     Received message
+ * @return uint32_t   Running total of messages received with invalid CRC
+ *                    (resets on success, i.e. 0 is no error)
+ */
+TESTABLE uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const message)
 {
   // Reset the watchdog timer
   timer_reset(&s_fpga_watchdog_timer);
@@ -125,12 +154,24 @@ uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const message)
   sensor_store_reading(SENSOR_PRESSURE, message->measured_pressure);
   sensor_store_reading(SENSOR_TEMPERATURE, message->measured_temperature);
 
+  dispatcher_signal_event_mask(1u << EV_DO_UPDATE_DISPLAY, 0);
+
   return 0u;
 }
 
-void message_send_mcu_to_fpga(mcu_event_mask_t event_mask)
+TESTABLE void message_fetch_from_fpga(int32_t arg)
 {
-  s_tx_message.event_mask = event_mask;
+  message_fpga_to_mcu_t message;
+  if (spi_read(SPI_NO_COMMAND, (uint8_t* const)&message, sizeof(message)))
+  {
+    dispatcher_clear_event_mask(1u << EV_FPGA_READY);
+
+    message_process_fpga_to_mcu(&message);
+  }
+}
+
+TESTABLE void message_send_mcu_to_fpga(int32_t arg)
+{
   fpga_heartbeat_calculate(&s_tx_message, s_previous_received_heartbeat);
   display_get(&s_tx_message);
 
@@ -139,5 +180,8 @@ void message_send_mcu_to_fpga(mcu_event_mask_t event_mask)
     crc_calculate(&s_tx_message, sizeof(s_tx_message) - sizeof(s_tx_message.crc32));
 
   // Send out via SPI
-  spi_write(SPI_NO_COMMAND, (const uint8_t* const)&s_tx_message, sizeof(s_tx_message));
+  if(spi_write(SPI_NO_COMMAND, (const uint8_t* const)&s_tx_message, sizeof(s_tx_message)))
+  {
+    dispatcher_clear_event_mask(1u << EV_FPGA_SEND);
+  }
 }
