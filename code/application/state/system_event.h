@@ -14,6 +14,7 @@ typedef uint32_t system_event_mask_t;
 enum system_event
 {
   EV_FPGA_READY,
+  EV_FPGA_SEND,
   EV_UI,
   EV_OP_MODE_CHANGE,
   EV_MOTOR_DISABLED,

@@ -13,6 +13,7 @@
 #include "test_macros.h"
 #include "timer_mock.h"
 #include <string.h>
+#include <stdbool.h>
 
 extern enum fpga_operating_mode s_current_fpga_op_mode;
 extern uint32_t s_invalid_crc_count;
@@ -22,12 +23,25 @@ extern timer_t s_fpga_watchdog_timer;
 
 extern void message_fpga_watchdog_expiry(int32_t arg);
 
+extern uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const message);
+extern void message_fetch_from_fpga(int32_t arg);
+extern void message_send_mcu_to_fpga(int32_t arg);
+
 static uint32_t crc_calculate_12345678(const void *const data, size_t byte_length)
 {
   (void)data;
   (void)byte_length;
 
   return 0x12345678;
+}
+
+static bool returns_true(uint8_t command, uint8_t* const data_in, uint8_t max_length)
+{
+  (void)command;
+  (void)data_in;
+  (void)max_length;
+
+  return true;
 }
 
 TEST_GROUP(messages_tests);
@@ -65,11 +79,13 @@ TEST(messages_tests, fpga_watchdog_expiry_clears_event)
   TEST_ASSERT_EQUAL_INT(1u << EV_FPGA_WATCHDOG_EXPIRY, dispatcher_clear_event_mask_fake.arg0_val);
 }
 
-TEST(messages_tests, init_binds_timer_event)
+TEST(messages_tests, init_binds_events)
 {
   message_init();
-  TEST_ASSERT_EQUAL_INT(1, dispatcher_bind_fake.call_count);
-  TEST_ASSERT_EQUAL_INT(1u << EV_FPGA_WATCHDOG_EXPIRY, dispatcher_bind_fake.arg0_val);
+  TEST_ASSERT_EQUAL_INT(3, dispatcher_bind_fake.call_count);
+  TEST_ASSERT_VALUE_IN_ARRAY(1u << EV_FPGA_READY, dispatcher_bind_fake.arg0_history);
+  TEST_ASSERT_VALUE_IN_ARRAY(1u << EV_FPGA_SEND, dispatcher_bind_fake.arg0_history);
+  TEST_ASSERT_VALUE_IN_ARRAY(1u << EV_FPGA_WATCHDOG_EXPIRY, dispatcher_bind_fake.arg0_history);
 }
 
 TEST(messages_tests, init_attaches_timer)
@@ -245,6 +261,16 @@ TEST(messages_tests, process_fpga_to_mcu_signals_control_variable_change)
     47, dispatcher_signal_event_mask_fake.arg1_history);
 }
 
+TEST(messages_tests, process_fpga_to_mcu_signals_display_update)
+{
+  message_fpga_to_mcu_t test_message = {0};
+
+  message_process_fpga_to_mcu(&test_message);
+
+  TEST_ASSERT_VALUE_IN_ARRAY(
+    (1u << EV_DO_UPDATE_DISPLAY), dispatcher_signal_event_mask_fake.arg0_history);
+}
+
 TEST(messages_tests, process_fpga_to_mcu_stores_sensor_readings)
 {
   message_fpga_to_mcu_t test_message = {0};
@@ -257,10 +283,25 @@ TEST(messages_tests, process_fpga_to_mcu_stores_sensor_readings)
   TEST_ASSERT_VALUE_IN_ARRAY(SENSOR_TEMPERATURE, sensor_store_reading_fake.arg0_history);
 }
 
-TEST(messages_tests, send_mcu_to_fpga_sets_event_mask)
+TEST(messages_tests, fetch_from_fpga_clears_event_only_when_spi_receives)
 {
-  message_send_mcu_to_fpga(1234);
-  TEST_ASSERT_EQUAL_INT(1234, s_tx_message.event_mask);
+  message_fetch_from_fpga(0);
+  TEST_ASSERT_EQUAL(0u, dispatcher_clear_event_mask_fake.call_count);
+
+  spi_read_fake.custom_fake = returns_true;
+  message_fetch_from_fpga(0);
+  TEST_ASSERT_EQUAL(1u, dispatcher_clear_event_mask_fake.call_count);
+  TEST_ASSERT_EQUAL(1u << EV_FPGA_READY, dispatcher_clear_event_mask_fake.arg0_val);
+}
+
+TEST(messages_tests, fetch_from_fpga_processes_message_when_spi_receives)
+{
+  message_fetch_from_fpga(0);
+  TEST_ASSERT_EQUAL(0u, dispatcher_signal_event_mask_fake.call_count);
+
+  spi_read_fake.custom_fake = returns_true;
+  message_fetch_from_fpga(0);
+  TEST_ASSERT_GREATER_THAN(0u, dispatcher_signal_event_mask_fake.call_count);
 }
 
 TEST(messages_tests, send_mcu_to_fpga_sets_heartbeat)

@@ -22,22 +22,17 @@ void message_watchdog_enable(void);
 void message_watchdog_disable(void);
 
 /**
- * @brief Unpack a message and send the contents to the required places via the dispatcher
+ * @brief Set bits in the MCU event_mask that is sent in messages to the FPGA
  *
- * @param message     Received message
- * @return uint32_t   Running total of messages received with invalid CRC
- *                    (resets on success, i.e. 0 is no error)
+ * @param event_mask See enum mcu_event_bits - not the same as the system_event mask!
  */
-uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const message);
+void message_set_event_bits(mcu_event_mask_t event_mask);
 
 /**
- * @brief Assemble a message and send it to the FPGA
- * @note The display should be formatted prior to calling this function, using the display API
- * functions.
+ * @brief Clear bits in the MCU event_mask that is sent in messages to the FPGA
  *
- * @param event_mask See enum mcu_event_bits - should be preassembled (it is not the same as the
- *                   system_event mask!)
+ * @param event_mask See enum mcu_event_bits - not the same as the system_event mask!
  */
-void message_send_mcu_to_fpga(mcu_event_mask_t event_mask);
+void message_clear_event_bits(mcu_event_mask_t event_mask);
 
 #endif /* MESSAGES_H */

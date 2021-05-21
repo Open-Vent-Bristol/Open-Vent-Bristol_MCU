@@ -25,7 +25,7 @@ void system_init(void)
   uart_init();
 
   // Initialise driver components
-  actuator_init();
+  actuator_init(15.0, 4.0, 0.05);
   alarm_init();
   fan_init();
 
