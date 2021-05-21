@@ -1,6 +1,4 @@
 target_sources(OpenVent_application
   PUBLIC
-    main.c
-    dispatcher.c
-    timer.c
+    system.c
 )
