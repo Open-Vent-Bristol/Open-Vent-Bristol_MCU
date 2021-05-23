@@ -7,7 +7,8 @@
 #include "alarm_mock.h"
 #include "crc_mock.h"
 #include "dispatcher_mock.h"
-#include "display_mock.h"
+#include "display_controller_mock.h"
+#include "display_format_mock.h"
 #include "sensor_mock.h"
 #include "spi_mock.h"
 #include "test_macros.h"
@@ -40,6 +41,7 @@ TEST_SETUP(messages_tests)
   CRC_MOCKS(RESET_FAKE);
   DISPATCHER_MOCKS(RESET_FAKE);
   DISPLAY_FORMAT_MOCKS(RESET_FAKE);
+  DISPLAY_CONTROLLER_MOCKS(RESET_FAKE);
   SENSOR_MOCKS(RESET_FAKE);
   SPI_MOCKS(RESET_FAKE);
   TIMER_MOCKS(RESET_FAKE);
@@ -274,6 +276,24 @@ TEST(messages_tests, process_fpga_to_mcu_stores_sensor_readings)
   TEST_ASSERT_VALUE_IN_ARRAY(SENSOR_PERCENT_O2, sensor_store_reading_fake.arg0_history);
   TEST_ASSERT_VALUE_IN_ARRAY(SENSOR_PRESSURE, sensor_store_reading_fake.arg0_history);
   TEST_ASSERT_VALUE_IN_ARRAY(SENSOR_TEMPERATURE, sensor_store_reading_fake.arg0_history);
+}
+
+TEST(messages_tests, process_fpga_to_mcu_sets_display_overrides)
+{
+  message_fpga_to_mcu_t test_message =
+  {
+    .event_mask = (DISPLAY_OVERRIDE_LINE2_FULL << 10u) | (DISPLAY_OVERRIDE_LINE1_PLEASE_WAIT << 6u),
+  };
+
+  message_process_fpga_to_mcu(&test_message);
+
+  TEST_ASSERT_EQUAL_INT(1, display_controller_set_override_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(
+    DISPLAY_OVERRIDE_LINE1_PLEASE_WAIT, display_controller_set_override_fake.arg0_val);
+
+  TEST_ASSERT_EQUAL_INT(1, display_controller_set_line_2_override_fake.call_count);
+  TEST_ASSERT_EQUAL_INT(
+    DISPLAY_OVERRIDE_LINE2_FULL, display_controller_set_line_2_override_fake.arg0_val);
 }
 
 TEST(messages_tests, fetch_from_fpga_clears_event_only_when_spi_receives)

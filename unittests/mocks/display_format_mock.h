@@ -1,7 +1,7 @@
 // Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
 
-#ifndef DISPLAY_MOCK_H
-#define DISPLAY_MOCK_H
+#ifndef DISPLAY_FORMAT_MOCK_H
+#define DISPLAY_FORMAT_MOCK_H
 
 #include "fff.h"
 #include "fpga/private/display_format.h"
@@ -43,4 +43,4 @@ FAKE_VOID_FUNC(display_format_get, message_mcu_to_fpga_t* const);
   x(display_format_has_changed) \
   x(display_format_get)
 
-#endif /* DISPLAY_MOCK_H */
+#endif /* DISPLAY_FORMAT_MOCK_H */

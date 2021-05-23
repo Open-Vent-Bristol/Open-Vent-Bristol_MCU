@@ -2,22 +2,6 @@
 
 #pragma once
 
-#define DISPLAY_STR_HOLD_MUTE_SEL   "Hold Mute/Select\nTo turn off"
-
-#define DISPLAY_STR_L1_QUICK_CALIB  "QuickCalibration"
-#define DISPLAY_STR_L1_FULL_CALIB   "FullCalibration"
-#define DISPLAY_STR_L1_TUBES        "Disconnect tubes"
-#define DISPLAY_STR_L1_REDUCE_O2    "Reduce O2 to 0"
-#define DISPLAY_STR_L1_INCREASE_O2  "incr. O2 to 100%"
-#define DISPLAY_STR_L1_REMOVE_O2    "remove O2 supply"
-#define DISPLAY_STR_L1_CONNECT_N2   "connect N2 100%"
-#define DISPLAY_STR_L1_PLEASE_WAIT  "Please wait."
-
-#define DISPLAY_STR_L2_STANDBY      "\nStandby"
-#define DISPLAY_STR_L2_CONFIRM      "\nConfirm with Sel"
-#define DISPLAY_STR_L2_SUCCESS      "\nSuccessful"
-#define DISPLAY_STR_L2_FAILED       "\nFailed"
-
 #define BATTERY_INDICATOR_OUTLINE \
   (uint64_t)( 0b01110ull << 56u | \
               0b11111ull << 48u | \

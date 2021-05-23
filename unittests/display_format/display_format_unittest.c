@@ -526,40 +526,22 @@ TEST(display_format_test, format_battery_fault_char_no_change)
 
 TEST(display_format_test, format_progress_bar_steps)
 {
-  const uint8_t vals[] =
-  {
-    0u,
-    ((1u * 100u) / 16u) + 1u,
-    ((2u * 100u) / 16u) + 1u,
-    ((3u * 100u) / 16u) + 1u,
-    ((4u * 100u) / 16u) + 1u,
-    ((5u * 100u) / 16u) + 1u,
-    ((6u * 100u) / 16u) + 1u,
-    ((7u * 100u) / 16u) + 1u,
-    ((8u * 100u) / 16u) + 1u,
-    ((9u * 100u) / 16u) + 1u,
-    ((10u * 100u) / 16u) + 1u,
-    ((11u * 100u) / 16u) + 1u,
-    ((12u * 100u) / 16u) + 1u,
-    ((13u * 100u) / 16u) + 1u,
-    ((14u * 100u) / 16u) + 1u,
-    ((15u * 100u) / 16u) + 1u,
-    100u
-  };
-
   char expected[DISP_PROGRESS_BAR_LEN];
 
-  for (size_t i = 0u; i < sizeof(vals); i++)
+  for (size_t i = 0u; i <= DISP_PROGRESS_BAR_LEN; i++)
   {
     memset(expected, ' ', sizeof(expected));
     memset(expected, FULL_BLOCK, i);
-    display_format_progress_bar(vals[i]);
+    display_format_progress_bar(i);
     TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PROGRESS_BAR], DISP_PROGRESS_BAR_LEN);
   }
 }
 
 TEST(display_format_test, format_progress_bar_out_of_bounds)
 {
+  // Clear the static variable - last test ended with a full display
+  display_format_progress_bar(0);
+
   char expected[DISP_PROGRESS_BAR_LEN] =
   {
     FULL_BLOCK, FULL_BLOCK, FULL_BLOCK, FULL_BLOCK,

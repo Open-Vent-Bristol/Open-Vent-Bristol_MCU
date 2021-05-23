@@ -5,6 +5,7 @@
 #include "private/fpga_priv.h"
 #include "alarm/alarm.h"
 #include "crc/crc.h"
+#include "display_controller.h"
 #include "scheduler/dispatcher.h"
 #include "sensor/sensor.h"
 #include "spi/spi.h"
@@ -111,6 +112,17 @@ TESTABLE uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const
     dispatcher_signal_event_mask(1u << EV_OP_MODE_CHANGE, new_mode);
     s_current_fpga_op_mode = new_mode;
   }
+
+  // Display overrides
+  enum display_override_index override =
+    (enum display_override_index)(
+      (message->event_mask & FPGA_EVENT_DISPLAY_OVERRIDE_MASK) >> 6u);
+  display_controller_set_override(override);
+
+  enum display_override_line_2_index override_line_2 =
+    (enum display_override_line_2_index)(
+      (message->event_mask & FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_MASK) >> 10u);
+  display_controller_set_line_2_override(override_line_2);
 
   // if ((message->event_mask & FPGA_EVENT_MOTOR_DISABLED) ||
   //     (message->event_mask & FPGA_EVENT_TIDAL_VOLUME_EXCEEDED))

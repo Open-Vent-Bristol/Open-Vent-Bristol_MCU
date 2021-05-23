@@ -16,7 +16,7 @@ void display_format_percent_o2(uint8_t oxygen_percent);
 void display_format_battery_gauge(uint8_t charge_percent);
 void display_format_battery_fault(void);
 void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure_cmH2O);
-void display_format_progress_bar(uint8_t progress_percent);
+void display_format_progress_bar(uint8_t progress_sixteenths);
 
 /**
  * @brief Display a specific string up to two lines long
