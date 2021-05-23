@@ -24,6 +24,7 @@ TEST_GROUP_RUNNER(messages_tests)
   RUN_TEST_CASE(messages_tests, process_fpga_to_mcu_signals_set_point_change);
   RUN_TEST_CASE(messages_tests, process_fpga_to_mcu_signals_control_variable_change);
   RUN_TEST_CASE(messages_tests, process_fpga_to_mcu_signals_display_update);
+  RUN_TEST_CASE(messages_tests, process_fpga_to_mcu_signals_fpga_send);
   RUN_TEST_CASE(messages_tests, process_fpga_to_mcu_stores_sensor_readings);
 
   RUN_TEST_CASE(messages_tests, fetch_from_fpga_clears_event_only_when_spi_receives);

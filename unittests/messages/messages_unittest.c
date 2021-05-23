@@ -27,23 +27,6 @@ extern uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const m
 extern void message_fetch_from_fpga(int32_t arg);
 extern void message_send_mcu_to_fpga(int32_t arg);
 
-static uint32_t crc_calculate_12345678(const void *const data, size_t byte_length)
-{
-  (void)data;
-  (void)byte_length;
-
-  return 0x12345678;
-}
-
-static bool returns_true(uint8_t command, uint8_t* const data_in, uint8_t max_length)
-{
-  (void)command;
-  (void)data_in;
-  (void)max_length;
-
-  return true;
-}
-
 TEST_GROUP(messages_tests);
 
 TEST_SETUP(messages_tests)
@@ -111,7 +94,7 @@ TEST(messages_tests, watchdog_disable_stops_fpga_watchdog_timer)
 
 TEST(messages_tests, process_fpga_to_mcu_aborts_for_invalid_crc)
 {
-  crc_calculate_fake.custom_fake = crc_calculate_12345678;
+  crc_calculate_fake.return_val = 0x12345678;
 
   message_fpga_to_mcu_t test_message =
   {
@@ -128,7 +111,7 @@ TEST(messages_tests, process_fpga_to_mcu_aborts_for_invalid_crc)
 
 TEST(messages_tests, process_fpga_to_mcu_several_invalid_crc_sets_system_failure_alarm)
 {
-  crc_calculate_fake.custom_fake = crc_calculate_12345678;
+  crc_calculate_fake.return_val = 0x12345678;
 
   message_fpga_to_mcu_t test_message =
   {
@@ -151,7 +134,7 @@ TEST(messages_tests, process_fpga_to_mcu_several_invalid_crc_sets_system_failure
 
 TEST(messages_tests, process_fpga_to_mcu_resets_invalid_crc_count)
 {
-  crc_calculate_fake.custom_fake = crc_calculate_12345678;
+  crc_calculate_fake.return_val = 0x12345678;
 
   message_fpga_to_mcu_t test_message =
   {
@@ -271,6 +254,16 @@ TEST(messages_tests, process_fpga_to_mcu_signals_display_update)
     (1u << EV_DO_UPDATE_DISPLAY), dispatcher_signal_event_mask_fake.arg0_history);
 }
 
+TEST(messages_tests, process_fpga_to_mcu_signals_fpga_send)
+{
+  message_fpga_to_mcu_t test_message = {0};
+
+  message_process_fpga_to_mcu(&test_message);
+
+  TEST_ASSERT_VALUE_IN_ARRAY(
+    (1u << EV_FPGA_SEND), dispatcher_signal_event_mask_fake.arg0_history);
+}
+
 TEST(messages_tests, process_fpga_to_mcu_stores_sensor_readings)
 {
   message_fpga_to_mcu_t test_message = {0};
@@ -288,7 +281,7 @@ TEST(messages_tests, fetch_from_fpga_clears_event_only_when_spi_receives)
   message_fetch_from_fpga(0);
   TEST_ASSERT_EQUAL(0u, dispatcher_clear_event_mask_fake.call_count);
 
-  spi_read_fake.custom_fake = returns_true;
+  spi_read_fake.return_val = true;
   message_fetch_from_fpga(0);
   TEST_ASSERT_EQUAL(1u, dispatcher_clear_event_mask_fake.call_count);
   TEST_ASSERT_EQUAL(1u << EV_FPGA_READY, dispatcher_clear_event_mask_fake.arg0_val);
@@ -299,7 +292,7 @@ TEST(messages_tests, fetch_from_fpga_processes_message_when_spi_receives)
   message_fetch_from_fpga(0);
   TEST_ASSERT_EQUAL(0u, dispatcher_signal_event_mask_fake.call_count);
 
-  spi_read_fake.custom_fake = returns_true;
+  spi_read_fake.return_val = true;
   message_fetch_from_fpga(0);
   TEST_ASSERT_GREATER_THAN(0u, dispatcher_signal_event_mask_fake.call_count);
 }
@@ -315,13 +308,18 @@ TEST(messages_tests, send_mcu_to_fpga_sets_heartbeat)
 TEST(messages_tests, send_mcu_to_fpga_copies_cached_display)
 {
   message_send_mcu_to_fpga(0);
+  TEST_ASSERT_EQUAL_INT(0, display_format_get_fake.call_count);
+
+  display_format_has_changed_fake.return_val = true;
+
+  message_send_mcu_to_fpga(0);
   TEST_ASSERT_EQUAL_INT(1, display_format_get_fake.call_count);
   TEST_ASSERT_EQUAL_PTR(&s_tx_message, display_format_get_fake.arg0_val);
 }
 
 TEST(messages_tests, send_mcu_to_fpga_sets_crc)
 {
-  crc_calculate_fake.custom_fake = crc_calculate_12345678;
+  crc_calculate_fake.return_val = 0x12345678;
 
   message_send_mcu_to_fpga(0);
   TEST_ASSERT_EQUAL_INT(1, crc_calculate_fake.call_count);
