@@ -18,8 +18,8 @@ extern uint8_t s_current_duty;
 extern void fan_switch_lookup(int32_t set_pressure);
 extern void fan_service(int32_t arg);
 
-uint16_t test_temperature = 0;
-uint16_t get_test_temperature(enum sensor_index sensor)
+int16_t test_temperature = 0;
+int16_t get_test_temperature(enum sensor_index sensor)
 {
   return test_temperature;
 }
@@ -147,149 +147,193 @@ TEST_TEAR_DOWN(fan_service_tests)
 TEST(fan_service_tests, duty_calculation)
 {
   s_pressure_lookup_index = 0u;
-  test_temperature = 0u;
+  test_temperature = 0;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 29u;
+  test_temperature = 29;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 30u;
+  test_temperature = 30;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 39u;
+  test_temperature = 39;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 40u;
+  test_temperature = 40;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = UINT16_MAX;
+  test_temperature = INT16_MAX;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
+
+  test_temperature = -1;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
+
+  test_temperature = INT16_MIN;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
   s_pressure_lookup_index = 1u;
   RESET_FAKE(FAN_PWM);
 
-  test_temperature = 0u;
+  test_temperature = 0;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 29u;
+  test_temperature = 29;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 30u;
+  test_temperature = 30;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 39u;
+  test_temperature = 39;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 40u;
+  test_temperature = 40;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(25u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = UINT16_MAX;
+  test_temperature = INT16_MAX;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(25u), FAN_PWM_fake.arg0_val);
+
+  RESET_FAKE(FAN_PWM);
+
+  test_temperature = -1;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
+
+  test_temperature = INT16_MIN;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
   s_pressure_lookup_index = 2u;
   RESET_FAKE(FAN_PWM);
 
-  test_temperature = 0u;
+  test_temperature = 0;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 29u;
+  test_temperature = 29;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 30u;
+  test_temperature = 30;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 39u;
+  test_temperature = 39;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
-  test_temperature = 40u;
+  test_temperature = 40;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(50u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = UINT16_MAX;
+  test_temperature = INT16_MAX;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(50u), FAN_PWM_fake.arg0_val);
+
+  RESET_FAKE(FAN_PWM);
+
+  test_temperature = -1;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
+
+  test_temperature = INT16_MIN;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(0u, FAN_PWM_fake.call_count);
 
   s_pressure_lookup_index = 3u;
   RESET_FAKE(FAN_PWM);
 
-  test_temperature = 0u;
+  test_temperature = 0;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(10u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = 29u;
+  test_temperature = 29;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(10u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = 30u;
+  test_temperature = 30;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(25u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = 39u;
+  test_temperature = 39;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(25u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = 40u;
+  test_temperature = 40;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(75u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = UINT16_MAX;
+  test_temperature = INT16_MAX;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(75u), FAN_PWM_fake.arg0_val);
+
+  test_temperature = -1;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(10u), FAN_PWM_fake.arg0_val);
+
+  test_temperature = INT16_MIN;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(10u), FAN_PWM_fake.arg0_val);
 
   s_pressure_lookup_index = 4u;
   RESET_FAKE(FAN_PWM);
 
-  test_temperature = 0u;
+  test_temperature = 0;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(30u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = 29u;
+  test_temperature = 29;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(30u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = 30u;
+  test_temperature = 30;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(75u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = 39u;
+  test_temperature = 39;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(75u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = 40u;
+  test_temperature = 40;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(100u), FAN_PWM_fake.arg0_val);
 
-  test_temperature = UINT16_MAX;
+  test_temperature = INT16_MAX;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(100u), FAN_PWM_fake.arg0_val);
+
+  test_temperature = -1;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(30u), FAN_PWM_fake.arg0_val);
+
+  test_temperature = INT16_MIN;
+  fan_service(0);
+  TEST_ASSERT_EQUAL_INT(PERCENT_TO_UINT8(30u), FAN_PWM_fake.arg0_val);
 }
 
 TEST(fan_service_tests, sets_pwm_on_off)
 {
   s_pressure_lookup_index = 4u;
-  test_temperature = 40u;
+  test_temperature = 40;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(1, FAN_PWM_fake.call_count);
   TEST_ASSERT_EQUAL_INT(1, FAN_PWM_START_fake.call_count);
 
   s_pressure_lookup_index = 0u;
-  test_temperature = 0u;
+  test_temperature = 0;
   fan_service(0);
   TEST_ASSERT_EQUAL_INT(1, FAN_PWM_STOP_fake.call_count);
 }
