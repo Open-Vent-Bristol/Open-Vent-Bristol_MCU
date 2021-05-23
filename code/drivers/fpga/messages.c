@@ -1,7 +1,7 @@
 // Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
 
 #include "messages.h"
-#include "display.h"
+#include "private/display_format.h"
 #include "private/fpga_priv.h"
 #include "alarm/alarm.h"
 #include "crc/crc.h"
@@ -173,7 +173,7 @@ TESTABLE void message_fetch_from_fpga(int32_t arg)
 TESTABLE void message_send_mcu_to_fpga(int32_t arg)
 {
   fpga_heartbeat_calculate(&s_tx_message, s_previous_received_heartbeat);
-  display_get(&s_tx_message);
+  display_format_get(&s_tx_message);
 
   // Calculate the CRC-32
   s_tx_message.crc32 =

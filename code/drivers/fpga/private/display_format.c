@@ -1,7 +1,7 @@
 // Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
 
-#include "display.h"
-#include "private/display_priv.h"
+#include "display_format.h"
+#include "display_priv.h"
 #include "misc/util.h"
 #include <string.h>
 #include <stdint.h>
@@ -397,7 +397,7 @@ void display_format_progress_bar(uint8_t progress_percent)
   }
 }
 
-void display_string(const char* const string_to_display)
+void display_format_string(const char* const string_to_display)
 {
   enum which_lines
   {
@@ -470,12 +470,12 @@ void display_string(const char* const string_to_display)
   }
 }
 
-bool display_has_changed(void)
+bool display_format_has_changed(void)
 {
   return s_display_changed;
 }
 
-void display_get(message_mcu_to_fpga_t* const message_to_format)
+void display_format_get(message_mcu_to_fpga_t* const message_to_format)
 {
   if (!message_to_format)
   {

@@ -56,7 +56,7 @@ TEST_SETUP(messages_tests)
   ALARM_MOCKS(RESET_FAKE);
   CRC_MOCKS(RESET_FAKE);
   DISPATCHER_MOCKS(RESET_FAKE);
-  DISPLAY_MOCKS(RESET_FAKE);
+  DISPLAY_FORMAT_MOCKS(RESET_FAKE);
   SENSOR_MOCKS(RESET_FAKE);
   SPI_MOCKS(RESET_FAKE);
   TIMER_MOCKS(RESET_FAKE);
@@ -315,8 +315,8 @@ TEST(messages_tests, send_mcu_to_fpga_sets_heartbeat)
 TEST(messages_tests, send_mcu_to_fpga_copies_cached_display)
 {
   message_send_mcu_to_fpga(0);
-  TEST_ASSERT_EQUAL_INT(1, display_get_fake.call_count);
-  TEST_ASSERT_EQUAL_PTR(&s_tx_message, display_get_fake.arg0_val);
+  TEST_ASSERT_EQUAL_INT(1, display_format_get_fake.call_count);
+  TEST_ASSERT_EQUAL_PTR(&s_tx_message, display_format_get_fake.arg0_val);
 }
 
 TEST(messages_tests, send_mcu_to_fpga_sets_crc)
