@@ -8,8 +8,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
-enum display_override_index s_display_override_index = DISPLAY_OVERRIDE_NONE;
-enum display_override_line_2_index s_display_override_line_2_index = DISPLAY_OVERRIDE_LINE2_NONE;
+TESTABLE enum display_override_index s_display_override_index = DISPLAY_OVERRIDE_NONE;
+TESTABLE enum display_override_line_2_index s_display_override_line_2_index = DISPLAY_OVERRIDE_LINE2_NONE;
 
 static const char* const s_override_strings[] =
 {
@@ -93,7 +93,7 @@ void display_controller_init(void)
 
 void display_controller_set_override(enum display_override_index index)
 {
-  if (s_display_override_index < ARRAY_LENGTH(s_override_strings))
+  if (index < ARRAY_LENGTH(s_override_strings))
   {
     s_display_override_index = index;
   }
