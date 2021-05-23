@@ -41,6 +41,8 @@ static const char* const s_override_line_2_strings[] =
  */
 TESTABLE void display_controller_update(int32_t arg)
 {
+  (void)arg;
+
   dispatcher_clear_event_mask(1u << EV_DO_UPDATE_DISPLAY);
 
   // Most of the time the measurements display should be shown
