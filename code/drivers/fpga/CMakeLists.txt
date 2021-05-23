@@ -1,5 +1,6 @@
 target_sources(OpenVent_drivers
   PUBLIC
-    display.c
+    private/display_format.c
+    display_controller.c
     messages.c
 )

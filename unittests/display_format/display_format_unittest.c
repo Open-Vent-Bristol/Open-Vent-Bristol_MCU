@@ -2,7 +2,7 @@
 
 #include "unity.h"
 #include "unity_fixture.h"
-#include "fpga/display.h"
+#include "fpga/private/display_format.h"
 #include "fpga/private/display_priv.h"
 #include <string.h>
 
@@ -12,36 +12,36 @@ extern bool s_display_changed;
 
 extern void make_custom_char(enum display_char char_to_create);
 
-TEST_GROUP(display_tests);
+TEST_GROUP(display_format_test);
 
-TEST_SETUP(display_tests)
+TEST_SETUP(display_format_test)
 {
   memset(s_custom_chars, 0u, sizeof(s_custom_chars));
   memset(s_display, ' ', sizeof(s_display));
   s_display_changed = false;
 }
 
-TEST_TEAR_DOWN(display_tests)
+TEST_TEAR_DOWN(display_format_test)
 {}
 
-TEST(display_tests, has_changed_true)
+TEST(display_format_test, has_changed_true)
 {
   s_display_changed = true;
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 }
 
-TEST(display_tests, has_changed_false)
+TEST(display_format_test, has_changed_false)
 {
-  TEST_ASSERT_FALSE(display_has_changed());
+  TEST_ASSERT_FALSE(display_format_has_changed());
 }
 
-TEST(display_tests, get_copies_custom_chars)
+TEST(display_format_test, get_copies_custom_chars)
 {
   message_mcu_to_fpga_t message;
   memset(&message, 0xFF, sizeof(message));
 
   s_display_changed = true;
-  display_get(&message);
+  display_format_get(&message);
 
   TEST_ASSERT_EQUAL_UINT64(0u, message.battery_indicator);
   TEST_ASSERT_EQUAL_UINT64(0u, message.pressure_bar_edge);
@@ -50,15 +50,15 @@ TEST(display_tests, get_copies_custom_chars)
   TEST_ASSERT_FALSE(s_display_changed);
 }
 
-TEST(display_tests, get_with_null_pointer)
+TEST(display_format_test, get_with_null_pointer)
 {
   s_display_changed = true;
-  display_get((message_mcu_to_fpga_t*)0u);
+  display_format_get((message_mcu_to_fpga_t*)0u);
 
   TEST_ASSERT_TRUE(s_display_changed);
 }
 
-TEST(display_tests, make_custom_char_pressure_peak_marker)
+TEST(display_format_test, make_custom_char_pressure_peak_marker)
 {
   make_custom_char(DISPLAY_CHAR_PEAK_PRESSURE_0);
   TEST_ASSERT_EQUAL_UINT64(0x0101010101010101,
@@ -83,7 +83,7 @@ TEST(display_tests, make_custom_char_pressure_peak_marker)
     s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_EDGE]);
 }
 
-TEST(display_tests, make_custom_char_pressure_bar_edge)
+TEST(display_format_test, make_custom_char_pressure_bar_edge)
 {
   // Invalid
   make_custom_char(DISPLAY_CHAR_PRESSURE_0);
@@ -109,7 +109,7 @@ TEST(display_tests, make_custom_char_pressure_bar_edge)
     s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK]);
 }
 
-TEST(display_tests, make_custom_char_battery_empty)
+TEST(display_format_test, make_custom_char_battery_empty)
 {
   make_custom_char(DISPLAY_CHAR_BATTERY_0);
   TEST_ASSERT_EQUAL_UINT64(BATTERY_INDICATOR_OUTLINE,
@@ -122,7 +122,7 @@ TEST(display_tests, make_custom_char_battery_empty)
     s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK]);
 }
 
-TEST(display_tests, make_custom_char_battery)
+TEST(display_format_test, make_custom_char_battery)
 {
   make_custom_char(DISPLAY_CHAR_BATTERY_20);
   TEST_ASSERT_EQUAL_UINT64((BATTERY_INDICATOR_OUTLINE | 0xE00),
@@ -151,7 +151,7 @@ TEST(display_tests, make_custom_char_battery)
     s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK]);
 }
 
-TEST(display_tests, make_custom_char_battery_fault)
+TEST(display_format_test, make_custom_char_battery_fault)
 {
   make_custom_char(DISPLAY_CHAR_BATTERY_FAULT);
   TEST_ASSERT_EQUAL_UINT64(BATTERY_INDICATOR_FAULT,
@@ -164,48 +164,48 @@ TEST(display_tests, make_custom_char_battery_fault)
     s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK]);
 }
 
-TEST(display_tests, format_tidal_volume_text)
+TEST(display_format_test, format_tidal_volume_text)
 {
   char expected1[DISP_TIDAL_VOL_LEN] = {'0', '0', '9'};
   display_format_tidal_volume(9u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected1, &s_display[DISP_TIDAL_VOL], DISP_TIDAL_VOL_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
   char expected2[DISP_TIDAL_VOL_LEN] = {'1', '2', '3'};
   display_format_tidal_volume(123u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected2, &s_display[DISP_TIDAL_VOL], DISP_TIDAL_VOL_LEN);
 }
 
-TEST(display_tests, format_tidal_volume_out_of_bounds)
+TEST(display_format_test, format_tidal_volume_out_of_bounds)
 {
   char expected[DISP_TIDAL_VOL_LEN] = {'>', '1', 'k'};
   display_format_tidal_volume(9999u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_TIDAL_VOL], DISP_TIDAL_VOL_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 }
 
-TEST(display_tests, format_tidal_volume_text_no_change)
+TEST(display_format_test, format_tidal_volume_text_no_change)
 {
   message_mcu_to_fpga_t message;
 
   display_format_tidal_volume(50u);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
-  display_get(&message);
-  TEST_ASSERT_FALSE(display_has_changed());
+  display_format_get(&message);
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   display_format_tidal_volume(50u);
-  TEST_ASSERT_FALSE(display_has_changed());
+  TEST_ASSERT_FALSE(display_format_has_changed());
 }
 
-TEST(display_tests, format_peak_flow_text)
+TEST(display_format_test, format_peak_flow_text)
 {
   // Argument is in dl/min and output is in l/min.  9.6 l/min == 96 dl/min
   char expected1[DISP_PEAK_FLOW_LEN] = {'0', '9', '.', '6'};
   display_format_peak_flow(96u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected1, &s_display[DISP_PEAK_FLOW],
     DISP_PEAK_FLOW_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
   // Argument is in dl/min and output is in l/min.  34.2 l/min == 342 dl/min
   char expected2[DISP_PEAK_FLOW_LEN] = {'3', '4', '.', '2'};
@@ -214,134 +214,134 @@ TEST(display_tests, format_peak_flow_text)
     DISP_PEAK_FLOW_LEN);
 }
 
-TEST(display_tests, format_peak_flow_out_of_bounds)
+TEST(display_format_test, format_peak_flow_out_of_bounds)
 {
   // Argument is in ml/s and output is in l/min.  100 l/min == 1667 ml/s
   char expected[DISP_PEAK_FLOW_LEN] = {'>', '1', '0', '0'};
   display_format_peak_flow(1667u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PEAK_FLOW],
     DISP_PEAK_FLOW_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 }
 
-TEST(display_tests, format_peak_flow_text_no_change)
+TEST(display_format_test, format_peak_flow_text_no_change)
 {
   message_mcu_to_fpga_t message;
 
   display_format_peak_flow(50u);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
-  display_get(&message);
-  TEST_ASSERT_FALSE(display_has_changed());
+  display_format_get(&message);
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   display_format_peak_flow(50u);
-  TEST_ASSERT_FALSE(display_has_changed());
+  TEST_ASSERT_FALSE(display_format_has_changed());
 }
 
-TEST(display_tests, format_respiration_rate_text)
+TEST(display_format_test, format_respiration_rate_text)
 {
   char resp_rate_expected1[DISP_RESP_RATE_LEN] = {'0', '9'};
   display_format_respiration_rate(9u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(resp_rate_expected1, &s_display[DISP_RESP_RATE], DISP_RESP_RATE_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
   char resp_rate_expected2[DISP_RESP_RATE_LEN] = {'1', '2'};
   display_format_respiration_rate(12u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(resp_rate_expected2, &s_display[DISP_RESP_RATE], DISP_RESP_RATE_LEN);
 }
 
-TEST(display_tests, format_respiration_rate_out_of_bounds)
+TEST(display_format_test, format_respiration_rate_out_of_bounds)
 {
   char resp_rate_expected[DISP_RESP_RATE_LEN] = {'-', '-'};
   display_format_respiration_rate(UINT8_MAX);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(resp_rate_expected, &s_display[DISP_RESP_RATE], DISP_RESP_RATE_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 }
 
-TEST(display_tests, format_respiration_rate_text_no_change)
+TEST(display_format_test, format_respiration_rate_text_no_change)
 {
   message_mcu_to_fpga_t message;
 
   display_format_respiration_rate(50u);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
-  display_get(&message);
-  TEST_ASSERT_FALSE(display_has_changed());
+  display_format_get(&message);
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   display_format_respiration_rate(50u);
-  TEST_ASSERT_FALSE(display_has_changed());
+  TEST_ASSERT_FALSE(display_format_has_changed());
 }
 
-TEST(display_tests, format_percent_o2_text)
+TEST(display_format_test, format_percent_o2_text)
 {
   char percent_expected1[DISP_PERCENT_LEN] = {'0', '0', '9'};
   display_format_percent_o2(9u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(percent_expected1, &s_display[DISP_PERCENT_O2], DISP_PERCENT_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
   char percent_expected2[DISP_PERCENT_LEN] = {'1', '0', '0'};
   display_format_percent_o2(100u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(percent_expected2, &s_display[DISP_PERCENT_O2], DISP_PERCENT_LEN);
 }
 
-TEST(display_tests, format_percent_o2_out_of_bounds)
+TEST(display_format_test, format_percent_o2_out_of_bounds)
 {
   // Display should cap at 100%
   char percent_expected[DISP_PERCENT_LEN] = {'1', '0', '0'};
   display_format_percent_o2(UINT8_MAX);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(percent_expected, &s_display[DISP_PERCENT_O2], DISP_PERCENT_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 }
 
-TEST(display_tests, format_percent_o2_text_no_change)
+TEST(display_format_test, format_percent_o2_text_no_change)
 {
   message_mcu_to_fpga_t message;
 
   display_format_percent_o2(50u);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
-  display_get(&message);
-  TEST_ASSERT_FALSE(display_has_changed());
+  display_format_get(&message);
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   display_format_percent_o2(50u);
-  TEST_ASSERT_FALSE(display_has_changed());
+  TEST_ASSERT_FALSE(display_format_has_changed());
 }
 
-TEST(display_tests, format_pressure_text)
+TEST(display_format_test, format_pressure_text)
 {
   char pressure_expected1[DISP_PRESSURE_LEN] = {'0', '9'};
   display_format_pressure_bar(9u, 0u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(pressure_expected1, &s_display[DISP_PRESSURE], DISP_PRESSURE_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
   char pressure_expected2[DISP_PRESSURE_LEN] = {'1', '2'};
   display_format_pressure_bar(12u, 0u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(pressure_expected2, &s_display[DISP_PRESSURE], DISP_PRESSURE_LEN);
 }
 
-TEST(display_tests, format_pressure_text_out_of_bounds)
+TEST(display_format_test, format_pressure_text_out_of_bounds)
 {
   char pressure_expected[DISP_PRESSURE_LEN] = {'-', '-'};
   display_format_pressure_bar(100u, 0u);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(pressure_expected, &s_display[DISP_PRESSURE], DISP_PRESSURE_LEN);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 }
 
-TEST(display_tests, format_pressure_text_no_change)
+TEST(display_format_test, format_pressure_text_no_change)
 {
   message_mcu_to_fpga_t message;
 
   display_format_pressure_bar(50u, 50u);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
-  display_get(&message);
-  TEST_ASSERT_FALSE(display_has_changed());
+  display_format_get(&message);
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   display_format_pressure_bar(50u, 50u);
-  TEST_ASSERT_FALSE(display_has_changed());
+  TEST_ASSERT_FALSE(display_format_has_changed());
 }
 
-TEST(display_tests, format_pressure_bar_rising)
+TEST(display_format_test, format_pressure_bar_rising)
 {
   char expected[DISP_PRESSURE_GAUGE_LEN] =
     {' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',  ' '};
@@ -362,7 +362,7 @@ TEST(display_tests, format_pressure_bar_rising)
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 }
 
-TEST(display_tests, format_pressure_bar_falling)
+TEST(display_format_test, format_pressure_bar_falling)
 {
   char expected[DISP_PRESSURE_GAUGE_LEN] =
   {
@@ -387,7 +387,7 @@ TEST(display_tests, format_pressure_bar_falling)
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 }
 
-TEST(display_tests, format_pressure_bar_edge_chars)
+TEST(display_format_test, format_pressure_bar_edge_chars)
 {
   char expected[DISP_PRESSURE_GAUGE_LEN] =
   {
@@ -409,7 +409,7 @@ TEST(display_tests, format_pressure_bar_edge_chars)
   TEST_ASSERT_EQUAL_UINT64(0x0404040404040404, s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_PEAK]);
 }
 
-TEST(display_tests, format_pressure_bar_overlapping_edge_chars)
+TEST(display_format_test, format_pressure_bar_overlapping_edge_chars)
 {
   char expected[DISP_PRESSURE_GAUGE_LEN] =
   {
@@ -429,7 +429,7 @@ TEST(display_tests, format_pressure_bar_overlapping_edge_chars)
   TEST_ASSERT_EQUAL_UINT64(0x1414141414141414, s_custom_chars[CUSTOM_CHAR_PRESSURE_BAR_EDGE]);
 }
 
-TEST(display_tests, format_pressure_bar_out_of_bounds)
+TEST(display_format_test, format_pressure_bar_out_of_bounds)
 {
   char expected[DISP_PRESSURE_GAUGE_LEN] =
   {
@@ -443,7 +443,7 @@ TEST(display_tests, format_pressure_bar_out_of_bounds)
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PRESSURE_GAUGE], DISP_PRESSURE_GAUGE_LEN);
 }
 
-TEST(display_tests, format_battery_gauge_char)
+TEST(display_format_test, format_battery_gauge_char)
 {
   display_format_battery_gauge(0u);
   TEST_ASSERT_EQUAL_UINT64(BATTERY_INDICATOR_OUTLINE,
@@ -481,24 +481,24 @@ TEST(display_tests, format_battery_gauge_char)
   TEST_ASSERT_EQUAL_CHAR(CUSTOM_CHAR_BATTERY_INDICATOR, s_display[DISP_BATTERY]);
 }
 
-TEST(display_tests, format_battery_gauge_char_no_change)
+TEST(display_format_test, format_battery_gauge_char_no_change)
 {
   message_mcu_to_fpga_t message;
 
   display_format_battery_gauge(1u);
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
-  display_get(&message);
-  TEST_ASSERT_FALSE(display_has_changed());
+  display_format_get(&message);
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   display_format_battery_gauge(1u);
-  TEST_ASSERT_FALSE(display_has_changed());
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   // Ensure the battery character is inserted into the cached display
   TEST_ASSERT_EQUAL_CHAR(CUSTOM_CHAR_BATTERY_INDICATOR, s_display[DISP_BATTERY]);
 }
 
-TEST(display_tests, format_battery_fault_char)
+TEST(display_format_test, format_battery_fault_char)
 {
   display_format_battery_fault();
   TEST_ASSERT_EQUAL_UINT64(BATTERY_INDICATOR_FAULT, s_custom_chars[CUSTOM_CHAR_BATTERY_INDICATOR]);
@@ -507,59 +507,41 @@ TEST(display_tests, format_battery_fault_char)
   TEST_ASSERT_EQUAL_CHAR(CUSTOM_CHAR_BATTERY_INDICATOR, s_display[DISP_BATTERY]);
 }
 
-TEST(display_tests, format_battery_fault_char_no_change)
+TEST(display_format_test, format_battery_fault_char_no_change)
 {
   message_mcu_to_fpga_t message;
 
   display_format_battery_fault();
-  TEST_ASSERT_TRUE(display_has_changed());
+  TEST_ASSERT_TRUE(display_format_has_changed());
 
-  display_get(&message);
-  TEST_ASSERT_FALSE(display_has_changed());
+  display_format_get(&message);
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   display_format_battery_fault();
-  TEST_ASSERT_FALSE(display_has_changed());
+  TEST_ASSERT_FALSE(display_format_has_changed());
 
   // Ensure the battery character is inserted into the cached display
   TEST_ASSERT_EQUAL_CHAR(CUSTOM_CHAR_BATTERY_INDICATOR, s_display[DISP_BATTERY]);
 }
 
-TEST(display_tests, format_progress_bar_steps)
+TEST(display_format_test, format_progress_bar_steps)
 {
-  const uint8_t vals[] =
-  {
-    0u,
-    ((1u * 100u) / 16u) + 1u,
-    ((2u * 100u) / 16u) + 1u,
-    ((3u * 100u) / 16u) + 1u,
-    ((4u * 100u) / 16u) + 1u,
-    ((5u * 100u) / 16u) + 1u,
-    ((6u * 100u) / 16u) + 1u,
-    ((7u * 100u) / 16u) + 1u,
-    ((8u * 100u) / 16u) + 1u,
-    ((9u * 100u) / 16u) + 1u,
-    ((10u * 100u) / 16u) + 1u,
-    ((11u * 100u) / 16u) + 1u,
-    ((12u * 100u) / 16u) + 1u,
-    ((13u * 100u) / 16u) + 1u,
-    ((14u * 100u) / 16u) + 1u,
-    ((15u * 100u) / 16u) + 1u,
-    100u
-  };
-
   char expected[DISP_PROGRESS_BAR_LEN];
 
-  for (size_t i = 0u; i < sizeof(vals); i++)
+  for (size_t i = 0u; i <= DISP_PROGRESS_BAR_LEN; i++)
   {
     memset(expected, ' ', sizeof(expected));
     memset(expected, FULL_BLOCK, i);
-    display_format_progress_bar(vals[i]);
+    display_format_progress_bar(i);
     TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PROGRESS_BAR], DISP_PROGRESS_BAR_LEN);
   }
 }
 
-TEST(display_tests, format_progress_bar_out_of_bounds)
+TEST(display_format_test, format_progress_bar_out_of_bounds)
 {
+  // Clear the static variable - last test ended with a full display
+  display_format_progress_bar(0);
+
   char expected[DISP_PROGRESS_BAR_LEN] =
   {
     FULL_BLOCK, FULL_BLOCK, FULL_BLOCK, FULL_BLOCK,
@@ -572,24 +554,24 @@ TEST(display_tests, format_progress_bar_out_of_bounds)
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, &s_display[DISP_PROGRESS_BAR], DISP_PROGRESS_BAR_LEN);
 }
 
-TEST(display_tests, string_null_pointer)
+TEST(display_format_test, string_null_pointer)
 {
-  display_string(NULL);
+  display_format_string(NULL);
   TEST_ASSERT_FALSE(s_display_changed);
 }
 
-TEST(display_tests, string_terminates_at_length_32)
+TEST(display_format_test, string_terminates_at_length_32)
 {
   const char* test_string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   const char* expected = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef";
 
-  display_string(test_string);
+  display_format_string(test_string);
   // Will segfault if this test fails!
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
   TEST_ASSERT_TRUE(s_display_changed);
 }
 
-TEST(display_tests, string_null_terminated_first_line)
+TEST(display_format_test, string_null_terminated_first_line)
 {
   const char setup_string[DISP_LEN / 2u] = "abcdefghijklmnop";
   const char* test_string = "ABCDEFGH\0I";
@@ -597,12 +579,12 @@ TEST(display_tests, string_null_terminated_first_line)
 
   memcpy(&s_display[DISP_LEN / 2u], setup_string, sizeof(setup_string));
 
-  display_string(test_string);
+  display_format_string(test_string);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
   TEST_ASSERT_TRUE(s_display_changed);
 }
 
-TEST(display_tests, string_opening_new_line_second_line_only)
+TEST(display_format_test, string_opening_new_line_second_line_only)
 {
   const char setup_string[DISP_LEN / 2u] = "abcdefghijklmnop";
   const char* test_string = "\nABCDEF";
@@ -610,27 +592,27 @@ TEST(display_tests, string_opening_new_line_second_line_only)
 
   memcpy(s_display, setup_string, sizeof(setup_string));
 
-  display_string(test_string);
+  display_format_string(test_string);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
   TEST_ASSERT_TRUE(s_display_changed);
 }
 
-TEST(display_tests, string_ignores_new_line_at_index_16)
+TEST(display_format_test, string_ignores_new_line_at_index_16)
 {
   const char* test_string = "ABCDEFGHIJKLMNOP\nQRSTUVWXYZabcdef";
   const char* expected = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef";
 
-  display_string(test_string);
+  display_format_string(test_string);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
   TEST_ASSERT_TRUE(s_display_changed);
 }
 
-TEST(display_tests, string_treats_new_line_on_second_line_as_termination)
+TEST(display_format_test, string_treats_new_line_on_second_line_as_termination)
 {
   const char* test_string = "ABCDEFGHIJKLMNOPQ\nRSTUVWXYZabcdef";
   const char* expected = "ABCDEFGHIJKLMNOPQ               ";
 
-  display_string(test_string);
+  display_format_string(test_string);
   TEST_ASSERT_EQUAL_CHAR_ARRAY(expected, s_display, DISP_LEN);
   TEST_ASSERT_TRUE(s_display_changed);
 }

@@ -1,7 +1,7 @@
 // Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
 
-#include "display.h"
-#include "private/display_priv.h"
+#include "display_format.h"
+#include "display_priv.h"
 #include "misc/util.h"
 #include <string.h>
 #include <stdint.h>
@@ -372,32 +372,34 @@ void display_format_pressure_bar(uint16_t pressure_cmH2O, uint16_t peak_pressure
   }
 }
 
-void display_format_progress_bar(uint8_t progress_percent)
+void display_format_progress_bar(uint8_t progress_sixteenths)
 {
-  static uint8_t last_percent = 0u;
+  static uint8_t last_progress = 0u;
 
-  if (last_percent != progress_percent)
+  if (progress_sixteenths > 16u)
   {
-    uint32_t increments = 16u;
+    progress_sixteenths = 16u;
+  }
 
-    if (progress_percent <= 100u)
-    {
-      increments = progress_percent * DISP_PROGRESS_BAR_LEN / 100u;
-    }
-
+  if (last_progress != progress_sixteenths)
+  {
     // Start with an empty bar then copy full blocks into it
     char progress_bar[DISP_PROGRESS_BAR_LEN];
     memset(progress_bar, ' ', sizeof(progress_bar));
-    memset(progress_bar, FULL_BLOCK, increments);
 
-    last_percent = progress_percent;
+    if (progress_sixteenths != 0)
+    {
+      memset(progress_bar, FULL_BLOCK, progress_sixteenths);
+    }
+
+    last_progress = progress_sixteenths;
 
     strncpy(&s_display[DISP_PROGRESS_BAR], progress_bar, DISP_PROGRESS_BAR_LEN);
     s_display_changed = true;
   }
 }
 
-void display_string(const char* const string_to_display)
+void display_format_string(const char* const string_to_display)
 {
   enum which_lines
   {
@@ -470,12 +472,12 @@ void display_string(const char* const string_to_display)
   }
 }
 
-bool display_has_changed(void)
+bool display_format_has_changed(void)
 {
   return s_display_changed;
 }
 
-void display_get(message_mcu_to_fpga_t* const message_to_format)
+void display_format_get(message_mcu_to_fpga_t* const message_to_format)
 {
   if (!message_to_format)
   {

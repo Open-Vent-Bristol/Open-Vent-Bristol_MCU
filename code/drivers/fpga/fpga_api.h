@@ -45,23 +45,34 @@ typedef struct
 
 enum fpga_event_bits
 {
-  FPGA_EVENT_MODE_0                 = (1u << 0u),    // See enum fpga_operating_mode
-  FPGA_EVENT_MODE_1                 = (1u << 1u),    // See enum fpga_operating_mode
-  FPGA_EVENT_MODE_2                 = (1u << 2u),    // See enum fpga_operating_mode
-  FPGA_EVENT_MODE_MASK              = (FPGA_EVENT_MODE_2 | FPGA_EVENT_MODE_1 | FPGA_EVENT_MODE_0),
-  FPGA_EVENT_MOTOR_DISABLED         = (1u << 3u),    // The FPGA has disabled the motor
-  FPGA_EVENT_TIDAL_VOLUME_EXCEEDED  = (1u << 4u),    // The tidal volume limit is exceeded
-  FPGA_EVENT_ALARM_FAULT            = (1u << 5u),    // The FPGA requires the MCU to sound the alarm
-  // FPGA_EVENT_RESERVED_6             = (1u << 6u),
-  // FPGA_EVENT_RESERVED_7             = (1u << 7u),
-  // FPGA_EVENT_RESERVED_8             = (1u << 8u),
-  // FPGA_EVENT_RESERVED_9             = (1u << 9u),
-  // FPGA_EVENT_RESERVED_10            = (1u << 10u),
-  // FPGA_EVENT_RESERVED_11            = (1u << 11u),
-  // FPGA_EVENT_RESERVED_12            = (1u << 12u),
-  // FPGA_EVENT_RESERVED_13            = (1u << 13u),
-  // FPGA_EVENT_RESERVED_14            = (1u << 14u),
-  // FPGA_EVENT_RESERVED_15            = (1u << 15u)
+  FPGA_EVENT_MODE_0                       = (1u << 0u),    // See enum fpga_operating_mode
+  FPGA_EVENT_MODE_1                       = (1u << 1u),    // See enum fpga_operating_mode
+  FPGA_EVENT_MODE_2                       = (1u << 2u),    // See enum fpga_operating_mode
+  FPGA_EVENT_MODE_MASK                    =
+    (FPGA_EVENT_MODE_2 | FPGA_EVENT_MODE_1 | FPGA_EVENT_MODE_0),
+
+  FPGA_EVENT_MOTOR_DISABLED               = (1u << 3u),    // The FPGA has disabled the motor
+  FPGA_EVENT_TIDAL_VOLUME_EXCEEDED        = (1u << 4u),    // The tidal volume limit is exceeded
+  FPGA_EVENT_ALARM_FAULT                  = (1u << 5u),    // The MCU should sound its own alarm
+
+  FPGA_EVENT_DISPLAY_OVERRIDE_0           = (1u << 6u),    // See enum display_override_index
+  FPGA_EVENT_DISPLAY_OVERRIDE_1           = (1u << 7u),    // See enum display_override_index
+  FPGA_EVENT_DISPLAY_OVERRIDE_2           = (1u << 8u),    // See enum display_override_index
+  FPGA_EVENT_DISPLAY_OVERRIDE_3           = (1u << 9u),    // See enum display_override_index
+  FPGA_EVENT_DISPLAY_OVERRIDE_MASK        =
+    (FPGA_EVENT_DISPLAY_OVERRIDE_3 | FPGA_EVENT_DISPLAY_OVERRIDE_2 |
+     FPGA_EVENT_DISPLAY_OVERRIDE_1 | FPGA_EVENT_DISPLAY_OVERRIDE_0),
+
+  FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_0    = (1u << 10u),   // See enum display_override_line_2_index
+  FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_1    = (1u << 11u),   // See enum display_override_line_2_index
+  FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_2    = (1u << 12u),   // See enum display_override_line_2_index
+  FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_3    = (1u << 13u),   // See enum display_override_line_2_index
+  FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_4    = (1u << 14u),   // See enum display_override_line_2_index
+  FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_5    = (1u << 15u),   // See enum display_override_line_2_index
+  FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_MASK =
+    (FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_5 | FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_4 |
+     FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_3 | FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_2 |
+     FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_1 | FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_0),
 };
 
 /**
@@ -75,6 +86,43 @@ enum fpga_operating_mode
   FPGA_MODE_PRESSURE_SUPPORT        = (FPGA_EVENT_MODE_1 | FPGA_EVENT_MODE_0),  // Ventilation in response to patient demand
   FPGA_MODE_STOP                    = FPGA_EVENT_MODE_2,                        // Used only during calibration
   FPGA_MODE_RUN                     = (FPGA_EVENT_MODE_2 | FPGA_EVENT_MODE_0),  // Used only during calibration
+};
+
+/**
+ * Bits 6-9 of enum fpga_even t_bits
+ * String overrides for the display.
+ * Strings might affect only line 1, as indicated.
+ */
+enum display_override_index
+{
+  DISPLAY_OVERRIDE_NONE               = 0u,
+  DISPLAY_OVERRIDE_HOLD_MUTE_SEL      = 1u,
+  DISPLAY_OVERRIDE_LINE1_QUICK_CALIB  = 2u,
+  DISPLAY_OVERRIDE_LINE1_FULL_CALIB   = 3u,
+  DISPLAY_OVERRIDE_LINE1_TUBES        = 4u,
+  DISPLAY_OVERRIDE_LINE1_REDUCE_O2    = 5u,
+  DISPLAY_OVERRIDE_LINE1_INCREASE_O2  = 6u,
+  DISPLAY_OVERRIDE_LINE1_REMOVE_O2    = 7u,
+  DISPLAY_OVERRIDE_LINE1_CONNECT_N2   = 8u,
+  DISPLAY_OVERRIDE_LINE1_PLEASE_WAIT  = 9u,
+};
+
+/**
+ * Bits 10-15 of enum fpga_even t_bits
+ * String overrides for the display line 2.
+ * These will have no effect if the main override value (see above) is DISPLAY_OVERRIDE_NONE
+ * To display a progress bar, the value should be between 15 (zero length) and 31 (full length)
+ */
+enum display_override_line_2_index
+{
+  DISPLAY_OVERRIDE_LINE2_NONE         = 0u,
+  DISPLAY_OVERRIDE_LINE2_STANDBY      = 1u,
+  DISPLAY_OVERRIDE_LINE2_CONFIRM      = 2u,
+  DISPLAY_OVERRIDE_LINE2_SUCCESS      = 3u,
+  DISPLAY_OVERRIDE_LINE2_FAILED       = 4u,
+  /* Values 15-31 reserved for progress bar length */
+  DISPLAY_OVERRIDE_LINE2_EMPTY        = 15u,
+  DISPLAY_OVERRIDE_LINE2_FULL         = 31u,
 };
 
 enum mcu_event_bits

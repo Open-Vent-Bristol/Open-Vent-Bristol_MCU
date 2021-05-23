@@ -1,10 +1,11 @@
 // Copyright (c) 2021 <OpenVent-Bristol, Donald Robson>
 
 #include "messages.h"
-#include "display.h"
+#include "private/display_format.h"
 #include "private/fpga_priv.h"
 #include "alarm/alarm.h"
 #include "crc/crc.h"
+#include "display_controller.h"
 #include "scheduler/dispatcher.h"
 #include "sensor/sensor.h"
 #include "spi/spi.h"
@@ -112,6 +113,17 @@ TESTABLE uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const
     s_current_fpga_op_mode = new_mode;
   }
 
+  // Display overrides
+  enum display_override_index override =
+    (enum display_override_index)(
+      (message->event_mask & FPGA_EVENT_DISPLAY_OVERRIDE_MASK) >> 6u);
+  display_controller_set_override(override);
+
+  enum display_override_line_2_index override_line_2 =
+    (enum display_override_line_2_index)(
+      (message->event_mask & FPGA_EVENT_DISPLAY_LINE_2_OVERRIDE_MASK) >> 10u);
+  display_controller_set_line_2_override(override_line_2);
+
   // if ((message->event_mask & FPGA_EVENT_MOTOR_DISABLED) ||
   //     (message->event_mask & FPGA_EVENT_TIDAL_VOLUME_EXCEEDED))
   // {
@@ -154,6 +166,7 @@ TESTABLE uint32_t message_process_fpga_to_mcu(const message_fpga_to_mcu_t* const
   sensor_store_reading(SENSOR_PRESSURE, message->measured_pressure);
   sensor_store_reading(SENSOR_TEMPERATURE, message->measured_temperature);
 
+  dispatcher_signal_event_mask(1u << EV_FPGA_SEND, 0);
   dispatcher_signal_event_mask(1u << EV_DO_UPDATE_DISPLAY, 0);
 
   return 0u;
@@ -173,7 +186,11 @@ TESTABLE void message_fetch_from_fpga(int32_t arg)
 TESTABLE void message_send_mcu_to_fpga(int32_t arg)
 {
   fpga_heartbeat_calculate(&s_tx_message, s_previous_received_heartbeat);
-  display_get(&s_tx_message);
+
+  if (display_format_has_changed())
+  {
+    display_format_get(&s_tx_message);
+  }
 
   // Calculate the CRC-32
   s_tx_message.crc32 =
