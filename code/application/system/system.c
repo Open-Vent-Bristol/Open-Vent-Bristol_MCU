@@ -28,9 +28,9 @@ void system_init(void)
   actuator_init(15.0, 4.0, 0.05);
   alarm_init();
   fan_init();
+  message_init();
+  interrupt_init();
 
   // Initialise app components
   ventilation_init();
-  message_init();
-  interrupt_init();
 }

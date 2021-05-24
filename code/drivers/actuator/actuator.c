@@ -3,7 +3,6 @@
 #include "actuator.h"
 #include "private/actuator_priv.h"
 #include "gpio/gpio.h"
-#include "misc/telemetry_buffer.h"
 #include "private/pid.h"
 #include "board/board.h"
 #include "scheduler/dispatcher.h"
@@ -26,15 +25,6 @@ timer_t s_timer =
   .events_signalled = EV_ACTUATOR_SERVICE,
   .unique_id = TIMER_ACTUATOR_SERVICE
 };
-
-// TODO - Mechanical fault monitoring #48
-// Circular buffers to track the time period of push strokes
-// Every 256 push strokes an average of the preceding eight strokes will be recorded.
-// At 8 strokes per minute, long term tracking of one minute of sampling per hour for about 8 hours.
-// At 8 strokes per minute, short term tracking of every stroke for about 1 minutes.
-// By comparing the values, the driver can spot if the resistance to motion has changed decreased.
-// telemetry_buffer_t s_short_term_stroke_tracker = {0u};
-// telemetry_buffer_t s_long_term_stroke_tracker = {0u};
 
 /**
  * @brief Cap a speed.  For use with constant speed modes.
