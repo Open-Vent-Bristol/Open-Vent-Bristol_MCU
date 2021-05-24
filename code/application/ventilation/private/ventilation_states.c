@@ -1,6 +1,6 @@
 #include "ventilation_states.h"
 #include "ventilation/ventilation.h"
-#include "state/state_machine.h"
+#include "scheduler/state_machine.h"
 #include "misc/util.h"
 
 /**

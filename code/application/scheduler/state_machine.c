@@ -7,7 +7,7 @@
 #include <stdbool.h>
 
 
-TESTABLE state_machine_t s_machines[STATE_MACHINE_COUNT_MAX];
+state_machine_t s_machines[STATE_MACHINE_COUNT_MAX];
 
 TESTABLE bool state_machine_valid(const state_machine_t* const state_machine)
 {
@@ -104,7 +104,15 @@ void state_machine_set_transition_list(state_machine_t* state_machine,
   }
 }
 
-void state_machine_run(state_machine_t* const state_machine, system_event_mask_t* const event_mask)
+/**
+ * @brief Signal an event (or NO_EVENT) to the state_machine and call appropriate functions.
+ * This function must be run frequently.
+ *
+ * @param state_machine State machine object pointer.  Event will be handled in the context of this
+ *                      object.
+ * @param event_mask    Event bits.  Bits that cause a transition will NOT be cleared automatically.
+ */
+TESTABLE void state_machine_run(state_machine_t* const state_machine, system_event_mask_t* const event_mask)
 {
   if (state_machine_valid(state_machine) && (event_mask != NULL))
   {
@@ -169,4 +177,23 @@ void state_machine_run(state_machine_t* const state_machine, system_event_mask_t
       }
     }
   }
+}
+
+void state_machine_run_all(system_event_mask_t* const event_mask)
+{
+  // Run attached state machines.  Send all state machines the same event mask and clear any
+  // cleared bits from s_unhandled_events.
+  system_event_mask_t return_event_mask = *event_mask;
+
+  for (size_t i = 0u; i < ARRAY_LENGTH(s_machines); i++)
+  {
+    if (s_machines[i].definitions != NULL)
+    {
+      system_event_mask_t event_mask_copy = *event_mask;
+      state_machine_run(&s_machines[i], &event_mask_copy);
+      return_event_mask &= event_mask_copy;
+    }
+  }
+
+  *event_mask = return_event_mask;
 }

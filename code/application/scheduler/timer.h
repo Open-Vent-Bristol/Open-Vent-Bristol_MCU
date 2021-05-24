@@ -3,7 +3,7 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include "state/system_event.h"
+#include "system/system_event.h"
 #include <stdint.h>
 
 #define TIMER_START_INDEX (0x40000000)

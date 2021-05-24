@@ -8,7 +8,7 @@ enable_testing()
 
 add_executable(state_machine_unittest
   ${UNITY_SRC}
-  ${CODE}/application/state/state_machine.c
+  ${CODE}/application/scheduler/state_machine.c
   state_machine_unittest.c
   all_tests.c
 )

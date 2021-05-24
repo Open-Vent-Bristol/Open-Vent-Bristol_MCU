@@ -9,7 +9,7 @@
 #include "scheduler/dispatcher.h"
 #include "sensor/sensor.h"
 #include "spi/spi.h"
-#include "state/system_event.h"
+#include "system/system_event.h"
 #include "scheduler/timer.h"
 #include "misc/util.h"
 

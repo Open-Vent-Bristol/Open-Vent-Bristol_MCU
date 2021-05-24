@@ -1,6 +1,6 @@
 #include "ventilation.h"
 #include "private/ventilation_states.h"
-#include "state/state_machine.h"
+#include "scheduler/state_machine.h"
 #include <stddef.h>
 
 extern const state_transition_list_t s_pcv_transitions;
@@ -17,15 +17,4 @@ void ventilation_init(void)
 void ventilation_set_mode(ventilation_mode_t mode)
 {
   // s_next_mode = mode;
-}
-
-void ventilation_run(system_event_mask_t* const event_mask)
-{
-
-}
-
-void ventilation_stop(void)
-{
-  // system_event_mask_t stop_event = EVENT_STOP;
-  // state_machine_run(&stop_event);
 }

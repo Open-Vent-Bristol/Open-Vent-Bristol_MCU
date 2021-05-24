@@ -29,10 +29,18 @@ TEST_GROUP_RUNNER(state_machine_run_tests)
   RUN_TEST_CASE(state_machine_run_test, run_prioritises_low_bits_for_transitions);
 }
 
+TEST_GROUP_RUNNER(state_machine_run_all_tests)
+{
+  RUN_TEST_CASE(state_machine_run_all_test, run_all_sends_same_event_mask_to_all_machines);
+  RUN_TEST_CASE(
+    state_machine_run_all_test, run_all_clears_bits_in_event_mask_if_a_machine_clears_them);
+}
+
 static void RunAllTests(void)
 {
   RUN_TEST_GROUP(state_machine_tests);
   RUN_TEST_GROUP(state_machine_run_tests);
+  RUN_TEST_GROUP(state_machine_run_all_tests);
 }
 
 int main(int argc, const char* argv[])
