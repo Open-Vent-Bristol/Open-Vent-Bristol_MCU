@@ -3,7 +3,7 @@
 #ifndef TIMER_PRIV_H
 #define TIMER_PRIV_H
 
-#include "state/system_event.h"
+#include "system/system_event.h"
 
 #define TIMER_COUNT (TIMER_END_INDEX - TIMER_START_INDEX)
 

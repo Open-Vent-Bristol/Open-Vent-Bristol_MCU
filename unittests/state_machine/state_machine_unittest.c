@@ -2,8 +2,8 @@
 
 #include "unity.h"
 #include "unity_fixture.h"
-#include "state/state_machine.h"
-#include "state/private/state_machine_priv.h"
+#include "scheduler/state_machine.h"
+#include "scheduler/private/state_machine_priv.h"
 #include "misc/util.h"
 #include "fake_state_defs.h"
 #include <string.h>
@@ -12,6 +12,8 @@
 extern state_machine_t s_machines[STATE_MACHINE_COUNT_MAX];
 
 extern bool state_machine_valid(const state_machine_t* const state_machine);
+extern void state_machine_run(
+  state_machine_t* const state_machine, system_event_mask_t* const event_mask);
 
 static system_event_mask_t test_event_val;
 static void test_store_event_val(system_event_mask_t* const event_mask)
@@ -458,7 +460,6 @@ TEST(state_machine_run_test, run_does_not_clear_event_bits_on_transition)
 
 TEST(state_machine_run_test, run_prioritises_low_bits_for_transitions)
 {
-  // TODO - SEGFAULT
   run_machine->current_state = 4;
 
   system_event_mask_t trans_4_to_3 = 8;
@@ -471,4 +472,55 @@ TEST(state_machine_run_test, run_prioritises_low_bits_for_transitions)
   TEST_ASSERT_EQUAL(1, test_state_member_4_exit_fake.call_count);
   TEST_ASSERT_EQUAL(1, test_state_member_3_entry_fake.call_count);
   TEST_ASSERT_EQUAL(0, test_state_member_5_entry_fake.call_count);
+}
+
+state_machine_t* run_machine_2;
+
+TEST_GROUP(state_machine_run_all_test);
+
+TEST_SETUP(state_machine_run_all_test)
+{
+  FAKE_STATE_FUNCTIONS(RESET_FAKE);
+  memset(s_machines, 0, sizeof(s_machines));
+  test_event_val = UINT32_MAX;
+  run_machine = NULL;
+  run_machine_2 = NULL;
+  state_machine_init(&run_machine, 2, &run_definition_list, &run_transition_list);
+  state_machine_init(&run_machine_2, 2, &run_definition_list, &run_transition_list);
+  RESET_FAKE(test_state_member_2_entry);
+}
+
+TEST_TEAR_DOWN(state_machine_run_all_test)
+{}
+
+TEST(state_machine_run_all_test, run_all_sends_same_event_mask_to_all_machines)
+{
+  test_state_member_2_run_fake.custom_fake = test_store_event_val;
+
+  system_event_mask_t event_mask = 0x12345678;
+
+  state_machine_run_all(&event_mask);
+
+  // This should get written twice with the same value
+  TEST_ASSERT_EQUAL_HEX32(0x12345678, test_event_val);
+}
+
+void test_clear_0x5678(system_event_mask_t* const event_mask)
+{
+  test_event_val = *event_mask;
+  *event_mask &= ~0x5678;
+}
+
+TEST(state_machine_run_all_test, run_all_clears_bits_in_event_mask_if_a_machine_clears_them)
+{
+  test_state_member_2_run_fake.custom_fake = test_clear_0x5678;
+
+  system_event_mask_t event_mask = 0x12345678;
+
+  state_machine_run_all(&event_mask);
+
+  // This should get written twice with the same value
+  TEST_ASSERT_EQUAL_HEX32(0x12345678, test_event_val);
+
+  TEST_ASSERT_EQUAL_HEX32(0x12340000, event_mask);
 }

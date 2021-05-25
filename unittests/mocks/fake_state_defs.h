@@ -3,7 +3,7 @@
 #ifndef FAKE_STATE_DEFS_H
 #define FAKE_STATE_DEFS_H
 
-#include "state/system_event.h"
+#include "system/system_event.h"
 #include "fff.h"
 
 #define FFF_GCC_FUNCTION_ATTRIBUTES

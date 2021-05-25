@@ -14,6 +14,7 @@ TEST_GROUP_RUNNER(dispatcher_tests)
   RUN_TEST_CASE(dispatcher_tests, clear_event_mask_clears_all_bits);
   RUN_TEST_CASE(dispatcher_tests, clear_event_mask_disables_interrupts);
 
+  RUN_TEST_CASE(dispatcher_tests, service_runs_state_machines_first);
   RUN_TEST_CASE(dispatcher_tests, service_null_pointer_calls_default_handler);
   RUN_TEST_CASE(dispatcher_tests, service_doesnt_process_invalid_events);
   RUN_TEST_CASE(dispatcher_tests, service_processes_all_events);

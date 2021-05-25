@@ -4,6 +4,7 @@
 #include "unity_fixture.h"
 #include "scheduler/dispatcher.h"
 #include "board_mock.h"
+#include "state_machine_mock.h"
 #include <string.h>
 
 #include "fff.h"
@@ -16,6 +17,11 @@ FAKE_VOID_FUNC(test_function, int32_t);
 void test_function_caller(int32_t arg)
 {
   test_function(arg);
+}
+
+void test_xor_alternate_bits(system_event_mask_t* const event_mask)
+{
+  *event_mask ^= 0xAAAAAAAA;
 }
 
 extern system_event_callback s_bindings[EV_NUMBER_EVENTS];
@@ -35,6 +41,7 @@ TEST_SETUP(dispatcher_tests)
   RESET_FAKE(test_function);
   RESET_FAKE(GLOBAL_INTERRUPTS_DISABLE);
   RESET_FAKE(GLOBAL_INTERRUPTS_ENABLE);
+  STATE_MACHINE_MOCKS(RESET_FAKE);
 }
 
 TEST_TEAR_DOWN(dispatcher_tests)
@@ -97,13 +104,38 @@ TEST(dispatcher_tests, clear_event_mask_disables_interrupts)
   TEST_ASSERT_EQUAL_INT(1, GLOBAL_INTERRUPTS_ENABLE_fake.call_count);
 }
 
+TEST(dispatcher_tests, service_runs_state_machines_first)
+{
+  state_machine_run_all_fake.custom_fake = test_xor_alternate_bits;
+
+  // state_machine_run_all mock will clear mask 0xAAAAAAAA, so we can test that events are not
+  // handled, even if bound.
+  // Bind all events in mask (EV_NUMBER_EVENTS | 1 | 0xAAAAAAAA)
+  for (size_t i = 0u; i < EV_NUMBER_EVENTS; i++)
+  {
+    if (((1u << i) & 0xAAAAAAAA) & (i != 0))
+    {
+      continue;
+    }
+
+    s_bindings[i] = test_function_caller;
+    s_signalled_args[i] = i;
+  }
+
+  s_unhandled_events = 0xAAAAAAAA + 1;
+  dispatcher_service();
+
+  // Only event (1u << 1u) should have been handled
+  TEST_ASSERT_EQUAL_INT(1u, s_unhandled_events);
+  TEST_ASSERT_EQUAL_INT(1u, test_function_fake.call_count);
+}
+
 TEST(dispatcher_tests, service_null_pointer_calls_default_handler)
 {
   // Set all valid event bits
   s_unhandled_events = (1u << EV_NUMBER_EVENTS) - 1u;
   dispatcher_service();
   TEST_ASSERT_EQUAL_INT(EV_NUMBER_EVENTS, s_dispatch_errors);
-  TEST_ASSERT_EQUAL_INT(0u, s_unhandled_events);
 }
 
 TEST(dispatcher_tests, service_doesnt_process_invalid_events)
@@ -126,7 +158,6 @@ TEST(dispatcher_tests, service_processes_all_events)
   // Set all valid event bits
   s_unhandled_events = (1u << EV_NUMBER_EVENTS) - 1u;
   dispatcher_service();
-  TEST_ASSERT_EQUAL_INT(0u, s_unhandled_events);
 
   // Check that all the events were processed as expected
   TEST_ASSERT_EQUAL_INT(EV_NUMBER_EVENTS, test_function_fake.call_count);

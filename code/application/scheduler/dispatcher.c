@@ -3,6 +3,7 @@
 #include "dispatcher.h"
 #include "board/board.h"
 #include "misc/util.h"
+#include "private/state_machine_priv.h"
 #include <string.h>
 
 // This holds the callback function pointers
@@ -60,6 +61,10 @@ void dispatcher_clear_event_mask(system_event_mask_t event_mask)
 
 void dispatcher_service(void)
 {
+  // Run state machines first
+  state_machine_run_all(&s_unhandled_events);
+
+  // Handle events via callbacks
   for (size_t i = 0u; i < EV_NUMBER_EVENTS; i++)
   {
     if (s_unhandled_events == 0u)
@@ -78,9 +83,8 @@ void dispatcher_service(void)
       else
       {
         default_handler(i, s_signalled_args[i]);
+        s_unhandled_events &= ~(1u << i);
       }
-
-      s_unhandled_events &= ~(1u << i);
     }
   }
 

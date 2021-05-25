@@ -3,7 +3,7 @@
 #ifndef STATE_MACHINE_H
 #define STATE_MACHINE_H
 
-#include "state/system_event.h"
+#include "system/system_event.h"
 #include <stdint.h>
 #include <stddef.h>
 
@@ -92,15 +92,5 @@ void state_machine_init(state_machine_t** state_machine_ptr, int8_t initial_stat
  */
 void state_machine_set_transition_list(state_machine_t* state_machine,
   const state_transition_list_t* transitions);
-
-/**
- * @brief Signal an event (or NO_EVENT) to the state_machine and call appropriate functions.
- * This function must be run frequently.
- *
- * @param state_machine State machine object pointer.  Event will be handled in the context of this
- *                      object.
- * @param event_mask    Event bits.  Bits that cause a transition will NOT be cleared automatically.
- */
-void state_machine_run(state_machine_t* const state_machine, system_event_mask_t* const event_mask);
 
 #endif /* STATE_MACHINE_H */

@@ -3,7 +3,7 @@
 #ifndef DISPATCHER_H
 #define DISPATCHER_H
 
-#include "state/system_event.h"
+#include "system/system_event.h"
 #include <stddef.h>
 
 /**
@@ -24,7 +24,9 @@ void dispatcher_signal_event_mask(system_event_mask_t event_mask, int32_t arg);
 void dispatcher_clear_event_mask(system_event_mask_t event_mask);
 
 /**
- * @brief Call the functions associated with the unhandled events.
+ * @brief Call the functions associated with the unhandled events and run state machines.
+ * @note State machines will be run before events are handled by callback bindings, so that events
+ * that are cleared by callbacks can also be used to trigger state transitions.
  */
 void dispatcher_service(void);
 
