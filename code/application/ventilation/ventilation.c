@@ -20,10 +20,8 @@ TESTABLE state_machine_t* s_ventilation_state_machine;
  */
 TESTABLE void ventilation_set_target_mode(int32_t mode)
 {
-  if (mode != s_next_mode)
-  {
-    s_next_mode = mode;
-  }
+  dispatcher_clear_event_mask(1u << EV_OP_MODE_CHANGE);
+  s_next_mode = mode;
 }
 
 void ventilation_init(void)
