@@ -25,6 +25,19 @@ void clock_init(void)
   LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
   LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
 
+  // Set voltage scaling range to allow higher clock speeds for USB
+  LL_APB1_GRP1_EnableClock(RCC_APB1ENR1_PWREN);
+  LL_PWR_SetRegulVoltageScaling(LL_PWR_REGU_VOLTAGE_SCALE1);
+  while (!LL_PWR_IsActiveFlag_VOS());
+
+  // Due to voltage scaling range, flash latency (wait states) are needed
+  LL_FLASH_SetLatency(LL_FLASH_LATENCY_2);
+
+  // Setup MSI at 48MHz and tell USB to use it
+  LL_RCC_MSI_SetRange(LL_RCC_MSIRANGE_11);
+  LL_RCC_MSI_EnableRangeSelection();
+  LL_RCC_SetUSBClockSource(LL_RCC_SYS_CLKSOURCE_MSI);
+
   // SysTick config for scheduler
   // IMPORTANT: the AHBPrescaler setting above must be accounted for if non-zero
   SysTick_Config((CPU_CLOCK_HZ / SYSTICK_HZ) - 1u);

@@ -4,3 +4,9 @@
 [submodule "unittests/frameworks/fff"]
 	path = unittests/frameworks/fff
 	url = https://github.com/meekrosoft/fff.git
+[submodule "submodules/libusb_stm32"]
+	path = submodules/libusb_stm32
+	url = https://github.com/dmitrystu/libusb_stm32.git
+[submodule "submodules/sboot_stm32"]
+	path = submodules/sboot_stm32
+	url = https://github.com/dmitrystu/sboot_stm32.git

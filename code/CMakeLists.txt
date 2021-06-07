@@ -35,6 +35,7 @@ include_directories(
   application
   drivers
   hal
+  ../submodules/libusb_stm32/inc
 )
 
 if(${MCU_TARGET} STREQUAL stm32l4)

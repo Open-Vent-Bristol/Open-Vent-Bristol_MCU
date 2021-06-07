@@ -9,6 +9,7 @@
                 "${workspaceFolder}/code/hal/stm32l4",
                 "${workspaceFolder}/code/hal/stm32l4/CMSIS/Device/ST/STM32L4xx/Include",
                 "${workspaceFolder}/code/hal/stm32l4/CMSIS/Core/Include",
+                "${workspaceFolder}/submodules/libusb_stm32/inc",
                 "${workspaceFolder}/unittests/frameworks",
                 "${workspaceFolder}/unittests/frameworks/fff",
                 "${workspaceFolder}/unittests/frameworks/Unity/src",

@@ -14,7 +14,7 @@ set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}g++ CACHE INTERNAL "C++ Compiler")
 set(CMAKE_OBJCOPY ${TOOLCHAIN_PREFIX}objcopy CACHE INTERNAL "Objcopy tool")
 set(CMAKE_SIZE_UTIL ${TOOLCHAIN_PREFIX}size CACHE INTERNAL "Size tool")
 
-set(CMAKE_C_FLAGS   "${COMMON_FLAGS} -std=c99 " CACHE INTERNAL "C Compiler options")
+set(CMAKE_C_FLAGS   "${COMMON_FLAGS} -std=c11 " CACHE INTERNAL "C Compiler options")
 set(CMAKE_CXX_FLAGS "${COMMON_FLAGS} -std=c++14 " CACHE INTERNAL "C++ Compiler options")
 set(CMAKE_ASM_FLAGS "${COMMON_FLAGS} -x assembler-with-cpp " CACHE INTERNAL "ASM Compiler options")
 set(CMAKE_EXE_LINKER_FLAGS
